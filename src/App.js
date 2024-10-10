@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 
 import Home from "./Components/Home";
 import StartPage from "./Components/StartPage";
-//import SoundCal from "./Components/SoundCal";
+import SoundCal from "./Components/SoundCal";
 import HeadphoneCheck from "./Components/HeadphoneCheck";
 //import PerTut from "./Components/Tutorial";
 //import PerTask from "./Components/Task";
@@ -15,6 +15,7 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/Start" element={<StartPage />} />
       <Route path="/HeadphoneCheck" element={<HeadphoneCheck />} />
+      <Route path="/SoundCal" element={<SoundCal />} />
     </Routes>
   );
 }

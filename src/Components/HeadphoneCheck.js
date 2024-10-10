@@ -110,16 +110,19 @@ class HeadphoneCheck extends React.Component {
   constructor(props) {
     super(props);
     // Constructor and props
-    const userID = this.props.state.userID;
+    /*  const userID = this.props.state.userID;
     const prolificID = this.props.state.prolificID;
     const date = this.props.state.date;
-    const startTime = this.props.state.startTime;
+    const startTime = this.props.state.startTime; */
 
+    var userID = 1000;
+    var prolificID = 1000;
+    var date = 1000;
+    var startTime = 1000;
 
     var currTime = Math.round(performance.now());
     var volNtLog = 80;
     var vol = logslider(80);
-
 
     ////////////////////////////////////////////////////////////////////////////////
     //Set state
@@ -158,15 +161,15 @@ class HeadphoneCheck extends React.Component {
       volumeNotLog: volNtLog, //this is what you feed into the slider and convert back
       checkTry: 1,
 
-     // fix: fix,
-     // stimTrain1: stimTrain1,
-    //  stimTrain2: stimTrain2,
-    //  counter: counter,
-     // fbAver: fbAver,
-     // fbSafe: fbSafe,
-     // fbAvoid: fbAvoid,
-     // astrodude: astrodude,
-     // stim1: stim1,
+      // fix: fix,
+      // stimTrain1: stimTrain1,
+      //  stimTrain2: stimTrain2,
+      //  counter: counter,
+      // fbAver: fbAver,
+      // fbSafe: fbSafe,
+      // fbAvoid: fbAvoid,
+      // astrodude: astrodude,
+      // stim1: stim1,
       //stim2: stim2,
       //stim3: stim3,
       //stim4: stim4,
@@ -394,13 +397,13 @@ class HeadphoneCheck extends React.Component {
     var audioBite = this.state.quizSounds[qnNum - 1];
 
     return (
-      <div className={style.bg}>
-      <div className={style.textFrame}>
-        <div className={style.fontStyle}>
-        <strong>
-              Question {qnNum} of {this.state.qnNumTotal}
-            </strong>
-       
+      <div>
+        {" "}
+        <center>
+          <strong>
+            Question {qnNum} of {this.state.qnNumTotal}
+          </strong>
+          <br />
           <br />
           When you click the play button below, you will hear three sounds
           separated by silences.
@@ -410,34 +413,30 @@ class HeadphoneCheck extends React.Component {
           attention!
           <br />
           <br />
-          <span className={style.textCenter}>
-            <PlayButton
-              audio={audioBite}
-              play={this.togglePlaying}
-              stop={this.togglePlaying}
-              idleBackgroundColor={this.state.varPlayColour[qnNum - 1]}
-              volume={this.state.volume}
-              active={this.state.active}
-            />
-            <br />
-            <br />
-            Which sound was the <strong>softest</strong> (quietest) -- 1, 2, or
-            3?
-            <br /> <br />
-            <strong>1</strong> - FIRST sound was SOFTEST <br />
-            <strong>2</strong> - SECOND sound was SOFTEST <br />
-            <strong>3</strong> - THIRD sound was SOFTEST <br />
-            <br />
-            [Press the correct number key]
-            <br /> <br />{" "}
-          
-              [Note: Number keys will not work unless you click the play
-              button.]
-        
+          <PlayButton
+            audio={audioBite}
+            play={this.togglePlaying}
+            stop={this.togglePlaying}
+            idleBackgroundColor={this.state.varPlayColour[qnNum - 1]}
+            volume={this.state.volume}
+            active={this.state.active}
+          />
+          <br />
+          <br />
+          Which sound was the <strong>softest</strong> (quietest) -- 1, 2, or 3?
+          <br />
+          <br />
+          <strong>1</strong> - FIRST sound was SOFTEST <br />
+          <strong>2</strong> - SECOND sound was SOFTEST <br />
+          <strong>3</strong> - THIRD sound was SOFTEST <br />
+          <br />
+          [Press the correct number key]
+          <br />
+          <br />
+          <span className={style.textSmall}>
+            [Note: Number keys will not work unless you click the play button.]
           </span>
-    
-      </div>
-      </div>
+        </center>
       </div>
     );
   }
@@ -730,21 +729,21 @@ class HeadphoneCheck extends React.Component {
         volume: this.state.volume,
         volumeNotLog: this.state.volumeNotLog,
 
-     //   fix: this.state.fix,
-     //   stimTrain1: this.state.stimTrain1,
-      //  stimTrain2: this.state.stimTrain2,
-      //  counter: this.state.counter,
-     //   fbAver: this.state.fbAver,
-     //   fbSafe: this.state.fbSafe,
-     //   fbAvoid: this.state.fbAvoid,
-     //   astrodude: this.state.astrodude,
+        //   fix: this.state.fix,
+        //   stimTrain1: this.state.stimTrain1,
+        //  stimTrain2: this.state.stimTrain2,
+        //  counter: this.state.counter,
+        //   fbAver: this.state.fbAver,
+        //   fbSafe: this.state.fbSafe,
+        //   fbAvoid: this.state.fbAvoid,
+        //   astrodude: this.state.astrodude,
 
-     //   stim1: this.state.stim1,
-     //   stim2: this.state.stim2,
-      //  stim3: this.state.stim3,
-      //  stim4: this.state.stim4,
-      //  stim5: this.state.stim5,
-     //   stim6: this.state.stim6,
+        //   stim1: this.state.stim1,
+        //   stim2: this.state.stim2,
+        //  stim3: this.state.stim3,
+        //  stim4: this.state.stim4,
+        //  stim5: this.state.stim5,
+        //   stim6: this.state.stim6,
       },
     });
   }
@@ -761,11 +760,11 @@ class HeadphoneCheck extends React.Component {
           document.addEventListener("keyup", this._handleInstructKey);
           this.useEffect();
           text = (
-            <div className={style.bg}>
-            <div className={style.textFrame}>
-              <div className={style.fontStyle}>
+            <div>
+              <span>
+                <center>
                   <strong>WELCOME</strong>
-               
+                </center>
                 <br />
                 Today, we will be playing a game that will require the use of
                 several sounds.
@@ -784,20 +783,16 @@ class HeadphoneCheck extends React.Component {
                 When you are ready, you can navigate the pages with the left and
                 right arrow keys.
                 <br />
-              
+                <center>
                   <br />[<strong>NEXT</strong> →]
-               </div>
-               </div>
-           
+                </center>
+              </span>
             </div>
           );
         } else if (this.state.currentInstructionText === 2) {
           text = (
-            <div className={style.bg}>
-            <div className={style.textFrame}>
-              <div className={style.fontStyle}>
-           
-                <br />
+            <div>
+              <span>
                 Great! First, we need to set your sound settings to an
                 appropriate level. <br />
                 Please set your computer system volume level to{" "}
@@ -806,7 +801,7 @@ class HeadphoneCheck extends React.Component {
                 Now, click the play button below.
                 <br />
                 <br />
-                <span className={style.center}>
+                <center>
                   <PlayButton
                     audio={this.state.calibSound}
                     play={this.togglePlaying}
@@ -815,7 +810,7 @@ class HeadphoneCheck extends React.Component {
                     idleBackgroundColor={this.state.varPlayColour[0]}
                     active={this.state.active}
                   />
-                </span>
+                </center>
                 <br />
                 If it is too loud or soft, adjust the volume on the slider
                 below.
@@ -824,21 +819,24 @@ class HeadphoneCheck extends React.Component {
                 <br />
                 <br />
                 You should aim for a <u>loud but comfortable</u> level.
-                <br /> <br />
-                <span className={style.center}>
+                <br />
+                <br />
+                <br />
+                <center>
                   <SliderVol.SliderVol
                     callBackValue={this.callbackVol.bind(this)}
                     callBackValueNotLog={this.callbackVolNotLog.bind(this)}
                   />
-                </span>
+                </center>
                 <br />
                 Please continue on to the next page when you are happy with the
                 sound level.
-                <br /> <br />
+                <br />
+                <br />
+                <center>
                   [← <strong>BACK</strong>] [<strong>NEXT</strong> →]
-           
-            </div>
-            </div>
+                </center>
+              </span>
             </div>
           );
         }
@@ -847,11 +845,11 @@ class HeadphoneCheck extends React.Component {
         // this is the 3 sound quiz
         if (this.state.quizScreen === false) {
           text = (
-            <div className={style.bg}>
-            <div className={style.textFrame}>
-              <div className={style.fontStyle}>
+            <div>
+              <span>
+                <center>
                   <strong>AUDIO TEST: PART I</strong>
-             
+                </center>
                 <br />
                 To ensure that all is working properly, you will now complete an
                 audio screening task.
@@ -863,21 +861,18 @@ class HeadphoneCheck extends React.Component {
                 <br />
                 You will need to pass this quiz in order to proceed further.
                 <br /> <br />
-                  Press <strong>SPACEBAR</strong> to begin.
-       </div>
-       </div>
-       </div>
+                <center>
+                  Press [<strong>SPACEBAR</strong>] to begin.
+                </center>
+              </span>
+            </div>
           );
         } else {
           //QUIZ STARTS
           if (this.state.qnNum <= this.state.qnNumTotal) {
             text = (
-              <div className="questionnaire">
-                <center>
-                  <br />
-                  {this.display_question(this.state.qnNum)}
-                  <br />
-                </center>
+              <div>
+                <span>{this.display_question(this.state.qnNum)}</span>
               </div>
             );
           } else {
@@ -889,11 +884,11 @@ class HeadphoneCheck extends React.Component {
             } else {
               document.addEventListener("keydown", this._handleRestartKey);
               text = (
-                <div className={style.main}>
-                  <p>
-                    <span className={style.center}>
+                <div>
+                  <span>
+                    <center>
                       <strong>END AUDIO CHECK</strong>
-                    </span>
+                    </center>
                     <br />
                     <br />
                     Sorry, you failed the screening test.
@@ -907,10 +902,11 @@ class HeadphoneCheck extends React.Component {
                     calibrate a louder audio volume.
                     <br />
                     <br />
-                    <span className={style.centerTwo}>
-                      Press SPACEBAR to calibrate the volume again.
-                    </span>
-                  </p>
+                    <center>
+                      Press [<strong>SPACEBAR</strong>] to calibrate the volume
+                      again.
+                    </center>
+                  </span>
                 </div>
               );
             }
@@ -920,17 +916,21 @@ class HeadphoneCheck extends React.Component {
     } else if (this.state.debug === true) {
       document.addEventListener("keyup", this._handleDebugKey);
       text = (
-        <div className={style.bg}>
-        <div className={style.textFrame}>
-          <div className={style.fontStyle}>
-              Press the [<strong>SPACEBAR</strong>] to skip to next section.
-          </div>
-          </div>
+        <div>
+          <span>
+            Press the [<strong>SPACEBAR</strong>] to skip to next section.
+          </span>
         </div>
       );
     }
 
-    return <div className={style.spaceship}>{text}</div>;
+    return (
+      <div className={style.bg}>
+        <div className={style.textFrame}>
+          <div className={style.fontStyle}>{text}</div>
+        </div>
+      </div>
+    );
   }
 }
 

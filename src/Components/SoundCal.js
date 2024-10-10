@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "react-bootstrap";
-import { withRouter } from "react-router-dom";
+import withRouter from "./withRouter.js";
 
 import attenSound from "./sounds/task/IADSE_pianomed1360_5000.wav";
 import fbSound from "./sounds/task/morriss_scream_1000.wav";
@@ -14,8 +14,8 @@ import otherSound4 from "./sounds/task/YangIADSE_cicada0335_1500.wav";
 import otherSound5 from "./sounds/task/YangIADSE_water0921_2000.wav";
 import otherSound6 from "./sounds/task/zaldPardo_metalscreech_1500.wav";
 
-import * as RatingSlider from "./sliders/RatingSlider.js";
-import styles from "./style/taskStyle.module.css";
+import * as RatingSlider from "./sliders/RatingSlider2.js";
+import style from "./style/taskStyle.module.css";
 import PlayButton from "./PlayButton";
 import { DATABASE_URL } from "./config";
 
@@ -157,32 +157,33 @@ class SoundCal extends React.Component {
   constructor(props) {
     super(props);
 
-    const userID = this.props.location.state.userID;
-    const date = this.props.location.state.date;
-    const startTime = this.props.location.state.startTime;
-    const volume = this.props.location.state.volume;
-    const volumeNotLog = this.props.location.state.volumeNotLog;
+    /*   const userID = this.props.state.userID;
+    const date = this.props.state.date;
+    const startTime = this.props.state.startTime;
+    const volume = this.props.state.volume;
+    const volumeNotLog = this.props.state.volumeNotLog;
 
-    const fix = this.props.location.state.fix;
-    const stimTrain1 = this.props.location.state.stimTrain1;
-    const stimTrain2 = this.props.location.state.stimTrain2;
-    const counter = this.props.location.state.counter;
-    const fbAver = this.props.location.state.fbAver;
-    const fbSafe = this.props.location.state.fbSafe;
-    const fbAvoid = this.props.location.state.fbAvoid;
-    const astrodude = this.props.location.state.astrodude;
-    const stim1 = this.props.location.state.stim1;
-    const stim2 = this.props.location.state.stim2;
-    const stim3 = this.props.location.state.stim3;
-    const stim4 = this.props.location.state.stim4;
-    const stim5 = this.props.location.state.stim5;
-    const stim6 = this.props.location.state.stim6;
+    const fix = this.props.state.fix;
+    const stimTrain1 = this.props.state.stimTrain1;
+    const stimTrain2 = this.props.state.stimTrain2;
+    const counter = this.props.state.counter;
+    const fbAver = this.props.state.fbAver;
+    const fbSafe = this.props.state.fbSafe;
+    const fbAvoid = this.props.state.fbAvoid;
+    const astrodude = this.props.state.astrodude;
+    const stim1 = this.props.state.stim1;
+    const stim2 = this.props.state.stim2;
+    const stim3 = this.props.state.stim3;
+    const stim4 = this.props.state.stim4;
+    const stim5 = this.props.state.stim5;
+    const stim6 = this.props.state.stim6; */
 
-    // var userID = 1000;
-    // var date = 1000;
-    // var startTime = 1000;
-    // var volume = 80;
-    // var volumeNotLog = 39;
+    var userID = 1000;
+    var prolificID = 1000;
+    var date = 1000;
+    var startTime = 1000;
+    var volume = 80;
+    var volumeNotLog = 39;
 
     var averRatingDef = randomArray(qnNumTotal, 35, 65);
     var arouRatingDef = randomArray(qnNumTotal, 35, 65);
@@ -249,7 +250,7 @@ class SoundCal extends React.Component {
       // neutralRating: 0,
       halfAverRating: 0,
       halfArouRating: 0,
-
+      /* 
       fix: fix,
       stimTrain1: stimTrain1,
       stimTrain2: stimTrain2,
@@ -263,7 +264,7 @@ class SoundCal extends React.Component {
       stim3: stim3,
       stim4: stim4,
       stim5: stim5,
-      stim6: stim6,
+      stim6: stim6, */
 
       debug: false,
     };
@@ -444,9 +445,9 @@ class SoundCal extends React.Component {
     }
 
     let question_text = (
-      <div className={styles.main}>
+      <div className={style.main}>
         <span>
-          <span className={styles.center}>
+          <span className={style.center}>
             <strong>Sound {qnNumShow}</strong>
           </span>
           <br />
@@ -461,7 +462,7 @@ class SoundCal extends React.Component {
     // if the index is not for the frequencies that wee chosen before...
     question_text1 = (
       <div>
-        <span className={styles.centerTwo}>
+        <span className={style.centerTwo}>
           <PlayButton
             audio={this.state.soundFocus}
             play={this.togglePlaying}
@@ -476,8 +477,8 @@ class SoundCal extends React.Component {
     );
 
     let question_text2 = (
-      <div className={styles.main}>
-        <span className={styles.centerTwo}>
+      <div className={style.main}>
+        <span className={style.centerTwo}>
           <strong>Q{qnNumShow}a:</strong> How pleasant is this sound?
           <br />
           <br />
@@ -499,7 +500,7 @@ class SoundCal extends React.Component {
           />
           <br />
           <br />
-          <span className={styles.smallfont}>
+          <span className={style.smallfont}>
             [Note: You must play the sound and <strong>drag</strong> (not click)
             all sliders at least once to click NEXT.]
           </span>
@@ -507,7 +508,7 @@ class SoundCal extends React.Component {
           <br />
           <Button
             id="right"
-            className={styles.clc}
+            className={style.clc}
             disabled={this.state.btnDisNext}
             onClick={this.saveData.bind(this)}
           >
@@ -1113,9 +1114,9 @@ class SoundCal extends React.Component {
         if (this.state.currentInstructionText === 1) {
           document.addEventListener("keyup", this._handleInstructKey);
           text = (
-            <div className={styles.main}>
+            <div className={style.main}>
               <p>
-                <span className={styles.center}>
+                <span className={style.center}>
                   <strong>AUDIO TEST: PART II</strong>
                 </span>
                 <br />
@@ -1137,7 +1138,7 @@ class SoundCal extends React.Component {
                 2) <strong>arousal</strong>: on scale of sleepy to awake <br />
                 <br />
                 <br />
-                <span className={styles.centerTwo}>
+                <span className={style.centerTwo}>
                   [<strong>NEXT</strong> →]
                 </span>
               </p>
@@ -1145,15 +1146,15 @@ class SoundCal extends React.Component {
           );
         } else if (this.state.currentInstructionText === 2) {
           text = (
-            <div className={styles.main}>
+            <div className={style.main}>
               <p>
-                <span className={styles.center}>
+                <span className={style.center}>
                   <strong>AUDIO TEST: PART II</strong>
                 </span>
                 <br />
                 When you are asked to rate the sound on the:
                 <br /> <br />
-                <span className={styles.centerTwo}>
+                <span className={style.centerTwo}>
                   <strong>Pleasantness</strong> scale
                 </span>
                 <br />
@@ -1178,7 +1179,7 @@ class SoundCal extends React.Component {
                 that are neither pleasant nor unpleasant to you.
                 <br />
                 <br />
-                <span className={styles.centerTwo}>
+                <span className={style.centerTwo}>
                   [← <strong>BACK</strong>] [<strong>NEXT</strong> →]
                 </span>
               </p>
@@ -1186,15 +1187,15 @@ class SoundCal extends React.Component {
           );
         } else if (this.state.currentInstructionText === 3) {
           text = (
-            <div className={styles.main}>
+            <div className={style.main}>
               <p>
-                <span className={styles.center}>
+                <span className={style.center}>
                   <strong>AUDIO TEST: PART II</strong>
                 </span>
                 <br />
                 When you are asked to rate the sound on the:
                 <br /> <br />
-                <span className={styles.centerTwo}>
+                <span className={style.centerTwo}>
                   <strong>Arousal</strong> scale
                 </span>
                 <br />
@@ -1219,7 +1220,7 @@ class SoundCal extends React.Component {
                 that are neither low nor high energy to you.
                 <br />
                 <br />
-                <span className={styles.centerTwo}>
+                <span className={style.centerTwo}>
                   [← <strong>BACK</strong>] [<strong>NEXT</strong> →]
                 </span>
               </p>
@@ -1227,9 +1228,9 @@ class SoundCal extends React.Component {
           );
         } else if (this.state.currentInstructionText === 4) {
           text = (
-            <div className={styles.main}>
+            <div className={style.main}>
               <p>
-                <span className={styles.center}>
+                <span className={style.center}>
                   <strong>AUDIO TEST: PART II</strong>
                 </span>
                 <br />
@@ -1240,11 +1241,11 @@ class SoundCal extends React.Component {
                 Some sounds may repeat.
                 <br />
                 <br />
-                <span className={styles.centerTwo}>
+                <span className={style.centerTwo}>
                   When you are ready, press <strong>SPACEBAR</strong> to begin.
                 </span>
                 <br />
-                <span className={styles.centerTwo}>
+                <span className={style.centerTwo}>
                   [← <strong>BACK</strong>]
                 </span>
               </p>
@@ -1253,16 +1254,16 @@ class SoundCal extends React.Component {
         } else if (this.state.currentInstructionText === 5) {
           document.addEventListener("keyup", this._handleInstructKey);
           text = (
-            <div className={styles.main}>
+            <div className={style.main}>
               <p>
-                <span className={styles.center}>
+                <span className={style.center}>
                   <strong>AUDIO TEST: PART II</strong>
                 </span>
                 <br />
                 Great! You are now ready to begin the game.
                 <br />
                 <br />
-                <span className={styles.centerTwo}>
+                <span className={style.centerTwo}>
                   When you are ready, press <strong>SPACEBAR</strong>.
                 </span>
               </p>
@@ -1286,19 +1287,19 @@ class SoundCal extends React.Component {
     } else if (this.state.debug === true) {
       document.addEventListener("keyup", this._handleDebugKey);
       text = (
-        <div className={styles.main}>
+        <div className={style.main}>
           <p>
-            <span className={styles.center}>DEBUG MODE</span>
+            <span className={style.center}>DEBUG MODE</span>
             <br />
 
-            <span className={styles.centerTwo}>
+            <span className={style.centerTwo}>
               Press the [<strong>SPACEBAR</strong>] to skip to next section.
             </span>
           </p>
         </div>
       );
     }
-    return <div className={styles.spaceship}>{text}</div>;
+    return <div className={style.spaceship}>{text}</div>;
   }
 
   // this is the end of the component

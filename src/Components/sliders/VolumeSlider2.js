@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
@@ -56,9 +55,11 @@ function logslider(position) {
   return Math.exp(minv + scale * (position - minp));
 }
 
-
-
-export function SliderVol({ callBackValue, initialValue, callBackValueNotLog }) {
+export function SliderVol({
+  callBackValue,
+  initialValue,
+  callBackValueNotLog,
+}) {
   const [value, setValue] = React.useState(initialValue);
 
   const handleChange = (event) => {

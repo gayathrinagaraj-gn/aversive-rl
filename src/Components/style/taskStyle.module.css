@@ -33,7 +33,7 @@
 
 .textFrame {
   position: relative;
-  background-color: #2D323E;
+  background-color: #2d323e;
   /* opacity: 0.8; */
   border-radius: 30px;
   border: 1px solid white;
@@ -45,8 +45,8 @@
     0 2px 4px -1px rgba(0, 0, 0, 0.3);
 }
 
-.textCenter {
-  text-align: center;
+.textSmall {
+  font-size: 18px;
 }
 
 .points {
@@ -86,7 +86,6 @@ textarea {
   font-size: 18px;
 }
 
-
 .bg {
   /* The image used */
   background-color: #000000;
@@ -104,8 +103,6 @@ textarea {
   position: absolute;
   /* background-attachment: fixed; */
 }
-
-
 
 html,
 body {
