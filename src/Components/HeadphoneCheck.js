@@ -112,11 +112,13 @@ class HeadphoneCheck extends React.Component {
     // Constructor and props
     /*  const userID = this.props.state.userID;
     const prolificID = this.props.state.prolificID;
+    const sessionID = this.props.state.sessionID;
     const date = this.props.state.date;
     const startTime = this.props.state.startTime; */
 
     var userID = 1000;
     var prolificID = 1000;
+    var sessionID = 1000;
     var date = 1000;
     var startTime = 1000;
 
@@ -130,6 +132,7 @@ class HeadphoneCheck extends React.Component {
     this.state = {
       userID: userID,
       prolificID: prolificID,
+      sessionID: sessionID,
       date: date,
       startTime: startTime,
 
@@ -511,6 +514,8 @@ class HeadphoneCheck extends React.Component {
     if (this.state.volCalStage === "volCalib") {
       quizbehaviour = {
         userID: this.state.userID,
+        prolificID: this.state.prolificID,
+        sessionID: this.state.sessionID,
         date: this.state.date,
         startTime: this.state.startTime,
         volCalStage: this.state.volCalStage,
@@ -553,6 +558,8 @@ class HeadphoneCheck extends React.Component {
     } else if (this.state.volCalStage === "headphoneCheck") {
       quizbehaviour = {
         userID: this.state.userID,
+        prolificID: this.state.prolificID,
+        sessionID: this.state.sessionID,
         date: this.state.date,
         startTime: this.state.startTime,
         volCalStage: this.state.volCalStage,
@@ -720,10 +727,18 @@ class HeadphoneCheck extends React.Component {
   ////////////////////////////////////////////////////////////////////////////////
   redirectToTarget() {
     document.removeEventListener("keyup", this._handleDebugKey);
-    this.props.history.push({
-      pathname: `/SoundCal`,
+
+    var condUrl =
+      "/SoundCal?PROLIFIC_PID=" +
+      this.state.prolificID +
+      "SESSION_ID=" +
+      this.state.sessionID;
+
+    this.props.navigate(condUrl, {
       state: {
         userID: this.state.userID,
+        prolificID: this.state.prolificID,
+        sessionID: this.state.sessionID,
         date: this.state.date,
         startTime: this.state.startTime,
         volume: this.state.volume,

@@ -24,11 +24,13 @@ class StartPage extends React.Component {
     var userID = Math.floor(100000 + Math.random() * 900000);
 
     const prolificID = this.props.state.prolificID;
+    const sessionID = this.props.state.sessionID;
 
     // Set state
     this.state = {
       userID: userID,
       prolificID: prolificID,
+      sessionID: sessionID,
       date: dateString,
       dateTime: dateTime,
       startTime: timeString,
@@ -59,15 +61,19 @@ class StartPage extends React.Component {
       consentComplete: 1,
     });
 
+    var condUrl =
+      "/HeadphoneCheck?PROLIFIC_PID=" +
+      this.state.prolificID +
+      "SESSION_ID=" +
+      this.state.sessionID;
 
-    var condUrl = "/HeadphoneCheck?PROLIFIC_PID=";
-
-    this.props.navigate(condUrl + this.state.prolificID, {
+    this.props.navigate(condUrl, {
       state: {
-        prolificID: this.state.prolificID,
         userID: this.state.userID,
+        prolificID: this.state.prolificID,
+        sessionID: this.state.sessionID,
         date: this.state.date,
-        startTime: this.state.startTime,  
+        startTime: this.state.startTime,
       },
     });
   }

@@ -5,7 +5,7 @@ import Home from "./Components/Home";
 import StartPage from "./Components/StartPage";
 import SoundCal from "./Components/SoundCal";
 import HeadphoneCheck from "./Components/HeadphoneCheck";
-//import PerTut from "./Components/Tutorial";
+import Tutorial from "./Components/Tutorial";
 //import PerTask from "./Components/Task";
 //import EndPage from "./Components/EndPage";
 
@@ -16,6 +16,7 @@ function App() {
       <Route path="/Start" element={<StartPage />} />
       <Route path="/HeadphoneCheck" element={<HeadphoneCheck />} />
       <Route path="/SoundCal" element={<SoundCal />} />
+      <Route path="/Tutorial" element={<Tutorial />} />
     </Routes>
   );
 }
