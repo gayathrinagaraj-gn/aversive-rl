@@ -9,10 +9,6 @@
   font-family: "Arial", monospace;
 }
 
-.boxStyle {
-  margin: 0px;
-}
-
 .confTextLeft {
   font-size: 16px;
   font-family: Arial, Helvetica, sans-serif;
@@ -29,6 +25,97 @@
   font-size: 16px;
   font-family: Arial, Helvetica, sans-serif;
   float: right;
+}
+
+.container {
+  position: relative;
+}
+
+img.stim {
+  width: 150px;
+  height: auto;
+  padding: 10%;
+  margin: auto;
+}
+
+img.stimLeft {
+  width: 150px;
+  height: auto;
+  float: left;
+  padding-right: 50px;
+  margin: auto;
+}
+
+img.stimRight {
+  width: 150px;
+  height: auto;
+  padding-left: 50px;
+  float: left;
+  margin: auto;
+}
+
+img.stimLeftNotChosen {
+  width: 150px;
+  height: auto;
+  float: left;
+  padding-right: 100px;
+  margin: auto;
+}
+
+img.stimRightNotChosen {
+  width: 150px;
+  height: auto;
+  padding-left: 100px;
+  float: left;
+  margin: auto;
+}
+
+img.stimLeftChosen {
+  width: 150px;
+  height: auto;
+  float: left;
+  margin: auto;
+  opacity: 1;
+  border: 10px solid lightblue;
+}
+
+img.stimRightChosen {
+  width: 150px;
+  height: auto;
+  float: left;
+  margin: auto;
+  opacity: 1;
+  border: 10px solid lightblue;
+}
+
+img.nofb {
+  width: 150px;
+  height: auto;
+  margin: auto;
+}
+
+img.correct {
+  width: 150px;
+  height: auto;
+  margin: auto;
+  opacity: 1;
+  border: 10px solid green;
+}
+
+img.incorrect {
+  width: 150px;
+  height: auto;
+
+  margin: auto;
+  opacity: 1;
+  border: 10px solid red;
+}
+
+.frame {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 100px;
+  padding-bottom: 100px;
 }
 
 .textFrame {

@@ -1,13 +1,21 @@
 import React from "react";
 import DrawFix from "./DrawFix.js";
-import DrawBox from "./DrawBox.js";
-import * as DrawChoice from "./DrawChoice.js";
+//import DrawBox from "./DrawBox.js";
+//import * as DrawChoice from "./DrawChoice.js";
 import style from "./style/taskStyle.module.css";
 import * as utils from "./utils.js";
 import withRouter from "./withRouter.js";
 
 import { DATABASE_URL } from "./config.js";
 
+import stim1 from "./fractals/bandit01.png";
+import stim2 from "./fractals/bandit02.png";
+import fbPic from "./fractals/audio-sound.png";
+
+import averSound from "./sounds/task/morriss_scream_1000.wav";
+import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus20.wav";
+
+//import DrawStim from "./DrawStim.js";
 //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
 // THIS CODES THE TUTORIAL SESSION + QUIZ FOR THE TASK
@@ -19,7 +27,7 @@ import { DATABASE_URL } from "./config.js";
 // 5) Quiz on instructions
 // 6) If quiz fail once, bring to instructions ver 2 if fail twice, bring to the start of instructions
 
-class PerTut extends React.Component {
+class Tutorial extends React.Component {
   //////////////////////////////////////////////////////////////////////////////////////////////
   // CONSTRUCTOR
   constructor(props) {
@@ -40,8 +48,8 @@ class PerTut extends React.Component {
     // const date = this.props.state.date;
     //const startTime = this.props.state.startTime;
 
-    var trialNumTotal1 = 5;
-    var trialNumTotal2 = 10;
+    var trialNumTotal1 = 2; // first tutorial, learn to chose one stimuli
+    var trialNumTotal2 = 12; // second tutorial, learn the switch
 
     //the stim position
     var pracStimPos1 = Array(Math.round(trialNumTotal1 / 2))
@@ -60,6 +68,16 @@ class PerTut extends React.Component {
     var pracStimCond2 = Array(Math.round(trialNumTotal2 / 2))
       .fill(1)
       .concat(Array(Math.round(trialNumTotal2 / 2)).fill(2));
+
+    console.log(pracStimPos1);
+    console.log(pracStimPos2);
+    console.log(pracStimCond1);
+    console.log(pracStimCond2);
+
+    // so if cond is == 1, and stim pos is 1, the correct answer is left
+    // so if cond is == 1, and stim pos is 2, the correct answer is right
+    // so if cond is == 2, and stim pos is 1, the correct answer is right
+    // so if cond is == 2, and stim pos is 2, the correct answer is left
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,11 +98,15 @@ class PerTut extends React.Component {
       fixTimeLag: 100, // the very first fixation
       stimTimeLag: 1500, //
       respFbTimeLag: 500, //
-      postrespTimeLag: [300, 400, 500], // post choice fixation jitter
-      fbTimeLag: 1000, // how long the sound is played
-      itiTimeLag: [400, 500, 700], // this adds to the first fixation, iti jitter
+      postrespTimeLag: [500, 600, 700], // post choice fixation jitter
+      fbTimeLag: 1250, // how long the sound is played
+      itiTimeLag: [750, 850, 950], // this adds to the first fixation, iti jitter
+
+      averSound: averSound,
+      neuSound: neuSound,
 
       //trial parameters
+      tutorial: 1, // first or second tutorial
       trialNumTotal1: trialNumTotal1,
       stimPosList1: pracStimPos1,
       stimCondList1: pracStimCond1,
@@ -94,6 +116,9 @@ class PerTut extends React.Component {
 
       respKeyCode: [87, 79], // for left and right choice keys, currently it is W and O
       tutorialTry: 1,
+
+      stimPic: [stim1, stim2],
+      fbPic: fbPic,
 
       //trial by trial paramters
       trialNum: 0,
@@ -117,12 +142,12 @@ class PerTut extends React.Component {
 
       //quiz paramters
       quizTry: 1,
-      quizNumTotal: 7,
+      quizNumTotal: 3,
       quizNum: 0,
       quizPressed: null,
       quizCor: null,
       quizCorTotal: null,
-      quizAns: [2, 1, 2, 3, 3, 1, 3],
+      quizAns: [2, 2, 3],
 
       // screen parameters
       instructScreen: true,
@@ -149,11 +174,12 @@ class PerTut extends React.Component {
     this.handleInstruct = this.handleInstruct.bind(this);
     this.handleBegin = this.handleBegin.bind(this);
     this.handleResp = this.handleResp.bind(this);
-    this.handleNextResp = this.handleNextResp.bind(this);
     this.handleQuizResp = this.handleQuizResp.bind(this);
     this.instructText = this.instructText.bind(this);
     this.quizText = this.quizText.bind(this);
 
+    this.averSound = new Audio(this.state.averSound);
+    this.neuSound = new Audio(this.state.neuSound);
     //////////////////////////////////////////////////////////////////////////////////////////////
     //End constructor props
   }
@@ -193,30 +219,30 @@ class PerTut extends React.Component {
     var curInstructNum = this.state.instructNum;
     var whichButton = keyPressed;
 
-    if (whichButton === 1 && curInstructNum >= 2 && curInstructNum <= 5) {
-      // from page 2 to 5, I can move back a page
-      this.setState({ instructNum: curInstructNum - 1 });
-    } else if (
-      whichButton === 2 &&
-      curInstructNum >= 1 &&
-      curInstructNum <= 4
-    ) {
-      // from page 1 to 4, I can move forward a page
+    // from page 1 to 5, I can move forward a page
+    if (whichButton === 2 && curInstructNum >= 1 && curInstructNum <= 4) {
       this.setState({ instructNum: curInstructNum + 1 });
+      // from page 2 to 6, I can move backward a page
     } else if (
       whichButton === 1 &&
-      curInstructNum >= 7 &&
-      curInstructNum <= 12
+      curInstructNum >= 2 &&
+      curInstructNum <= 5
     ) {
-      // from page 7 to 10, I can move back a page
+      // from page 6 to 7, I can move forward a page
       this.setState({ instructNum: curInstructNum - 1 });
     } else if (
       whichButton === 2 &&
       curInstructNum >= 6 &&
-      curInstructNum <= 11
+      curInstructNum <= 7
     ) {
-      // from page 6 to 9, I can move forward a page
+      // from page 7 to 8, I can move back a page
       this.setState({ instructNum: curInstructNum + 1 });
+    } else if (
+      whichButton === 1 &&
+      curInstructNum >= 7 &&
+      curInstructNum <= 8
+    ) {
+      this.setState({ instructNum: curInstructNum - 1 });
     }
   }
 
@@ -225,13 +251,9 @@ class PerTut extends React.Component {
     var whichButton = keyPressed;
     if (whichButton === 3 && curInstructNum === 5) {
       this.setState({
+        tutorial: 1,
         trialNum: 1,
-        //results: results,
         correctMat: [], //put correct in vector, to cal perf %
-        responseMatrix: [true, true],
-        reversals: 0,
-        stairDir: ["up", "up"],
-        dotStair: 4.65,
       });
       setTimeout(
         function () {
@@ -239,7 +261,20 @@ class PerTut extends React.Component {
         }.bind(this),
         0
       );
-    } else if (whichButton === 3 && curInstructNum === 12) {
+    } else if (whichButton === 3 && curInstructNum === 8) {
+      //11
+      this.setState({
+        tutorial: 2,
+        trialNum: 1,
+        correctMat: [], //put correct in vector, to cal perf %
+      });
+      setTimeout(
+        function () {
+          this.tutorBegin();
+        }.bind(this),
+        0
+      );
+    } else if (whichButton === 3 && curInstructNum === 9) {
       //11
       setTimeout(
         function () {
@@ -247,7 +282,7 @@ class PerTut extends React.Component {
         }.bind(this),
         0
       );
-    } else if (whichButton === 3 && curInstructNum === 13) {
+    } else if (whichButton === 3 && curInstructNum === 10) {
       //12
       setTimeout(
         function () {
@@ -264,54 +299,75 @@ class PerTut extends React.Component {
       (this.state.trialTime + this.state.fixTime + this.state.stimTime);
 
     var choice;
+    var correct;
+    var stimPicChosen1;
+    var stimPicChosen2;
+    var soundPlay;
+
+    var stimPos = this.state.stimPos;
+    var stimCond = this.state.stimCond;
+    var fbCss;
+
     if (keyPressed === 1) {
       choice = "left";
+      stimPicChosen1 = style.stimLeftChosen;
+      stimPicChosen2 = style.stimRightNotChosen;
+      if (stimPos === 1 && stimCond === 1) {
+        correct = 1;
+        fbCss = style.correct;
+      } else if (stimPos === 2 && stimCond === 2) {
+        correct = 1;
+        fbCss = style.correct;
+      } else {
+        correct = 0;
+        fbCss = style.incorrect;
+      }
     } else if (keyPressed === 2) {
       choice = "right";
+      stimPicChosen1 = style.stimLeftNotChosen;
+      stimPicChosen2 = style.stimRightChosen;
+      if (stimPos === 2 && stimCond === 1) {
+        correct = 1;
+        fbCss = style.correct;
+      } else if (stimPos === 1 && stimCond === 2) {
+        correct = 1;
+        fbCss = style.correct;
+      } else {
+        correct = 0;
+        fbCss = style.incorrect;
+      }
     } else {
       choice = null;
-      //  console.log("No response made!");
+      correct = null;
+      fbCss = style.nfb;
     }
 
-    var correct;
-    var response;
-    // correct and response is the same thing, response is just in boolean for the responseMat
-    if (
-      this.state.stimPosList1 == 1 &&
-      this.state.stimCondList1 == 1 &&
-      choice === "left"
-    ) {
-      response = true;
-      correct = 1;
-    } else if (
-      this.state.stimPosList1 == 2 &&
-      this.state.stimCondList1 == 1 &&
-      choice === "right"
-    ) {
-      response = true;
-      correct = 1;
-    } else if (
-      this.state.stimPosList1 == 1 &&
-      this.state.stimCondList1 == 2 &&
-      choice === "left"
-    ) {
-      response = true;
-      correct = 1;
-    } else if (
-      this.state.stimPosList1 == 1 &&
-      this.state.stimCondList1 == 2 &&
-      choice === "right"
-    ) {
-      response = true;
-      correct = 1;
+    console.log(choice + " choice!");
+    console.log(stimPos + " stimPos!");
+    console.log(stimCond + " stimCond!");
+    console.log(correct + " correct!");
+
+    if (correct === 1) {
+      //if it is correct, then it is the less aversive noise
+      if (Math.random() < this.state.contingency) {
+        soundPlay = 1; //less aversive
+      } else {
+        soundPlay = 2; //more aversive
+      }
+    } else if (correct === 0) {
+      if (Math.random() > this.state.contingency) {
+        soundPlay = 1;
+      } else {
+        soundPlay = 2;
+      }
     } else {
-      response = false;
-      correct = 0;
+      soundPlay = null;
     }
+
+    console.log(soundPlay + " soundPlay!");
 
     //  console.log("response: " + response);
     var correctMat = this.state.correctMat.concat(correct);
-    var responseMatrix = this.state.responseMatrix.concat(response);
     var correctPer =
       Math.round((utils.getAvg(correctMat) + Number.EPSILON) * 100) / 100; //2 dec pl
 
@@ -320,9 +376,12 @@ class PerTut extends React.Component {
       choice: choice,
       respTime: respTime,
       correct: correct,
-      responseMatrix: responseMatrix,
       correctMat: correctMat,
       correctPer: correctPer,
+      stimPicChosen1: stimPicChosen1,
+      stimPicChosen2: stimPicChosen2,
+      soundPlay: soundPlay,
+      fbCss: fbCss,
     });
 
     setTimeout(
@@ -331,33 +390,6 @@ class PerTut extends React.Component {
       }.bind(this),
       0
     );
-  }
-
-  handleNextResp(keyPressed, timePressed) {
-    var whichButton = keyPressed;
-    if (whichButton === 3) {
-      var averFbTime =
-        Math.round(performance.now()) -
-        [
-          this.state.trialTime +
-            this.state.fixTime +
-            this.state.stimTime +
-            this.state.respTime +
-            this.state.respFbTime,
-        ];
-
-      this.setState({
-        averFbTime: averFbTime,
-      });
-
-      document.removeEventListener("keyup", this._handleNextRespKey);
-      setTimeout(
-        function () {
-          this.renderTutorSave();
-        }.bind(this),
-        0
-      );
-    }
   }
 
   handleQuizResp(keyPressed, timePressed) {
@@ -463,30 +495,6 @@ class PerTut extends React.Component {
   };
 
   // handle key keyPressed
-  _handleNextRespKey = (event) => {
-    var keyPressed;
-    var timePressed;
-
-    switch (event.keyCode) {
-      case 32:
-        //    this is spacebar
-        keyPressed = 3;
-        timePressed = Math.round(performance.now());
-        this.handleNextResp(keyPressed, timePressed);
-        break;
-      default:
-    }
-  };
-
-  handleCallbackConf(callBackValue) {
-    this.setState({ confValue: callBackValue });
-  }
-
-  handleCallbackBlame(callBackValue) {
-    this.setState({ blameLevel: callBackValue });
-  }
-
-  // handle key keyPressed
   _handleQuizKey = (event) => {
     var keyPressed;
     var timePressed;
@@ -524,7 +532,6 @@ class PerTut extends React.Component {
   instructText(instructNum) {
     let text;
     let text2;
-    let taskCond;
 
     //If fail quiz once, this brings me to instruct before confidence
     if (this.state.quizTry === 2 && this.state.quizTry === 3) {
@@ -534,8 +541,8 @@ class PerTut extends React.Component {
           quiz. Please read the instructions carefully.
           <br />
           <br />
-          Your task is to choose the battery card with the{" "}
-          <strong>higher charge level, i.e., more number of white dots</strong>.
+          Your task is to choose the fractal that more often leads to the more
+          pleasant sound.
         </span>
       );
     }
@@ -544,8 +551,8 @@ class PerTut extends React.Component {
       text = (
         <span>
           You scored {this.state.quizCorTotal}/{this.state.quizNumTotal} on the
-          quiz. We will restart the tutorial. Please read the instructions
-          carefully.
+          quiz. We will restart the tutorial from the beginning. Please read the
+          instructions carefully.
           <br />
           <br />
         </span>
@@ -556,34 +563,10 @@ class PerTut extends React.Component {
           Well done!
           <br />
           <br />
-          You saw that choosing the battery card with the higher charge level,
-          i.e., more number of white dots was the correct answer.
-        </span>
-      );
-    }
-
-    if (this.state.condition === 1) {
-      taskCond = (
-        <span>
-          Welcome to the spaceship!
-          <br /> <br />
-          The ship has been damaged with an asteriod hit and we are glad you are
-          here to help.
+          You saw that choosing the fractal that more often leads to the more
+          pleasant sound was the correct answer.
           <br />
           <br />
-          We have found that the spaceship is running low on power.
-        </span>
-      );
-    } else {
-      taskCond = (
-        <span>
-          Welcome to the spaceship!
-          <br /> <br />
-          The ship has been damaged with an asteriod hit and we are glad you are
-          here to help.
-          <br />
-          <br />
-          We have found that the spaceship is running low on power.
         </span>
       );
     }
@@ -592,13 +575,23 @@ class PerTut extends React.Component {
       <div>
         <span>
           {text}
-          {taskCond}
           <br />
-          <br />
-          We need you to replace the battery cards fueling the spaceship.
-          However, the new battery cards have different charge levels - we need
-          your assistance in selecting the ones with{" "}
-          <strong>high charge</strong> for use.
+          Welcome to the task! Today, we will be making choices between two
+          fractals.
+          <center>
+            <img
+              src={this.state.stimPic[0]}
+              className={style.stim}
+              alt="stim1"
+            />
+            <img
+              src={this.state.stimPic[1]}
+              className={style.stim}
+              alt="stim2"
+            />
+          </center>
+          Your aim is to choose the fractal that more often leads to the more
+          pleasant sound.
           <br /> <br />
           <center>
             Use the ← and → keys to navigate the pages.
@@ -606,29 +599,28 @@ class PerTut extends React.Component {
             <br />[<strong>→</strong>]
           </center>
         </span>
-        <span className={style.astro}>
-          <img src={this.state.astrodude} width={280} alt="astrodude" />
-        </span>
       </div>
     );
 
     let instruct_text2 = (
       <div>
-        <span>A battery card looks like this:</span>
-        <br />
-        <br />
         <span>
-          <center>
-            <DrawDotsEx.DrawDotsEx1
-              dotRadius={this.state.dotRadius}
-              dotDiff={80}
-            />
-          </center>
+          Choosing one of fractals will result in an unpleasant noise most of
+          the time.
         </span>
-        <br />
+        <center>
+          <img
+            src={this.state.stimPic[0]}
+            className={style.stim}
+            alt="stim1"
+            onClick={() => {
+              this.averSound.load();
+              this.averSound.play();
+            }}
+          />
+        </center>
         <span>
-          The white dots indicate the charge level of the battery card. The more
-          white dots on the card, the higher the charge.
+          Click on it to hear what sound it will give you.
           <br />
           <br />
           <center>
@@ -641,31 +633,25 @@ class PerTut extends React.Component {
     let instruct_text3 = (
       <div>
         <span>
-          As there are many new battery cards to go through, we will show you
-          two cards at one time. You will have to choose the battery card which
-          has <strong>the higher charge</strong>, i.e., the one with{" "}
-          <strong>more white dots</strong>.
+          Choosing the other fractal will result in a slightly more pleasant
+          noise most of the time.
         </span>
         <br />
+        <br />{" "}
+        <center>
+          <img
+            src={this.state.stimPic[1]}
+            className={style.stim}
+            alt="stim2"
+            onClick={() => {
+              this.neuSound.load();
+              this.neuSound.play();
+            }}
+          />{" "}
+        </center>
         <br />
         <span>
-          <center>
-            For instance:
-            <br />
-            <br />
-            <DrawDotsEx.DrawDotsEx2
-              dotRadius={this.state.dotRadius}
-              dotDiffLeft={0}
-              dotDiffRight={100}
-            />
-          </center>
-        </span>
-        <br />
-        <br />
-        <span>
-          The battery card on the <strong>right</strong> has a higher charge
-          than the battery card on the left - this is the card you should
-          select.
+          Click on it to hear what sound it will give you.
           <br />
           <br />
           <center>
@@ -678,38 +664,37 @@ class PerTut extends React.Component {
     let instruct_text4 = (
       <div>
         <span>
-          You can select the battery card of your choice with a keypress.
+          You can select the fractal of your choice with a keypress.
           <br />
           <br />
-          If the battery card on the <strong>left</strong> has more charge,{" "}
-          <strong>press W</strong>.
+          If the fractal on the <strong>left</strong> leads to the more pleasant
+          noise more often, <strong>press W</strong>.
           <br />
-          If the battery card on the <strong>right</strong> has more charge,{" "}
-          <strong>press O</strong>.
+          If the fractal on the <strong>right</strong> leads to the more
+          pleasant noise more often, <strong>press O</strong>.
           <br />
           <br />
-          Your selected battery card will be outlined in{" "}
+          Your selected fractal will be outlined in{" "}
           <font color="#87C1FF">
             <strong>light blue</strong>
           </font>
-          . Please respond quickly and to the best of your ability - the
-          spaceship&apos;s power depends on it!
+          .
           <br />
           <br />
           Let&apos;s start with a practice. In this phase we will tell you
           whether your choices are right or wrong.
           <br />
           <br />
-          If you are <strong>correct</strong>, the card that you selected will
-          have its outline turn{" "}
+          If you are <strong>correct</strong>, the feedback will have its
+          outline turn{" "}
           <font color="green">
             <strong>green</strong>
           </font>
           .
           <br />
           <br />
-          If you are <strong>incorrect</strong>, the box that you selected will
-          have its outline turn{" "}
+          If you are <strong>incorrect</strong>, the feedback will have its
+          outline turn{" "}
           <font color="red">
             <strong>red</strong>
           </font>
@@ -726,26 +711,22 @@ class PerTut extends React.Component {
     let instruct_text5 = (
       <div>
         <span>
-          You will have {this.state.trialNumTotal} chances to choose the battery
-          card with the higher charge.
+          You will have {this.state.trialNumTotal1} chances to choose the
+          fractal that most often leads to the more pleasant noise.
           <br />
           <br />
           For every choice, you will be presented with a white cross in the
-          middle of the screen first before the battery cards appear. Please pay
-          attention closely as the charge level indicator (white dots) of the
-          battery cards will be <strong>flashed quickly only once</strong>. Make
-          your selection{" "}
-          <strong>after the charge level indicator disappears</strong>
-          .
+          middle of the screen first before the fractals appear. After a short
+          delay, the sound will play.
           <br />
           <br />
           As a reminder:
           <br />
           <br />
-          <strong>Press W</strong> to choose the battery on the{" "}
+          <strong>Press W</strong> to choose the fractal on the{" "}
           <strong>left</strong>.
           <br />
-          <strong>Press O</strong> to choose the battery on the{" "}
+          <strong>Press O</strong> to choose the fractal on the{" "}
           <strong>right</strong>.
           <br />
           <br />
@@ -763,38 +744,34 @@ class PerTut extends React.Component {
     let instruct_text6 = (
       <div>
         <span>
-          Thank you for completing the practice!
+          {text2}
+          Now, we will introduce a new rule in this task. After some time, the
+          sounds that are more often associated to each fractal may swap.
           <br />
           <br />
-          As this is a very sensitive operation, we want to make sure the chosen
-          battery cards have a high charge as often as possible. For this, we
-          need more people making decisions! We will be pairing you up with
-          other players (3 total) <strong> one at a time </strong> who have
-          sorted the batteries earlier. Each time, you will see the same battery
-          cards that another player has seen. After you choose a card, you will
-          be informed:
-          <br />
-          <br />
+          This means that this fractal that previously lead to the unpleasant
+          noise most of time now leads to the more pleasant sound.
           <br />
           <center>
-            <strong> Whether you’re both correct </strong>
-            <br />
-            <br />
-            <strong> Whether you’re both wrong</strong>
-            <br />
-            <br />
-            <strong> Whether only one person got it wrong </strong>
-            <br />
-            <br />
+            <img
+              src={this.state.stimPic[1]}
+              className={style.stim}
+              alt="stim1"
+              onClick={() => {
+                this.neuSound.load();
+                this.neuSound.play();
+              }}
+            />
           </center>
+          Click on it to hear what sound it will give you.
+          <br />
+          <br />
           <center>
-            [<strong>←</strong>] [<strong>→</strong>]
+            [<strong>→</strong>]
             <br />
             <br />
             <br />
             <br />
-            <img src={this.state.astronaut2} width={180} alt="astronauts" />
-            <img src={this.state.astronaut2} width={180} alt="astronauts" />
           </center>
           <br />
           <br />
@@ -804,236 +781,87 @@ class PerTut extends React.Component {
 
     let instruct_text7 = (
       <div>
-        In the main task, you can also earn points that you will share with the
-        other players!
-        <br />
-        <br />
-        <br />
-        <center>
-          You will earn one point per correct battery sorted, but only if the
-          other player also chose correctly (+1).
+        <span>
+          This means also that this fractal that previously lead to the more
+          pleasant noise most of time now leads to the unpleasant sound.
+          <br />
+          <center>
+            <img
+              src={this.state.stimPic[0]}
+              className={style.stim}
+              alt="stim2"
+              onClick={() => {
+                this.averSound.load();
+                this.averSound.play();
+              }}
+            />
+          </center>
+          Click on it to hear what sound it will give you.
           <br />
           <br />
-          If <strong>either of you chose wrongly</strong>, <strong>no</strong>{" "}
-          points will be earned (0).
-          <br />
-          <br />
-          If you <strong>both</strong> chose wrongly, there will be a{" "}
-          <strong>deduction</strong> of one point (-1).
-          <br />
-          <br />
-          <br />
-          <br />
-          You and the other players are eligible for a bonus of up to £x each
-          depending on the number of points earned. Try and earn as many points
-          as possible!
-        </center>
-        <br />
-        <br />
-        <center>
-          [<strong>←</strong>] [<strong>→</strong>]
-        </center>
+          <center>
+            [<strong>←</strong>] [<strong>→</strong>]
+          </center>
+        </span>
       </div>
     );
 
     let instruct_text8 = (
       <div>
-        In cases where one player chose wrongly, you will not be told who it is.
-        Instead, you will have to indicate the extent to which you think you or
-        the other player chose wrongly. After being shown that one person got it
-        wrong, we will show you a rating scale to rate the{" "}
-        <strong> probability that you or the other player is wrong</strong>.
-        <br />
-        <br />
-        <center>
-          If you are very sure <strong>the other player is wrong</strong> (and
-          you chose correctly), you would select the far right of the scale
-          (100%).
+        <span>
+          This swap will occur at some point during the task, so you will have
+          to keep track of the relationship between the fractals and sounds.
           <br />
           <br />
+          Let's play a short practice to demostrate how this would play out.
           <br />
           <br />
-          <center>
-            <BlameSlider.BlameSlider
-              callBackValue={this.handleCallbackBlame.bind(this)} //callBackValue={this.handleCallbackBlame.bind(this)}
-              initialValue={100}
-            />
-          </center>
+          As a reminder:
           <br />
           <br />
-          If you are very sure <strong>the other player is correct</strong> (and
-          you chose wrongly), you would select the far left of the scale (0%).
+          <strong>Press W</strong> to choose the fractal on the{" "}
+          <strong>left</strong>.
           <br />
-          <br />
+          <strong>Press O</strong> to choose the fractal on the{" "}
+          <strong>right</strong>.
           <br />
           <br />
           <center>
-            <BlameSlider.BlameSlider
-              callBackValue={this.handleCallbackBlame.bind(this)} //callBackValue={this.handleCallbackBlame.bind(this)}
-              initialValue={0}
-            />
+            Press [<strong>SPACEBAR</strong>] to begin the practice.
           </center>
           <br />
-          <br />
-          If you are very unsure who got it wrong, you would select a rating
-          (around 50%) between the two ends.
-          <br />
-          <br />
-          <br />
-          <br />
-          The other players will <strong>NOT</strong> be informed of these
-          ratings.
-        </center>
-        <br />
-        <br />
-        <center>
-          [<strong>←</strong>] [<strong>→</strong>]
-        </center>
+          <center>
+            [<strong>←</strong>]
+          </center>
+        </span>
       </div>
     );
 
     let instruct_text9 = (
       <div>
         <span>
-          {text2}
+          Great job! You should have noticed that the relationship between the
+          fractals and sounds swapped halfway through.
           <br />
           <br />
-          During the main task, you will also have to indicate your{" "}
-          <strong>confidence</strong> in your choice of the battery card you
-          pick.
+          Before you begin the main task, you have to pass a quick quiz to make
+          sure that you have understood the key points of your task for today.
           <br />
           <br />
-          After every choice (and before we tell you if you and the other player
-          got it right or wrong), we will show you a rating scale to rate the{" "}
-          <strong>probability that your choice was correct</strong>:
-          <br />
-          <br />
-          <br />
-          <br />
-          <center>
-            <ConfSliderEx.ConfSliderEx1
-              callBackValue={this.handleCallbackConf.bind(this)}
-              initialValue={68}
-            />
-          </center>
-          <br />
+          Note: You will have to get <strong>all</strong> quiz questions
+          correct. If not, you will be sent back to the instructions, and will
+          have to play the tutorial and retake the quiz!
           <br />
           <br />
           <center>
-            {" "}
-            [<strong>→</strong>]
+            Press [<strong>SPACEBAR</strong>] to begin the quiz.
           </center>
+          <br />
         </span>
       </div>
     );
 
     let instruct_text10 = (
-      <div>
-        If you are <strong>very unsure</strong> that you made a correct
-        judgement, you should select a 50% chance of being correct, or the{" "}
-        <strong>left</strong> end of the scale. It means that your choice was a
-        complete guess.
-        <br />
-        <br />
-        <br />
-        <br />
-        <center>
-          <ConfSliderEx.ConfSliderEx1
-            callBackValue={this.handleCallbackConf.bind(this)}
-            initialValue={50}
-          />
-        </center>
-        <br />
-        <br />
-        <br />
-        If you are <strong>very sure</strong> that you made a correct judgement,
-        you should select a 100% chance of being correct, or the{" "}
-        <strong>right</strong> end of the scale. It means that you are
-        absolutely certain that your choice was correct.
-        <br />
-        <br />
-        <br />
-        <br />
-        <center>
-          <ConfSliderEx.ConfSliderEx1
-            callBackValue={this.handleCallbackConf.bind(this)}
-            initialValue={100}
-          />
-        </center>
-        <br />
-        <br />
-        <br />
-        <br />
-        <center>
-          [<strong>←</strong>] [<strong>→</strong>]
-        </center>
-      </div>
-    );
-
-    let instruct_text11 = (
-      <div>
-        If you are <strong>somewhat sure</strong> that you made a correct
-        judgement, you should select a rating between the two ends of the scale.
-        <br />
-        <br />
-        <br />
-        <br />
-        <center>
-          <ConfSliderEx.ConfSliderEx1
-            callBackValue={this.handleCallbackConf.bind(this)}
-            initialValue={75}
-          />
-        </center>
-        <br />
-        <br />
-        <br />
-        <br />
-        You can use the slider by <strong>clicking any point</strong> along the
-        scale, or <strong>dragging the circle indicator</strong> along the
-        scale.
-        <br />
-        <br />
-        Alternatively, you can press [<strong>TAB</strong>] and use the{" "}
-        <strong>arrow</strong> keys to move the circle indicator.
-        <br />
-        <br />
-        During the main task, once you have selected your rating, you will have
-        to press the [<strong>SPACEBAR</strong>] to confirm it and move on to
-        the next set of battery cards.
-        <br />
-        <br />
-        <center>
-          [<strong>←</strong>] [<strong>→</strong>]
-        </center>
-      </div>
-    );
-
-    let instruct_text12 = (
-      <div>
-        Before you begin, you have to pass a quick quiz to make sure that you
-        have understood the key points of your task for today.
-        <br />
-        <br />
-        Note: You will have to get <strong>all</strong> quiz questions correct.
-        If not, you will be sent back to the instructions and will have to
-        retake the quiz!
-        <br />
-        <br />
-        If you fail too many times, you will be brought to the beginning of the
-        entire tutorial.
-        <br />
-        <br />
-        <center>
-          Press [<strong>SPACEBAR</strong>] to begin the quiz.
-        </center>
-        <br />
-        <center>
-          [<strong>←</strong>]
-        </center>
-      </div>
-    );
-
-    let instruct_text13 = (
       <div>
         Amazing! You scored {this.state.quizCorTotal}/{this.state.quizNumTotal}{" "}
         for the quiz.
@@ -1069,12 +897,6 @@ class PerTut extends React.Component {
         return <div>{instruct_text9}</div>;
       case 10:
         return <div>{instruct_text10}</div>;
-      case 11:
-        return <div>{instruct_text11}</div>;
-      case 12:
-        return <div>{instruct_text12}</div>;
-      case 13:
-        return <div>{instruct_text13}</div>;
     }
   }
 
@@ -1085,15 +907,17 @@ class PerTut extends React.Component {
   quizText(quizNum) {
     let quiz_text1 = (
       <div>
-        <strong>Q{this.state.quizNum}:</strong> You are shown two battery cards
-        to inspect. What do you do?
+        <strong>Q{this.state.quizNum}:</strong> You are shown two fractals to
+        choose from. What do you do?
         <br />
         <br />
-        [1] - I choose the battery card with the lower number of dots.
+        [1] - I choose the fractal that more often leads to the unpleasant
+        sound.
         <br />
-        [2] - I choose the battery card with the higher number of dots.
+        [2] - I choose the fractal that more often leads to the more pleasant
+        sound.
         <br />
-        [3] - I choose both battery cards when they have same number of dots.
+        [3] - I choose both fractals as fast as possible.
         <br />
         [4] - I am unsure.
       </div>
@@ -1101,17 +925,18 @@ class PerTut extends React.Component {
 
     let quiz_text2 = (
       <div>
-        <strong>Q{this.state.quizNum}:</strong> You have made your choice on the
-        battery card with the higher charge. However, you are{" "}
-        <strong>very unsure</strong> about your choice. How would you rate your
-        confidence on the rating scale?
+        <strong>Q{this.state.quizNum}:</strong> After some time, you notice that
+        the fractal that most often led to the unpleasant sound now leads more
+        often to the more pleasant sound. What do you do?
         <br />
         <br />
-        [1] - I would pick the left end of the scale (50% correct).
+        [1] - I continue to choose this fractal that more often leads to the
+        unpleasant sound.
         <br />
-        [2] - I would pick the right end of the scale (100% correct).
+        [2] - I now choose the other fractal that more often leads to the more
+        pleasant sound.
         <br />
-        [3] - I would pick somwhere in between the ends of the scale.
+        [3] - I pick the one that has the brightest color.
         <br />
         [4] - I am unsure.
       </div>
@@ -1119,87 +944,19 @@ class PerTut extends React.Component {
 
     let quiz_text3 = (
       <div>
-        <strong>Q{this.state.quizNum}:</strong> On the next set of battery
-        cards, you are <strong>very sure</strong> about your choice. How would
-        you rate your confidence on the rating scale?
+        <strong>Q{this.state.quizNum}:</strong> How do I know when the swap of
+        the relationship between fractals and sounds will occur?
         <br />
         <br />
-        [1] - I would pick the left end of the scale (50% correct).
+        [1] - The fractal leading to with more pleasant sound more often will be
+        outlined in blue.
         <br />
-        [2] - I would pick the right end of the scale (100% correct).
+        [2] - There will be a unqiue sound played in the background to signal
+        the swap.
         <br />
-        [3] - I would pick somwhere in between the ends of the scale.
-        <br />
-        [4] - I am unsure.
-      </div>
-    );
-
-    let quiz_text4 = (
-      <div>
-        <strong>Q{this.state.quizNum}:</strong> On the next set of battery
-        cards, you are <strong>somewhat sure</strong> about your choice. How
-        would you rate your confidence on the rating scale?
-        <br />
-        <br />
-        [1] - I would pick the left end of the scale (50% correct).
-        <br />
-        [2] - I would pick the right end of the scale (100% correct).
-        <br />
-        [3] - I would pick somwhere in between the ends of the scale.
+        [3] - I have to pay attention to the sounds linked to the fractals.
         <br />
         [4] - I am unsure.
-      </div>
-    );
-
-    let quiz_text5 = (
-      <div>
-        <strong>Q{this.state.quizNum}:</strong> <strong>Both</strong> you and
-        the other player chose the <strong>correct</strong> battery card. What
-        is the outcome of this?
-        <br />
-        <br />
-        [1] No extra points are given.
-        <br />
-        [2] A point is deducted.
-        <br />
-        [3] A point is added.
-        <br />
-        [4] I am unsure
-      </div>
-    );
-
-    let quiz_text6 = (
-      <div>
-        <strong>Q{this.state.quizNum}:</strong> After choosing a battery card,{" "}
-        <strong>one</strong> of you chose <strong>wrongly</strong>. You are very
-        sure the other player chose wrongly. What rating would you select on the
-        rating scale?
-        <br />
-        <br />
-        [1] The far right (Other player is 100% wrong)
-        <br />
-        [2] The far left (I am 100% wrong)
-        <br />
-        [3] The middle (0% - unsure)
-        <br />
-        [4] I am unsure
-      </div>
-    );
-
-    let quiz_text7 = (
-      <div>
-        <strong>Q{this.state.quizNum}:</strong> After choosing a battery card,
-        one of you chose wrongly. You are completely unsure who chose wrongly.
-        What rating would you select on the rating scale?
-        <br />
-        <br />
-        [1] The far right (Other player is 100% wrong)
-        <br />
-        [2] The far left (I am 100% wrong)
-        <br />
-        [3] The middle (0% - unsure)
-        <br />
-        [4] I am unsure
       </div>
     );
 
@@ -1210,14 +967,6 @@ class PerTut extends React.Component {
         return <div>{quiz_text2}</div>;
       case 3:
         return <div>{quiz_text3}</div>;
-      case 4:
-        return <div>{quiz_text4}</div>;
-      case 5:
-        return <div>{quiz_text5}</div>;
-      case 6:
-        return <div>{quiz_text6}</div>;
-      case 7:
-        return <div>{quiz_text7}</div>;
       default:
     }
   }
@@ -1232,11 +981,6 @@ class PerTut extends React.Component {
     //reset tutorial if need to do again
     this.setState({
       trialNum: 0,
-      responseMatrix: [true, true],
-      reversals: 0,
-      stairDir: ["up", "up"],
-      dotStair: 4.65, //in log space; this is about 104 dots which is 70 dots shown for the first one});
-      // push to render fixation for the first trial
     });
     setTimeout(
       function () {
@@ -1248,12 +992,23 @@ class PerTut extends React.Component {
 
   tutorEnd() {
     // change state to make sure the screen is changed for the task
-    this.setState({
-      instructScreen: true,
-      taskScreen: false,
-      instructNum: 6,
-      taskSection: null,
-    });
+
+    if (this.state.tutorial === 1) {
+      this.setState({
+        instructScreen: true,
+        taskScreen: false,
+        instructNum: 6,
+        taskSection: null,
+        tutorial: 2,
+      });
+    } else if (this.state.tutorial === 2) {
+      this.setState({
+        instructScreen: true,
+        taskScreen: false,
+        instructNum: 9,
+        taskSection: null,
+      });
+    }
   }
 
   quizBegin() {
@@ -1297,7 +1052,7 @@ class PerTut extends React.Component {
         this.setState({
           instructScreen: true,
           taskScreen: false,
-          instructNum: 13, //12
+          instructNum: 10,
           taskSection: "instruct",
         });
       } else if (quizCorTotal !== this.state.quizNumTotal && quizTry < 4) {
@@ -1308,6 +1063,7 @@ class PerTut extends React.Component {
         this.setState({
           instructScreen: true,
           taskScreen: false,
+          tutorial: 2,
           instructNum: 6,
           taskSection: "instruct",
           quizTry: quizTry,
@@ -1318,6 +1074,7 @@ class PerTut extends React.Component {
         //  console.log("FAIL QUIZ");
         quizTry = quizTry + 1;
         this.setState({
+          tutorial: 1,
           instructScreen: true,
           taskScreen: false,
           instructNum: 1,
@@ -1333,86 +1090,70 @@ class PerTut extends React.Component {
   // FOUR COMPONENTS OF THE TASK, Fixation, Stimulus/Response, Feedback and Confidence
   trialReset() {
     var trialNum = this.state.trialNum + 1; //trialNum is 0, so it starts from 1
-    var stimPos = this.state.stimPosList[trialNum - 1]; //shuffle the order for the dotDiffLeft
 
-    // run staircase
-    var s2 = staircase.staircase(
-      this.state.dotStair,
-      this.state.responseMatrix,
-      this.state.stairDir,
-      trialNum
-    );
+    var stimPosList;
+    var stimCondList;
+    var trialNumTotal;
+    var tutorial = this.state.tutorial;
 
-    var dotStair = s2.diff;
-    var stairDir = s2.direction;
-    var responseMatrix = s2.stepcount;
-
-    //  console.log("dotsStair: " + dotStair);
-    //  console.log("stairDir: " + stairDir);
-    //  console.log("responseMat: " + responseMatrix);
-
-    var reversals;
-    if (s2.reversal) {
-      // Check for reversal. If true, add one to reversals variable
-      reversals = 1;
-    } else {
-      reversals = 0;
+    if (tutorial === 1) {
+      trialNumTotal = this.state.trialNumTotal1;
+      stimPosList = this.state.stimPosList1;
+      stimCondList = this.state.stimCondList1;
+    } else if (tutorial === 2) {
+      trialNumTotal = this.state.trialNumTotal2;
+      stimPosList = this.state.stimPosList2;
+      stimCondList = this.state.stimCondList2;
     }
 
-    var dotDiffLeft;
-    var dotDiffRight;
-    var dotStairLeft;
-    var dotStairRight;
+    var stimPos = stimPosList[trialNum - 1]; //shuffle the order for the dotDiffLeft
+    var stimCond = stimCondList[trialNum - 1]; //shuffle the order for the dotDiffLeft
+    var stimPicPosition1;
+    var stimPicPosition2;
 
-    if (stimPos === 1) {
-      dotStairLeft = dotStair;
-      dotStairRight = 0;
-      dotDiffLeft = Math.round(Math.exp(dotStairLeft));
-      dotDiffRight = dotStairRight; //should be 0
-    } else {
-      dotStairLeft = 0;
-      dotStairRight = dotStair;
-      dotDiffLeft = dotStairLeft; //should be 0
-      dotDiffRight = Math.round(Math.exp(dotStairRight));
+    if (stimPos === 1 && stimCond === 1) {
+      stimPicPosition1 = 0; //left less aversive sound
+      stimPicPosition2 = 1; //right more aversive sound
+    } else if (stimPos === 2 && stimCond === 1) {
+      stimPicPosition1 = 1; //right more aversive sound
+      stimPicPosition2 = 0; //lleft ess aversive sound
+    } else if (stimPos === 1 && stimCond === 2) {
+      stimPicPosition1 = 1; //right more aversive sound
+      stimPicPosition2 = 0; //lleft ess aversive sound
+    } else if (stimPos === 2 && stimCond === 2) {
+      stimPicPosition1 = 0; //left less aversive sound
+      stimPicPosition2 = 1; //right more aversive sound
     }
 
     //Reset all parameters
     this.setState({
       instructScreen: false,
       taskScreen: true,
-      taskSection: "iti",
+      taskSection: "trialReset",
       trialNum: trialNum,
+      trialNumTotal: trialNumTotal,
       fixTime: 0,
       stimTime: 0,
       responseKey: 0,
       respTime: 0,
       respFbTime: 0,
       averFbTime: 0,
-      confLevel: null,
-      confTime: 0,
-      confMove: false,
+      soundPlay: null,
+      stimPicPosition1: stimPicPosition1,
+      stimPicPosition2: stimPicPosition2,
+      stimPicChosen1: null,
+      stimPicChosen2: null,
       choice: null,
       correct: null,
       correctPer: null,
       stimPos: stimPos,
-      reversals: reversals,
-      responseMatrix: responseMatrix,
-      stairDir: stairDir,
-      //Calculate the for the paramters for the stim
-      dotDiffStim1: Math.round(Math.exp(dotStair)),
-      dotDiffStim2: 0,
-      dotStair: dotStair,
-
-      dotStairLeft: dotStairLeft,
-      dotStairRight: dotStairRight,
-      dotDiffLeft: dotDiffLeft,
-      dotDiffRight: dotDiffRight,
+      stimCond: stimCond,
     });
 
-    //  console.log(this.state.trialNum);
-    //  console.log(this.state.trialNumTotal);
+    console.log(trialNum);
+    console.log(trialNumTotal);
 
-    if (trialNum < this.state.trialNumTotal + 1) {
+    if (trialNum < trialNumTotal + 1) {
       setTimeout(
         function () {
           this.renderFix();
@@ -1421,6 +1162,7 @@ class PerTut extends React.Component {
       );
     } else {
       // if the trials have reached the total trial number
+      document.removeEventListener("keyup", this._handleRespKey);
       setTimeout(
         function () {
           this.tutorEnd();
@@ -1452,6 +1194,7 @@ class PerTut extends React.Component {
   //////////////////////////////////////////////////////////////////////////////////////////////
   renderStim() {
     var fixTime = Math.round(performance.now()) - this.state.trialTime;
+    document.addEventListener("keyup", this._handleRespKey);
 
     this.setState({
       instructScreen: false,
@@ -1459,51 +1202,11 @@ class PerTut extends React.Component {
       taskSection: "stimulus",
       fixTime: fixTime,
     });
-
-    setTimeout(
-      function () {
-        this.renderChoice();
-      }.bind(this),
-      this.state.stimTimeLag
-    );
-  }
-
-  //////////////////////////////////////////////////////////////////////////////////////////////
-  renderChoice() {
-    document.addEventListener("keyup", this._handleRespKey);
-    var stimTime =
-      Math.round(performance.now()) -
-      [this.state.trialTime + this.state.fixTime];
-
-    this.setState({
-      instructScreen: false,
-      taskScreen: true,
-      taskSection: "choice",
-      stimTime: stimTime,
-    });
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////
   renderChoiceFb() {
     document.removeEventListener("keyup", this._handleRespKey);
-
-    this.setState({
-      instructScreen: false,
-      taskScreen: true,
-      taskSection: "choiceFeedback",
-    });
-
-    setTimeout(
-      function () {
-        this.renderCorFb();
-      }.bind(this),
-      this.state.respFbTimeLag
-    );
-  }
-
-  //////////////////////////////////////////////////////////////////////////////////////////////
-  renderCorFb() {
-    document.addEventListener("keyup", this._handleNextRespKey);
 
     var respFbTime =
       Math.round(performance.now()) -
@@ -1517,65 +1220,143 @@ class PerTut extends React.Component {
     this.setState({
       instructScreen: false,
       taskScreen: true,
-      taskSection: "corFeedback",
+      taskSection: "choiceFeedback",
       respFbTime: respFbTime,
     });
+
+    setTimeout(
+      function () {
+        this.renderPostChJitter();
+      }.bind(this),
+      this.state.respFbTimeLag
+    );
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  // jitter
+  renderPostChJitter() {
+    var postrespTimeLag = this.state.postrespTimeLag;
+    var postrespTimeLag2 =
+      postrespTimeLag[Math.floor(Math.random() * postrespTimeLag.length)];
+
+    console.log(postrespTimeLag2);
+
+    this.setState({
+      instructScreen: false,
+      taskScreen: true,
+      taskSection: "postChoiceJitter",
+      postrespTime: postrespTimeLag2,
+    });
+
+    setTimeout(
+      function () {
+        this.renderCorFb();
+      }.bind(this),
+      postrespTimeLag2
+    );
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  renderCorFb() {
+    var averFbTime =
+      Math.round(performance.now()) -
+      [
+        this.state.trialTime +
+          this.state.fixTime +
+          this.state.stimTime +
+          this.state.respTime +
+          this.state.postrespTime,
+      ];
+
+    this.setState({
+      instructScreen: false,
+      taskScreen: true,
+      taskSection: "corFeedback",
+      averFbTime: averFbTime,
+    });
+
+    var soundPlay = this.state.soundPlay;
+    if (soundPlay === 1) {
+      this.neuSound.load();
+      this.neuSound.play();
+    } else if (soundPlay === 2) {
+      this.averSound.load();
+      this.averSound.play();
+    }
+
+    setTimeout(
+      function () {
+        this.renderITI();
+      }.bind(this),
+      this.state.fbTimeLag
+    );
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  renderITI() {
+    var itiTimeLag = this.state.itiTimeLag;
+    var itiTimeLag2 = itiTimeLag[Math.floor(Math.random() * itiTimeLag.length)];
+
+    console.log(itiTimeLag2);
+
+    this.setState({
+      instructScreen: false,
+      taskScreen: true,
+      taskSection: "iti",
+      itiTime: itiTimeLag2,
+    });
+
+    setTimeout(
+      function () {
+        this.renderTutorSave();
+      }.bind(this),
+      itiTimeLag2
+    );
   }
 
   renderTutorSave() {
-    var prolificID = this.state.prolificID;
+    var userID = this.state.userID;
 
     let saveString = {
-      prolificID: this.state.prolificID,
-      condition: this.state.condition,
       userID: this.state.userID,
+      prolificID: this.state.prolificID,
+      sessionID: this.state.sessionID,
       date: this.state.date,
       startTime: this.state.startTime,
       section: this.state.section,
       sectionTime: this.state.sectionTime,
+      tutorial: this.state.tutorial,
       tutorialTry: this.state.tutorialTry,
       trialNum: this.state.trialNum,
       trialTime: this.state.trialTime,
       fixTime: this.state.fixTime,
       stimTime: this.state.stimTime,
       stimPos: this.state.stimPos,
-      dotDiffLeft: this.state.dotDiffLeft,
-      dotDiffRight: this.state.dotDiffRight,
-      dotDiffStim1: this.state.dotDiffStim1,
-      dotDiffStim2: this.state.dotDiffStim2,
+
       responseKey: this.state.responseKey,
       respTime: this.state.respTime,
       respFbTime: this.state.respFbTime,
       averFbTime: this.state.averFbTime,
+      itiTime: this.state.itiTime,
       choice: this.state.choice,
-      confLevel: this.state.confLevel,
-      confTime: this.state.confTime,
+
       correct: this.state.correct,
       correctMat: this.state.correctMat,
       correctPer: this.state.correctPer,
-
-      // staircase parameters
-      responseMatrix: this.state.responseMatrix,
-      reversals: this.state.reversals,
-      stairDir: this.state.stairDir,
-      dotStair: this.state.dotStair,
-
-      dotStairLeft: this.state.dotStairLeft,
-      dotStairRight: this.state.dotStairRight,
     };
 
-    try {
-      fetch(`${DATABASE_URL}/per_tutorial_data/` + prolificID, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(saveString),
-      });
-    } catch (e) {
-      console.log("Cant post?");
-    }
+    //   try {
+    //     fetch(`${DATABASE_URL}/per_tutorial_data/` + userID, {
+    //       method: "POST",
+    //      headers: {
+    //        Accept: "application/json",
+    //        "Content-Type": "application/json",
+    //      },
+    //      body: JSON.stringify(saveString),
+    //     });
+    //  } catch (e) {
+    //     console.log("Cant post?");
+    //   }
 
     setTimeout(
       function () {
@@ -1586,12 +1367,12 @@ class PerTut extends React.Component {
   }
 
   renderQuizSave() {
-    var prolificID = this.state.prolificID;
+    var userID = this.state.userID;
 
     let saveString = {
-      prolificID: this.state.prolificID,
-      condition: this.state.condition,
       userID: this.state.userID,
+      prolificID: this.state.prolificID,
+      sessionID: this.state.sessionID,
       date: this.state.date,
       startTime: this.state.startTime,
       section: this.state.section,
@@ -1608,18 +1389,18 @@ class PerTut extends React.Component {
       quizCorTotal: this.state.quizCorTotal,
     };
 
-    try {
-      fetch(`${DATABASE_URL}/per_quiz_test/` + prolificID, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(saveString),
-      });
-    } catch (e) {
-      console.log("Cant post?");
-    }
+    //    try {
+    //      fetch(`${DATABASE_URL}/per_quiz_test/` + userID, {
+    //        method: "POST",
+    //       headers: {
+    //         Accept: "application/json",
+    //          "Content-Type": "application/json",
+    //        },
+    //        body: JSON.stringify(saveString),
+    //      });
+    //   } catch (e) {
+    console.log("Cant post?");
+    //   }
 
     setTimeout(
       function () {
@@ -1632,16 +1413,20 @@ class PerTut extends React.Component {
   redirectToNextTask() {
     document.removeEventListener("keyup", this._handleInstructKey);
     document.removeEventListener("keyup", this._handleBeginKey);
-    this.props.navigate("/Tutorial?PROLIFIC_PID=" + this.state.prolificID, {
+
+    var condUrl =
+      "/Task?PROLIFIC_PID=" +
+      this.state.prolificID +
+      "?SESSION_ID=" +
+      this.state.sessionID;
+
+    this.props.navigate(condUrl, {
       state: {
         prolificID: this.state.prolificID,
-        condition: this.state.condition,
         userID: this.state.userID,
+        sessionID: this.state.sessionID,
         date: this.state.date,
         startTime: this.state.startTime,
-        dotStair: this.state.dotStair,
-        memCorrectPer: this.state.memCorrectPer,
-        perCorrectPer: this.state.perCorrectPer,
       },
     });
 
@@ -1651,6 +1436,22 @@ class PerTut extends React.Component {
   componentDidMount() {
     window.scrollTo(0, 0);
     document.body.style.overflow = "hidden";
+
+    this.averSound.addEventListener("ended", () =>
+      this.setState({ active: false })
+    );
+    this.neuSound.addEventListener("ended", () =>
+      this.setState({ active: false })
+    );
+  }
+
+  componentWillUnmount() {
+    this.averSound.removeEventListener("ended", () =>
+      this.setState({ active: false })
+    );
+    this.neuSound.removeEventListener("ended", () =>
+      this.setState({ active: false })
+    );
   }
 
   ///////////////////////////////////////////////////////////////
@@ -1664,21 +1465,25 @@ class PerTut extends React.Component {
         document.addEventListener("keyup", this._handleInstructKey);
         document.addEventListener("keyup", this._handleBeginKey);
         text = <div> {this.instructText(this.state.instructNum)}</div>;
-        console.log("THIS SHOULD BE INSTRUCTION BLOCK");
-        console.log(this.state.instructNum);
+        // console.log("THIS SHOULD BE INSTRUCTION BLOCK");
+        //console.log(this.state.instructNum);
       } else if (
         this.state.instructScreen === false &&
         this.state.taskScreen === true &&
-        this.state.taskSection === "iti"
+        this.state.taskSection === "trialReset"
       ) {
-        text = <div className={style.boxStyle}></div>;
+        text = (
+          <div>
+            <DrawFix />
+          </div>
+        );
       } else if (
         this.state.instructScreen === false &&
         this.state.taskScreen === true &&
         this.state.taskSection === "fixation"
       ) {
         text = (
-          <div className={style.boxStyle}>
+          <div>
             <DrawFix />
           </div>
         );
@@ -1688,22 +1493,28 @@ class PerTut extends React.Component {
         this.state.taskSection === "stimulus"
       ) {
         text = (
-          <div className={style.boxStyle}>
-            <DrawDots.DrawDots
-              dotRadius={this.state.dotRadius}
-              dotDiffLeft={this.state.dotDiffLeft}
-              dotDiffRight={this.state.dotDiffRight}
-            />
-          </div>
-        );
-      } else if (
-        this.state.instructScreen === false &&
-        this.state.taskScreen === true &&
-        this.state.taskSection === "choice"
-      ) {
-        text = (
-          <div className={style.boxStyle}>
-            <DrawBox />
+          <div>
+            <span className={style.frame}>
+              <center>
+                <img
+                  src={this.state.stimPic[this.state.stimPicPosition1]}
+                  className={style.stimLeft}
+                  alt="stim1"
+                />
+                <img
+                  src={this.state.stimPic[this.state.stimPicPosition2]}
+                  className={style.stimRight}
+                  alt="stim2"
+                />
+              </center>
+            </span>
+            <span className={style.textSmall}>
+              <center>
+                Press W for left choice.
+                <br />
+                Press O for right choice.
+              </center>
+            </span>
           </div>
         );
       } else if (
@@ -1711,9 +1522,34 @@ class PerTut extends React.Component {
         this.state.taskScreen === true &&
         this.state.taskSection === "choiceFeedback"
       ) {
+        var stimPicChosen1 = this.state.stimPicChosen1;
+        var stimPicChosen2 = this.state.stimPicChosen2;
         text = (
-          <div className={style.boxStyle}>
-            <DrawChoice.DrawChoice choice={this.state.choice} />
+          <div>
+            <span className={style.frame}>
+              <center>
+                <img
+                  src={this.state.stimPic[this.state.stimPicPosition1]}
+                  className={stimPicChosen1}
+                  alt="stim1"
+                />
+                <img
+                  src={this.state.stimPic[this.state.stimPicPosition2]}
+                  className={stimPicChosen2}
+                  alt="stim2"
+                />
+              </center>
+            </span>
+          </div>
+        );
+      } else if (
+        this.state.instructScreen === false &&
+        this.state.taskScreen === true &&
+        this.state.taskSection === "postChoiceJitter"
+      ) {
+        text = (
+          <div>
+            <DrawFix />
           </div>
         );
       } else if (
@@ -1721,12 +1557,24 @@ class PerTut extends React.Component {
         this.state.taskScreen === true &&
         this.state.taskSection === "corFeedback"
       ) {
+        var fbCss = this.state.fbCss;
         text = (
-          <div className={style.boxStyle}>
-            <DrawCorFeedback.DrawFeedback
-              choice={this.state.choice}
-              correct={this.state.correct}
-            />
+          <div>
+            <span className={style.frame}>
+              <center>
+                <img src={this.state.fbPic} className={fbCss} alt="fbsound" />
+              </center>
+            </span>
+          </div>
+        );
+      } else if (
+        this.state.instructScreen === false &&
+        this.state.taskScreen === true &&
+        this.state.taskSection === "iti"
+      ) {
+        text = (
+          <div>
+            <DrawFix />
           </div>
         );
       } else if (
@@ -1770,4 +1618,4 @@ class PerTut extends React.Component {
 
 //      If I want to disable mouse events to force them to use the keyboard <div style={{ pointerEvents: "none" }}>
 
-export default withRouter(PerTut);
+export default withRouter(Tutorial);

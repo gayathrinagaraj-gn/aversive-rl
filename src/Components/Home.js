@@ -29,7 +29,7 @@ class Home extends React.Component {
     this.props.navigate(
       "/Start?PROLIFIC_PID=" +
         this.state.prolificID +
-        "SESSION_ID=" +
+        "?SESSION_ID=" +
         this.state.sessionID,
       {
         state: {

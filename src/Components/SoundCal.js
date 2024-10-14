@@ -1093,7 +1093,7 @@ class SoundCal extends React.Component {
     var condUrl =
       "/Tutorial?PROLIFIC_PID=" +
       this.state.prolificID +
-      "SESSION_ID=" +
+      "?SESSION_ID=" +
       this.state.sessionID;
 
     this.props.navigate(condUrl, {
