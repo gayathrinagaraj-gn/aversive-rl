@@ -1,7 +1,5 @@
 import React from "react";
 import DrawFix from "./DrawFix.js";
-//import DrawBox from "./DrawBox.js";
-//import * as DrawChoice from "./DrawChoice.js";
 import style from "./style/taskStyle.module.css";
 import * as utils from "./utils.js";
 import withRouter from "./withRouter.js";
@@ -15,7 +13,6 @@ import fbPic from "./fractals/audio-sound.png";
 import averSound from "./sounds/task/morriss_scream_1000.wav";
 import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus20.wav";
 
-//import DrawStim from "./DrawStim.js";
 //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
 // THIS CODES THE TUTORIAL SESSION + QUIZ FOR THE TASK
@@ -131,7 +128,7 @@ class Tutorial extends React.Component {
       respTime: 0,
       respFbTime: 0,
       postrespTime: 0,
-      averFbTime: 0,
+      fbTime: 0,
       itiTime: 0,
 
       choice: null,
