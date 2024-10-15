@@ -14,7 +14,7 @@ import * as SliderVol from "./sliders/VolumeSlider2.js";
 import style from "./style/taskStyle.module.css";
 
 import PlayButton from "./PlayButton";
-import { DATABASE_URL } from "./config";
+//import { DATABASE_URL } from "./config";
 
 ////////////////////////////////////////////////////////////////////////////////
 //Functions
@@ -164,21 +164,6 @@ class HeadphoneCheck extends React.Component {
       volumeNotLog: volNtLog, //this is what you feed into the slider and convert back
       checkTry: 1,
 
-      // fix: fix,
-      // stimTrain1: stimTrain1,
-      //  stimTrain2: stimTrain2,
-      //  counter: counter,
-      // fbAver: fbAver,
-      // fbSafe: fbSafe,
-      // fbAvoid: fbAvoid,
-      // astrodude: astrodude,
-      // stim1: stim1,
-      //stim2: stim2,
-      //stim3: stim3,
-      //stim4: stim4,
-      //stim5: stim5,
-      //stim6: stim6,
-
       debug: false,
     };
 
@@ -312,6 +297,7 @@ class HeadphoneCheck extends React.Component {
       default:
     }
   };
+
   ////////////////////////////////////////////////////////////////////////////////
   //After audio calibration, move to headphone check instruction screen
   ////////////////////////////////////////////////////////////////////////////////
@@ -538,14 +524,14 @@ class HeadphoneCheck extends React.Component {
         arouRatingDef: null,
       };
 
-      fetch(`${DATABASE_URL}/vol_cal/` + userID, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(quizbehaviour),
-      });
+      //      fetch(`${DATABASE_URL}/vol_cal/` + userID, {
+      //        method: "POST",
+      //       headers: {
+      //       Accept: "application/json",
+      //       "Content-Type": "application/json",
+      //      },
+      //      body: JSON.stringify(quizbehaviour),
+      //     });
 
       // console.log(quizbehaviour);
 
@@ -582,14 +568,14 @@ class HeadphoneCheck extends React.Component {
         arouRatingDef: null,
       };
 
-      fetch(`${DATABASE_URL}/vol_cal/` + userID, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(quizbehaviour),
-      });
+      //    fetch(`${DATABASE_URL}/vol_cal/` + userID, {
+      //      method: "POST",
+      //      headers: {
+      //        Accept: "application/json",
+      //        "Content-Type": "application/json",
+      //      },
+      //      body: JSON.stringify(quizbehaviour),
+      //    });
 
       // console.log(quizbehaviour);
 
@@ -731,7 +717,7 @@ class HeadphoneCheck extends React.Component {
     var condUrl =
       "/SoundCal?PROLIFIC_PID=" +
       this.state.prolificID +
-      "SESSION_ID=" +
+      "?SESSION_ID=" +
       this.state.sessionID;
 
     this.props.navigate(condUrl, {
@@ -743,22 +729,6 @@ class HeadphoneCheck extends React.Component {
         startTime: this.state.startTime,
         volume: this.state.volume,
         volumeNotLog: this.state.volumeNotLog,
-
-        //   fix: this.state.fix,
-        //   stimTrain1: this.state.stimTrain1,
-        //  stimTrain2: this.state.stimTrain2,
-        //  counter: this.state.counter,
-        //   fbAver: this.state.fbAver,
-        //   fbSafe: this.state.fbSafe,
-        //   fbAvoid: this.state.fbAvoid,
-        //   astrodude: this.state.astrodude,
-
-        //   stim1: this.state.stim1,
-        //   stim2: this.state.stim2,
-        //  stim3: this.state.stim3,
-        //  stim4: this.state.stim4,
-        //  stim5: this.state.stim5,
-        //   stim6: this.state.stim6,
       },
     });
   }
@@ -784,6 +754,7 @@ class HeadphoneCheck extends React.Component {
                 Today, we will be playing a game that will require the use of
                 several sounds.
                 <br />
+                <br />
                 Before we begin, we will first need to adjust some sound-related
                 settings.
                 <br />
@@ -795,11 +766,10 @@ class HeadphoneCheck extends React.Component {
                 <br /> <br />
                 Please put on your <b>headphones or earphones</b> now.
                 <br /> <br />
-                When you are ready, you can navigate the pages with the left and
-                right arrow keys.
-                <br />
                 <center>
-                  <br />[<strong>NEXT</strong> →]
+                  Use the ← and → keys to navigate the pages.
+                  <br />
+                  <br />[<strong>→</strong>]
                 </center>
               </span>
             </div>
@@ -809,11 +779,11 @@ class HeadphoneCheck extends React.Component {
             <div>
               <span>
                 Great! First, we need to set your sound settings to an
-                appropriate level. <br />
-                Please set your computer system volume level to{" "}
-                <strong>30% of the maximum</strong>.
+                appropriate level.
                 <br /> <br />
-                Now, click the play button below.
+                Please set your computer system volume level to{" "}
+                <strong>30% of the maximum</strong>. Now, click the play button
+                below.
                 <br />
                 <br />
                 <center>
@@ -849,7 +819,7 @@ class HeadphoneCheck extends React.Component {
                 <br />
                 <br />
                 <center>
-                  [← <strong>BACK</strong>] [<strong>NEXT</strong> →]
+                  [<strong>←</strong>] [<strong>→</strong>]
                 </center>
               </span>
             </div>

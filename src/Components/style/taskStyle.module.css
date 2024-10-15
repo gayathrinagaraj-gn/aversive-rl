@@ -4,7 +4,7 @@
   align-items: center;
   height: auto;
   margin: 50px;
-  color: white;
+  color: black;
   font-size: 20px;
   font-family: "Arial", monospace;
 }
@@ -76,7 +76,7 @@ img.stimLeftChosen {
   float: left;
   margin: auto;
   opacity: 1;
-  border: 10px solid lightblue;
+  border: 10px solid #87c1ff;
 }
 
 img.stimRightChosen {
@@ -85,7 +85,7 @@ img.stimRightChosen {
   float: left;
   margin: auto;
   opacity: 1;
-  border: 10px solid lightblue;
+  border: 10px solid #87c1ff;
 }
 
 img.nofb {
@@ -120,10 +120,10 @@ img.incorrect {
 
 .textFrame {
   position: relative;
-  background-color: #2d323e;
+  background-color: #d3d3d3;
   /* opacity: 0.8; */
   border-radius: 30px;
-  border: 1px solid white;
+  border: 1px solid black;
   margin: 50px 200px 50px 200px;
   padding-top: 10px;
   padding-bottom: 10px;
@@ -145,11 +145,11 @@ img.incorrect {
 }
 
 button {
-  background-color: #000000;
-  border-color: white;
+  background-color: #d3d3d3;
+  border-color: black;
   border-width: 2px;
-  border-radius: 10px;
-  color: white;
+  border-radius: 5px;
+  color: black;
   font-size: 16px;
   padding: 12px 14px;
   margin: 4px 2px;
@@ -175,7 +175,7 @@ textarea {
 
 .bg {
   /* The image used */
-  background-color: #000000;
+  background-color: #808080;
 
   /* Full height */
   height: auto;

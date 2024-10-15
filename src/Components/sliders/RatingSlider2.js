@@ -10,10 +10,10 @@ const theme = createTheme({
     // the background and the text.
     primary: {
       contrastThreshold: 4.5,
-      main: "#ffffff",
+      main: "#000000",
     },
 
-    text: { primary: "#ffffff", secondary: "#ffffff" },
+    text: { primary: "#000000", secondary: "#000000" },
   },
 });
 
@@ -43,8 +43,7 @@ const marks = [
 export function AverSlider({ callBackValue, initialValue }) {
   const [averScale, setValue] = React.useState(initialValue);
 
-  const handleChange = (event) => {
-    const newValue = event.target.value;
+  const handleChange = (event, newValue) => {
     setValue(newValue);
     callBackValue(newValue);
   };
@@ -74,45 +73,10 @@ export function AverSlider({ callBackValue, initialValue }) {
   );
 }
 
-export function ArouSlider({ callBackValue, initialValue2 }) {
-  const [arouScale, setValue] = React.useState(initialValue2);
-
-  const handleChange = (event) => {
-    const newValue = event.target.value;
-    setValue(newValue);
-    callBackValue(newValue);
-  };
-
-  return (
-    <Box sx={{ width: 600 }}>
-      <Box sx={{ width: 500 }}>
-        <ThemeProvider theme={theme}>
-          <Slider
-            color="primary"
-            aria-label="Always visible"
-            step={1}
-            marks={marks}
-            min={0}
-            max={100}
-            track={false}
-            valueLabelDisplay="on"
-            value={arouScale}
-            onChange={handleChange}
-          />
-        </ThemeProvider>
-      </Box>
-      <span className={style.confTextLeft}>very sleepy</span>
-      <span className={style.confTextMiddle}>neutral</span>
-      <span className={style.confTextRight}>very awake</span>
-    </Box>
-  );
-}
-
 export function ExampleAver() {
   const [scale, setValue] = React.useState(50);
 
-  const handleChange = (event) => {
-    const newValue = event.target.value;
+  const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
@@ -137,39 +101,6 @@ export function ExampleAver() {
       <span className={style.confTextLeft}>very unpleasant</span>
       <span className={style.confTextMiddle}>neutral</span>
       <span className={style.confTextRight}>very pleasant</span>
-    </Box>
-  );
-}
-
-export function ExampleArou() {
-  const [scale, setValue] = React.useState(50);
-
-  const handleChange = (event) => {
-    const newValue = event.target.value;
-    setValue(newValue);
-  };
-
-  return (
-    <Box sx={{ width: 600 }}>
-      <Box sx={{ width: 500 }}>
-        <ThemeProvider theme={theme}>
-          <Slider
-            color="primary"
-            aria-label="Always visible"
-            step={1}
-            marks={marks}
-            min={0}
-            max={100}
-            track={false}
-            valueLabelDisplay="on"
-            value={scale}
-            onChange={handleChange}
-          />
-        </ThemeProvider>
-      </Box>
-      <span className={style.confTextLeft}>very sleepy</span>
-      <span className={style.confTextMiddle}>neutral</span>
-      <span className={style.confTextRight}>very awake</span>
     </Box>
   );
 }

@@ -36,7 +36,7 @@ class DrawFix extends React.Component {
               }
               width={this.state.fixWidVert}
               height={this.state.fixHeiVert}
-              fill="white"
+              fill="black"
             />
 
             <Rect
@@ -50,7 +50,7 @@ class DrawFix extends React.Component {
               }
               width={this.state.fixWidHori}
               height={this.state.fixHeiHori}
-              fill="white"
+              fill="black"
             />
           </Layer>
         </Stage>

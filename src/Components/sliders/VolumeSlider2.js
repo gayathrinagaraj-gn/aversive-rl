@@ -2,7 +2,7 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import style from "../style/taskStyle.module.css";
+//import style from "../style/taskStyle.module.css";
 
 const theme = createTheme({
   palette: {
@@ -10,10 +10,10 @@ const theme = createTheme({
     // the background and the text.
     primary: {
       contrastThreshold: 4.5,
-      main: "#ffffff",
+      main: "#000000",
     },
 
-    text: { primary: "#ffffff", secondary: "#ffffff" },
+    text: { primary: "#000000", secondary: "#000000" },
   },
 });
 
@@ -55,15 +55,10 @@ function logslider(position) {
   return Math.exp(minv + scale * (position - minp));
 }
 
-export function SliderVol({
-  callBackValue,
-  initialValue,
-  callBackValueNotLog,
-}) {
-  const [value, setValue] = React.useState(initialValue);
+export function SliderVol({ callBackValue, callBackValueNotLog }) {
+  const [value, setValue] = React.useState(80);
 
-  const handleChange = (event) => {
-    const newValue = event.target.value;
+  const handleChange = (event, newValue) => {
     var logValue = logslider(newValue);
     setValue(newValue);
     callBackValue(logValue);
@@ -88,9 +83,6 @@ export function SliderVol({
           />
         </ThemeProvider>
       </Box>
-      <span className={style.confTextLeft}>I performed better</span>
-      <span className={style.confTextMiddle}>We performed equally</span>
-      <span className={style.confTextRight}>Other player performed better</span>
     </Box>
   );
 }

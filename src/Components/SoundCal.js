@@ -2,17 +2,8 @@ import React from "react";
 //import { Button } from "react-bootstrap";
 import withRouter from "./withRouter.js";
 
-import attenSound from "./sounds/task/IADSE_pianomed1360_5000.wav";
-import fbSound from "./sounds/task/morriss_scream_1000.wav";
-import avoidSound from "./sounds/task/bacigalupo_whitenoise_1000_minus10.wav";
-import neutralSound from "./sounds/task/browniannoise_08amp_1500.wav";
-
-import otherSound1 from "./sounds/task/250hz_sinetone_08amp_1500.wav";
-import otherSound2 from "./sounds/task/800hz_sinetone_08amp_1500.wav";
-import otherSound3 from "./sounds/task/5000hz_sinetone_08amp_1500.wav";
-import otherSound4 from "./sounds/task/YangIADSE_cicada0335_1500.wav";
-import otherSound5 from "./sounds/task/YangIADSE_water0921_2000.wav";
-import otherSound6 from "./sounds/task/zaldPardo_metalscreech_1500.wav";
+import averSound from "./sounds/task/morriss_scream_1000.wav";
+import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus20.wav";
 
 import * as RatingSlider from "./sliders/RatingSlider2.js";
 import style from "./style/taskStyle.module.css";
@@ -87,52 +78,10 @@ function randomArray(length, min, max) {
 // This version, I change the calibration
 // They have to rate aver and avoid sounds TWO times at least, the second rating is where we base the calibration
 
-var varPlayColour = [
-  "#d02f33",
-  "#cd5a7e",
-  "#49458d",
-  "#c17860",
-  "#19cdc4",
-  "#430031",
-  "#21d770",
-  "#948082",
-  "#bfafed",
-  "#b6c8a9",
-  "#0e0399",
-  "#d16ab1",
-  "#3f0d9a",
-  "#c42557",
-  "#8e63a0",
-  "#706804",
-  "#435f07",
-  "#8050a9",
-  "#0f46e1",
-  "#197cab",
-  "#9a287c",
-  "#b20d44",
-  "#0a286a",
-  "#e5af2d",
-  "#ed3e92",
-  "#84473c",
-  "#6864a1",
-  "#e336c9",
-  "#70ddc9",
-  "#6864ca",
-];
+var varPlayColour = ["#d02f33", "#cd5a7e"];
 
 // this is the main sound array
-var soundArray = [
-  attenSound,
-  fbSound,
-  avoidSound,
-  neutralSound,
-  otherSound1,
-  otherSound2,
-  otherSound3,
-  otherSound4,
-  otherSound5,
-  otherSound6,
-];
+var soundArray = [averSound, neuSound];
 // Total number of audio bites for the first part of the rating (4)
 var qnNumTotal = soundArray.length;
 shuffleSingle(varPlayColour); // shuffling the color of the play button
@@ -164,21 +113,7 @@ class SoundCal extends React.Component {
     const startTime = this.props.state.startTime;
     const volume = this.props.state.volume;
     const volumeNotLog = this.props.state.volumeNotLog;
-
-    const fix = this.props.state.fix;
-    const stimTrain1 = this.props.state.stimTrain1;
-    const stimTrain2 = this.props.state.stimTrain2;
-    const counter = this.props.state.counter;
-    const fbAver = this.props.state.fbAver;
-    const fbSafe = this.props.state.fbSafe;
-    const fbAvoid = this.props.state.fbAvoid;
-    const astrodude = this.props.state.astrodude;
-    const stim1 = this.props.state.stim1;
-    const stim2 = this.props.state.stim2;
-    const stim3 = this.props.state.stim3;
-    const stim4 = this.props.state.stim4;
-    const stim5 = this.props.state.stim5;
-    const stim6 = this.props.state.stim6; */
+*/
 
     var userID = 1000;
     var prolificID = 1000;
@@ -189,7 +124,6 @@ class SoundCal extends React.Component {
     var volumeNotLog = 39;
 
     var averRatingDef = randomArray(qnNumTotal, 35, 65);
-    var arouRatingDef = randomArray(qnNumTotal, 35, 65);
 
     // keys for the slider
     var sliderKey = Array.from(Array(qnNumTotal).keys());
@@ -242,34 +176,14 @@ class SoundCal extends React.Component {
       qnRT: 0,
       playNum: 0,
       averRatingDef: averRatingDef,
-      arouRatingDef: arouRatingDef,
       averRating: null,
-      arouRating: null,
       active: false,
       soundFocus: null,
       btnDisNext: true,
 
       // these are the markers for the staircase
       fullAverRating: 0,
-      fullArouRating: 0,
-      // neutralRating: 0,
       halfAverRating: 0,
-      halfArouRating: 0,
-      /* 
-      fix: fix,
-      stimTrain1: stimTrain1,
-      stimTrain2: stimTrain2,
-      counter: counter,
-      fbAver: fbAver,
-      fbSafe: fbSafe,
-      fbAvoid: fbAvoid,
-      astrodude: astrodude,
-      stim1: stim1,
-      stim2: stim2,
-      stim3: stim3,
-      stim4: stim4,
-      stim5: stim5,
-      stim6: stim6, */
 
       debug: false,
     };
@@ -308,9 +222,9 @@ class SoundCal extends React.Component {
 
     if (whichButton === 4 && curText > 1) {
       this.setState({ currentInstructionText: curText - 1 });
-    } else if (whichButton === 5 && curText < 4) {
+    } else if (whichButton === 5 && curText < 3) {
       this.setState({ currentInstructionText: curText + 1 });
-    } else if (whichButton === 32 && curText === 4) {
+    } else if (whichButton === 32 && curText === 3) {
       //go to saveData
       setTimeout(
         function () {
@@ -318,7 +232,7 @@ class SoundCal extends React.Component {
         }.bind(this),
         5
       );
-    } else if (whichButton === 32 && curText === 5) {
+    } else if (whichButton === 32 && curText === 4) {
       // start tutor task
       setTimeout(
         function () {
@@ -397,22 +311,7 @@ class SoundCal extends React.Component {
   ////////////////////////////////////////////////////////////////////////////////
   callbackAver(callBackValue) {
     this.setState({ averRating: callBackValue });
-    if (
-      this.state.averRating !== null &&
-      this.state.arouRating !== null &&
-      this.state.playNum > 0
-    ) {
-      this.setState({ btnDisNext: false });
-    }
-  }
-
-  callbackArou(callBackValue) {
-    this.setState({ arouRating: callBackValue });
-    if (
-      this.state.averRating !== null &&
-      this.state.arouRating !== null &&
-      this.state.playNum > 0
-    ) {
+    if (this.state.averRating !== null && this.state.playNum > 0) {
       this.setState({ btnDisNext: false });
     }
   }
@@ -425,29 +324,12 @@ class SoundCal extends React.Component {
     var qnIndx = qnNum - 1;
     var qnNumShow = this.state.qnNumShow;
     var key1;
-    var key2;
     var averRatingDef;
-    var arouRatingDef;
     var varPlayColour = this.state.varPlayColour[qnNumShow - 1];
     var volume = this.state.volume;
 
-    if (this.state.volCalStage === "affRatings") {
-      key1 = this.state.sliderKey[qnIndx];
-      key2 = this.state.sliderKey[qnIndx] + this.state.qnNumTotal;
-      averRatingDef = this.state.averRatingDef[qnIndx];
-      arouRatingDef = this.state.arouRatingDef[qnIndx];
-      // this is the staircase calibration for the half aversive noise
-    } else if (this.state.volCalStage === "affCalibAver") {
-      key1 = this.state.sliderKey[qnIndx] + 10;
-      key2 = this.state.sliderKey[qnIndx] + 50;
-      averRatingDef = this.state.averRatingDef;
-      arouRatingDef = this.state.arouRatingDef;
-    } else if (this.state.volCalStage === "affCalibAvoid") {
-      key1 = this.state.sliderKey[qnIndx] + 100;
-      key2 = this.state.sliderKey[qnIndx] + 500;
-      averRatingDef = this.state.averRatingDef;
-      arouRatingDef = this.state.arouRatingDef;
-    }
+    key1 = this.state.sliderKey[qnIndx];
+    averRatingDef = this.state.averRatingDef[qnIndx];
 
     let question_text = (
       <div>
@@ -502,18 +384,6 @@ class SoundCal extends React.Component {
             <br />
             <br />
             <br />
-            <strong>Q{qnNumShow}b:</strong> How arousing is this sound?
-            <br />
-            <br />
-            <br />
-            <br />
-            <RatingSlider.ArouSlider
-              key={key2}
-              callBackValue={this.callbackArou.bind(this)}
-              initialValue2={arouRatingDef}
-            />
-            <br />
-            <br />
             <span className={style.textSmall}>
               [Note: You must play the sound and <strong>drag</strong> (not
               click) all sliders at least once to click NEXT.]
@@ -552,63 +422,29 @@ class SoundCal extends React.Component {
     var quizbehaviour;
 
     //first normal rating quiz
-    if (this.state.volCalStage === "affRatings") {
-      quizbehaviour = {
-        userID: this.state.userID,
-        date: this.state.date,
-        startTime: this.state.startTime,
-        volCalStage: this.state.volCalStage,
-        checkTry: null, //this is in headphoneCheck.js
-        qnTime: this.state.qnTime,
-        qnRT: qnRT,
-        qnNum: this.state.qnNum,
-        soundIndex: this.state.soundIndex,
-        soundFocus: this.state.soundFocus,
-        volume: this.state.volume,
-        volumePer: this.state.volumePer,
-        volumeNotLog: this.state.volumeNotLog,
-        playNum: this.state.playNum,
-        quizAnsIndiv: null, // no questions in this js but yes in headphonecheck
-        qnPressKey: null,
-        qnCorrIndiv: null,
-        averRating: this.state.averRating,
-        arouRating: this.state.arouRating,
-        averRatingDef: this.state.averRatingDef[this.state.qnNum - 1],
-        arouRatingDef: this.state.arouRatingDef[this.state.qnNum - 1],
-      };
-    } else if (
-      this.state.volCalStage === "affCalibAver" ||
-      this.state.volCalStage === "affCalibAvoid"
-    ) {
-      //second calibration quiz rating quiz
-
-      quizbehaviour = {
-        userID: this.state.userID,
-        date: this.state.date,
-        startTime: this.state.startTime,
-        volCalStage: this.state.volCalStage,
-        checkTry: null, //this is in headphoneCheck.js
-        qnTime: this.state.qnTime,
-        qnRT: qnRT,
-        qnNum: this.state.qnNum,
-        soundIndex: this.state.soundIndex,
-        soundFocus: this.state.soundFocus,
-        volume: this.state.volume,
-        volumePer: this.state.volumePer,
-        volumeNotLog: this.state.volumeNotLog,
-        playNum: this.state.playNum,
-        quizAnsIndiv: null, // no questions in this js but yes in headphonecheck
-        qnPressKey: null,
-        qnCorrIndiv: null,
-        averRating: this.state.averRating,
-        arouRating: this.state.arouRating,
-        averRatingDef: Number(this.state.averRatingDef),
-        arouRatingDef: Number(this.state.arouRatingDef),
-      };
-    }
+    quizbehaviour = {
+      userID: this.state.userID,
+      date: this.state.date,
+      startTime: this.state.startTime,
+      volCalStage: this.state.volCalStage,
+      checkTry: null, //this is in headphoneCheck.js
+      qnTime: this.state.qnTime,
+      qnRT: qnRT,
+      qnNum: this.state.qnNum,
+      soundIndex: this.state.soundIndex,
+      soundFocus: this.state.soundFocus,
+      volume: this.state.volume,
+      volumePer: this.state.volumePer,
+      volumeNotLog: this.state.volumeNotLog,
+      playNum: this.state.playNum,
+      quizAnsIndiv: null, // no questions in this js but yes in headphonecheck
+      qnPressKey: null,
+      qnCorrIndiv: null,
+      averRating: this.state.averRating,
+      averRatingDef: this.state.averRatingDef[this.state.qnNum - 1],
+    };
 
     // console.log("averRating: " + this.state.averRating);
-    // console.log("arouRating: " + this.state.arouRating);
     // console.log("volumePer: " + this.state.volumePer);
     // console.log("volume: " + this.state.volume);
     // console.log("volumeNotLog: " + this.state.volumeNotLog);
@@ -636,421 +472,31 @@ class SoundCal extends React.Component {
   }
 
   updateRate() {
-    if (this.state.volCalStage === "affRatings") {
-      if (this.state.soundIndex === 1) {
-        this.setState({
-          fullAverRating: Number(this.state.averRating),
-          fullArouRating: Number(this.state.arouRating),
-          volumeFullAver: Number(this.state.volume),
-          volumeNotLogFullAver: Number(this.state.volumeNotLog),
-        });
-      } else if (this.state.soundIndex === 2) {
-        this.setState({
-          halfAverRating: Number(this.state.averRating),
-          halfArouRating: Number(this.state.arouRating),
-          volumeHalfAver: Number(this.state.volume),
-          volumeNotLogHalfAver: Number(this.state.volumeNotLog),
-        });
-      }
-      // else if (this.state.soundIndex === 3) {
-      //   this.setState({ neutralRating: Number(this.state.averRating) });
-      // }
-    } else if (this.state.volCalStage === "affCalibAver") {
+    if (this.state.soundIndex === 1) {
       this.setState({
         fullAverRating: Number(this.state.averRating),
-        fullArouRating: Number(this.state.arouRating),
         volumeFullAver: Number(this.state.volume),
         volumeNotLogFullAver: Number(this.state.volumeNotLog),
       });
-    } else if (this.state.volCalStage === "affCalibAvoid") {
+    } else if (this.state.soundIndex === 2) {
       this.setState({
         halfAverRating: Number(this.state.averRating),
-        halfArouRating: Number(this.state.arouRating),
         volumeHalfAver: Number(this.state.volume),
         volumeNotLogHalfAver: Number(this.state.volumeNotLog),
       });
     }
-
     setTimeout(
       function () {
-        this.quizNext();
+        this.tutorTask();
       }.bind(this),
-      10
+      5
     );
   }
-
-  ////////////////////////////////////////////////////////////////////////////////
-  //Next quiz
-  ////////////////////////////////////////////////////////////////////////////////
-  quizNext() {
-    this.useEffect();
-    var qnTime = Math.round(performance.now());
-    var qnNum = this.state.qnNum + 1;
-    var qnNumShow = this.state.qnNumShow + 1;
-    var averRatingDef = randomArray(1, 35, 65);
-    var arouRatingDef = randomArray(1, 35, 65);
-
-    var ratingToReach;
-    var ratingToReachMin;
-    var ratingToReachMax;
-    var volumePer;
-    var volumeNew;
-    var volumeNotLog;
-
-    // console.log("volCalStage: " + this.state.volCalStage);
-    ///////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////
-    if (this.state.volCalStage === "affRatings") {
-      //
-      if (qnNum <= this.state.qnNumTotal) {
-        // While participant is still in the first rating phase,
-        // for the next sound...
-        var qnNumTotalIndex = this.state.qnNumTotalIndex;
-        var soundIndex = qnNumTotalIndex[qnNum - 1];
-        var soundbite = this.state.sounds[soundIndex];
-
-        // console.log("soundIndex: " + soundIndex);
-        // console.log("soundbite: " + soundbite);
-
-        this.setState({
-          qnNum: qnNum,
-          qnNumShow: qnNumShow,
-          qnTime: qnTime,
-          soundIndex: soundIndex,
-          playNum: 0,
-          averRating: null,
-          arouRating: null,
-          btnDisNext: true,
-          active: false,
-          soundFocus: soundbite,
-        });
-
-        // console.log("Def volumePer: " + this.state.volumePer);
-        // console.log("Def volume: " + this.state.volume);
-      } else {
-        // When the first rating is over, set up for the calibration phase.
-        // Two calibrations to be done
-        // 1) Calibrate the scream if it too postive <= 30
-        ///////////////////////////////////////////////////////////////////////
-        // console.log("Finish initial rating.");
-        // console.log("fullAverRating: " + this.state.fullAverRating);
-        // console.log("halfAverRating: " + this.state.halfAverRating);
-
-        // Play the scream again after the initial ratings
-
-        // console.log("Finish initial rating - scream rating too pleasant");
-        // increase the volume of the scream
-        volumePer = 1;
-        volumeNew = logslider(logposition(this.state.volumeDef) * volumePer);
-
-        // console.log("New volumePer: " + volumePer);
-        // console.log("New volumeNew: " + volumeNew);
-
-        // the maximum it can go is 100 volume
-        if (volumeNew >= 100) {
-          volumeNew = 100;
-          volumePer =
-            logposition(volumeNew) / logposition(this.state.volumeDef);
-        }
-
-        volumeNotLog = logposition(volumeNew);
-        // console.log("New volumePer: " + volumePer);
-        // console.log("New volumeNew: " + volumeNew);
-
-        this.setState({
-          qnTime: qnTime,
-          volCalStage: "affCalibAver", //this leads to the next section
-          qnNum: 1,
-          qnNumShow: qnNumShow,
-          soundIndex: 1,
-          volume: volumeNew,
-          volumeNotLog: volumeNotLog,
-          volumePer: volumePer,
-          playNum: 0,
-          averRating: null,
-          arouRating: null,
-          btnDisNext: true,
-          active: false,
-          soundFocus: this.state.sounds[1], // this should be the half aversive sound
-          averRatingDef: averRatingDef,
-          arouRatingDef: arouRatingDef,
-        });
-        // this will directly start the quiz without a direct send because qnNum = 1
-      }
-      //////////////////////////////////////////////////////////////////////
-    } else if (this.state.volCalStage === "affCalibAver") {
-      // this if only if aversive sound is too plesanet, so need to toggle
-
-      if (this.state.fullAverRating > 30 && this.state.volume !== 100) {
-        // console.log(
-        //   "affCalibAver - scream too pleasant and hasnt reached 100 vol"
-        // );
-        //
-        // console.log("affCalibAver -  scream too pleasant adjust more");
-        volumePer = Number(this.state.volumePer) + 0.1;
-        volumeNew = logslider(logposition(this.state.volumeDef) * volumePer);
-
-        if (volumeNew >= 100) {
-          volumeNew = 100;
-          volumePer =
-            logposition(volumeNew) / logposition(this.state.volumeDef);
-        }
-
-        volumeNotLog = logposition(volumeNew);
-        // console.log("New volumePer: " + volumePer);
-        // console.log("New volumeNew: " + volumeNew);
-
-        this.setState({
-          qnTime: qnTime,
-          qnNum: qnNum,
-          qnNumShow: qnNumShow,
-          soundIndex: 1,
-          volume: volumeNew,
-          volumeNotLog: volumeNotLog,
-          volumePer: volumePer,
-          playNum: 0,
-          averRating: null,
-          arouRating: null,
-          btnDisNext: true,
-          active: false,
-          soundFocus: this.state.sounds[1],
-          averRatingDef: averRatingDef,
-          arouRatingDef: arouRatingDef,
-        });
-      } else {
-        // if the ratings finally have reached, then
-        // then caluculate if avoid is within the rating
-        // console.log("affCalibAver - scream is fine");
-        //check if the avoid sound is somwhere in mid of unplesaent to 50
-        ratingToReach =
-          this.state.fullAverRating + (50 - this.state.fullAverRating) / 2;
-        ratingToReachMin = ratingToReach - 5;
-        ratingToReachMax = ratingToReach + 5;
-
-        // console.log(
-        //   "New ratingToReach: " + ratingToReachMin + " to " + ratingToReachMax
-        // );
-        // console.log("halfAverRating: " + this.state.halfAverRating);
-        // if rating is TOO aversive
-
-        // console.log("affCalibAver - white nosie too unpleasant");
-        volumePer = 1;
-        volumeNew = logslider(logposition(this.state.volumeDef) * volumePer);
-
-        // the minimum it can go is 1 volume
-        if (volumeNew <= 1) {
-          volumeNew = 1;
-          volumePer =
-            logposition(volumeNew) / logposition(this.state.volumeDef);
-        }
-
-        volumeNotLog = logposition(volumeNew);
-        // console.log("New volumePer: " + volumePer);
-        // console.log("New volumeNew: " + volumeNew);
-        this.setState({
-          qnTime: qnTime,
-          qnNum: 1,
-          qnNumShow: qnNumShow,
-          volCalStage: "affCalibAvoid",
-          soundIndex: 2,
-          volume: volumeNew,
-          volumeNotLog: volumeNotLog,
-          volumePer: volumePer,
-          playNum: 0,
-          averRating: null,
-          arouRating: null,
-          btnDisNext: true,
-          active: false,
-          soundFocus: this.state.sounds[2], // this should be the half aversive sound
-          averRatingDef: averRatingDef,
-          arouRatingDef: arouRatingDef,
-        });
-      }
-      //////////////////////////////////////////////////////////////////////
-    } else if (this.state.volCalStage === "affCalibAvoid") {
-      ratingToReach =
-        this.state.fullAverRating + (50 - this.state.fullAverRating) / 2;
-      ratingToReachMin = ratingToReach - 5;
-      ratingToReachMax = ratingToReach + 5;
-      // console.log(
-      //   "New ratingToReach: " + ratingToReachMin + " to " + ratingToReachMax
-      // );
-      /// too aversive
-      if (this.state.averRating < ratingToReachMin) {
-        // console.log("affCalibAvoid - white nosie is too unpleasant");
-        volumePer = Number(this.state.volumePer) - 0.1;
-        volumeNew = logslider(logposition(this.state.volumeDef) * volumePer);
-
-        // the minimum it can go is 1 volume
-        if (volumeNew <= 1) {
-          volumeNew = 1;
-          volumePer =
-            logposition(volumeNew) / logposition(this.state.volumeDef);
-        }
-
-        volumeNotLog = logposition(volumeNew);
-
-        // console.log("New volumePer: " + volumePer);
-        // console.log("New volumeNew: " + volumeNew);
-
-        this.setState({
-          qnTime: qnTime,
-          qnNum: qnNum,
-          qnNumShow: qnNumShow,
-          soundIndex: 2,
-          volume: volumeNew,
-          volumeNotLog: volumeNotLog,
-          volumePer: volumePer,
-          playNum: 0,
-          averRating: null,
-          arouRating: null,
-          btnDisNext: true,
-          active: false,
-          soundFocus: this.state.sounds[2], // this should be the half aversive sound
-          averRatingDef: averRatingDef,
-          arouRatingDef: arouRatingDef,
-        });
-      }
-      // if it is too pleasant, increase the volume
-      else if (
-        this.state.averRating > ratingToReachMax &&
-        this.state.volume !== 100
-      ) {
-        // console.log(
-        //   "affCalibAvoid - white nosie is too pleasant and hasnt reached 100 vol"
-        // );
-        volumePer = Number(this.state.volumePer) + 0.1;
-        volumeNew = logslider(logposition(this.state.volumeDef) * volumePer);
-
-        // the maximum it can go is 100 volume
-        if (volumeNew >= 100) {
-          volumeNew = 100;
-          volumePer =
-            logposition(volumeNew) / logposition(this.state.volumeDef);
-        }
-
-        volumeNotLog = logposition(volumeNew);
-
-        // console.log("New volumePer: " + volumePer);
-        // console.log("New volumeNew: " + volumeNew);
-
-        this.setState({
-          qnTime: qnTime,
-          qnNum: qnNum,
-          qnNumShow: qnNumShow,
-          soundIndex: 2,
-          volume: volumeNew,
-          volumeNotLog: volumeNotLog,
-          volumePer: volumePer,
-          playNum: 0,
-          averRating: null,
-          arouRating: null,
-          btnDisNext: true,
-          active: false,
-          soundFocus: this.state.sounds[2], // this should be the half aversive sound
-          averRatingDef: averRatingDef,
-          arouRatingDef: arouRatingDef,
-        });
-      } else {
-        // if the ratings are already in view, then go straight towards the task
-        // console.log("affCalibAvoid - white nosie is fine");
-        setTimeout(
-          function () {
-            this.tutorTask();
-          }.bind(this),
-          5
-        );
-      }
-    }
-  }
-
-  // averIsFine() {
-  //   // if aversive Noise is as aversive as expected, save the data again anyway bc its easier
-  //   var userID = this.state.userID;
-  //   let quizbehaviour;
-  //
-  //   quizbehaviour = {
-  //     userID: this.state.userID,
-  //     date: this.state.date,
-  //     startTime: this.state.startTime,
-  //     volCalStage: "affCalibAver",
-  //     checkTry: null, //this is in headphoneCheck.js
-  //     qnTime: null,
-  //     qnRT: null,
-  //     qnNum: this.state.qnNum,
-  //     soundIndex: 1,
-  //     soundFocus: this.state.sounds[1],
-  //     volume: this.state.volumeFullAver,
-  //     volumePer: this.state.volumePer,
-  //     volumeNotLog: this.state.volumeNotLogFullAver,
-  //     playNum: null,
-  //     quizAnsIndiv: null, // no questions in this js but yes in headphonecheck
-  //     qnPressKey: null,
-  //     qnCorrIndiv: null,
-  //     averRating: this.state.fullAverRating,
-  //     arouRating: this.state.fullArouRating,
-  //     averRatingDef: null,
-  //     arouRatingDef: null,
-  //   };
-  //
-  //   fetch(`${DATABASE_URL}/vol_cal/` + userID, {
-  //     method: "POST",
-  //     headers: {
-  //       Accept: "application/json",
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(quizbehaviour),
-  //   });
-  //
-  //   // console.log(quizbehaviour);
-  // }
-  //
-  // avoidIsFine() {
-  //   // if aversive Noise is as aversive as expected, save the data again anyway bc its easier
-  //
-  //   var userID = this.state.userID;
-  //   let quizbehaviour;
-  //
-  //   quizbehaviour = {
-  //     userID: this.state.userID,
-  //     date: this.state.date,
-  //     startTime: this.state.startTime,
-  //     volCalStage: "affCalibAvoid",
-  //     checkTry: null, //this is in headphoneCheck.js
-  //     qnTime: null,
-  //     qnRT: null,
-  //     qnNum: this.state.qnNum,
-  //     soundIndex: 2,
-  //     soundFocus: this.state.sounds[2],
-  //     volume: this.state.volumeHalfAver,
-  //     volumePer: this.state.volumePer,
-  //     volumeNotLog: this.state.volumeNotLogHalfAver,
-  //     playNum: null,
-  //     quizAnsIndiv: null, // no questions in this js but yes in headphonecheck
-  //     qnPressKey: null,
-  //     qnCorrIndiv: null,
-  //     averRating: this.state.halfAverRating,
-  //     arouRating: this.state.halfArouRating,
-  //     averRatingDef: null,
-  //     arouRatingDef: null,
-  //   };
-  //
-  //   fetch(`${DATABASE_URL}/vol_cal/` + userID, {
-  //     method: "POST",
-  //     headers: {
-  //       Accept: "application/json",
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(quizbehaviour),
-  //   });
-  //
-  //   // console.log(quizbehaviour);
-  // }
 
   tutorTask() {
     this.setState({
       quizScreen: false,
-      currentInstructionText: 5,
+      currentInstructionText: 4,
     });
   }
 
@@ -1099,27 +545,13 @@ class SoundCal extends React.Component {
     this.props.navigate(condUrl, {
       state: {
         userID: this.state.userID,
+        prolificID: this.state.prolificID,
+        sessionID: this.state.sessionID,
         date: this.state.date,
         startTime: this.state.startTime,
         volume: this.state.volume,
         volumeHalfAver: this.state.volumeHalfAver,
         volumeFullAver: this.state.volumeFullAver,
-
-        fix: this.state.fix,
-        stimTrain1: this.state.stimTrain1,
-        stimTrain2: this.state.stimTrain2,
-        counter: this.state.counter,
-        fbAver: this.state.fbAver,
-        fbSafe: this.state.fbSafe,
-        fbAvoid: this.state.fbAvoid,
-        astrodude: this.state.astrodude,
-
-        stim1: this.state.stim1,
-        stim2: this.state.stim2,
-        stim3: this.state.stim3,
-        stim4: this.state.stim4,
-        stim5: this.state.stim5,
-        stim6: this.state.stim6,
       },
     });
   }
@@ -1137,9 +569,6 @@ class SoundCal extends React.Component {
           text = (
             <div>
               <span>
-                <center>
-                  <strong>AUDIO TEST: PART II</strong>
-                </center>
                 <br />
                 Good job!
                 <br />
@@ -1149,18 +578,16 @@ class SoundCal extends React.Component {
                 <br />
                 <br />
                 All you have to do is to listen to them and rate the extent to
-                which they made you feel on some scales.
+                which they made you feel on:
                 <br /> <br />
-                There are 2 scales:
-                <br />
-                1) <strong>pleasantness</strong>: on scale of unpleasant to
+                <strong>Pleasantness</strong>: on scale of unpleasant to
                 pleasant
-                <br />
-                2) <strong>arousal</strong>: on scale of sleepy to awake <br />
                 <br />
                 <br />
                 <center>
-                  [<strong>NEXT</strong> →]
+                  Use the ← and → keys to navigate the pages.
+                  <br />
+                  <br />[<strong>→</strong>]
                 </center>
               </span>
             </div>
@@ -1169,12 +596,6 @@ class SoundCal extends React.Component {
           text = (
             <div>
               <span>
-                <center>
-                  <strong>AUDIO TEST: PART II</strong>
-                </center>
-                <br />
-                When you are asked to rate the sound on the:
-                <br /> <br />
                 <center>
                   <strong>Pleasantness</strong> scale
                   <br />
@@ -1203,7 +624,7 @@ class SoundCal extends React.Component {
                 <br />
                 <br />
                 <center>
-                  [← <strong>BACK</strong>] [<strong>NEXT</strong> →]
+                  [<strong>←</strong>] [<strong>→</strong>]
                 </center>
               </span>
             </div>
@@ -1212,52 +633,6 @@ class SoundCal extends React.Component {
           text = (
             <div>
               <span>
-                <center>
-                  <strong>AUDIO TEST: PART II</strong>
-                </center>
-                <br />
-                When you are asked to rate the sound on the:
-                <br /> <br />
-                <center>
-                  <strong>Arousal</strong> scale
-                  <br />
-                  <br />
-                  <br />
-                  <RatingSlider.ExampleArou />
-                </center>
-                <br />
-                <br />
-                <strong>Not arousing</strong> sounds (0 on the scale) would be
-                sounds which
-                <br />
-                make you feel very sleepy, bored or low energy.
-                <br />
-                <br />
-                In contrast, <strong>very arousing</strong> sounds (100 on the
-                scale) would be
-                <br />
-                sounds that make you feel very awake, excited or high energy.
-                <br />
-                <br />
-                <strong>Neutral</strong> sounds (50 on the scale) would be
-                sounds
-                <br />
-                that are neither low nor high energy to you.
-                <br />
-                <br />
-                <center>
-                  [← <strong>BACK</strong>] [<strong>NEXT</strong> →]
-                </center>
-              </span>
-            </div>
-          );
-        } else if (this.state.currentInstructionText === 4) {
-          text = (
-            <div>
-              <span>
-                <center>
-                  <strong>AUDIO TEST: PART II</strong>
-                </center>
                 <br />
                 Remember to <u>keep your headphones on</u> and{" "}
                 <u>do not adjust</u> your sound settings.
@@ -1272,19 +647,16 @@ class SoundCal extends React.Component {
                 </center>
                 <br />
                 <center>
-                  [← <strong>BACK</strong>]
+                  [<strong>←</strong>]
                 </center>
               </span>
             </div>
           );
-        } else if (this.state.currentInstructionText === 5) {
+        } else if (this.state.currentInstructionText === 4) {
           document.addEventListener("keyup", this._handleInstructKey);
           text = (
             <div>
               <span>
-                <center>
-                  <strong>AUDIO TEST: PART II</strong>
-                </center>
                 <br />
                 Great! You are now ready to begin the game.
                 <br />
