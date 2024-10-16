@@ -39,7 +39,7 @@ class Task extends React.Component {
     // const date = this.props.state.date;
     //const startTime = this.props.state.startTime;
 
-    var trialNumTotal = 120;
+    var trialNumTotal = 12;
     var blockNumTotal = 3;
     var trialNumPerBlock = Math.round(trialNumTotal / blockNumTotal);
 
@@ -82,7 +82,6 @@ class Task extends React.Component {
       blockNumTotal: blockNumTotal,
       trialNumPerBlock: trialNumPerBlock,
       stimPosList: taskStimPos,
-      stimPosList: null,
       stimCondList: null,
 
       respKeyCode: [87, 79], // for left and right choice keys, currently it is W and O
@@ -104,10 +103,12 @@ class Task extends React.Component {
       postrespTime: 0,
       fbTime: 0,
       itiTime: 0,
+      continSwap: 0,
 
       choice: null,
       correct: null,
       correctMat: [], //put correct in vector, to cal perf %
+      correctMatReset: [], // resets with every swap
       correctPer: 0,
       contingency: 0.8,
       soundPlay: null,
@@ -209,11 +210,12 @@ class Task extends React.Component {
   handleBegin(keyPressed) {
     var curInstructNum = this.state.instructNum;
     var whichButton = keyPressed;
-    if (whichButton === 3 && curInstructNum === 5) {
+    if (whichButton === 3 && curInstructNum === 1) {
       this.setState({
         trialNum: 1,
         trialinBlockNum: 1,
         correctMat: [], //put correct in vector, to cal perf %
+        correctMatReset: [],
       });
       setTimeout(
         function () {
@@ -221,7 +223,17 @@ class Task extends React.Component {
         }.bind(this),
         0
       );
-    } else if (whichButton === 3 && curInstructNum === 10) {
+    } else if (whichButton === 3 && curInstructNum === 2) {
+      this.setState({
+        trialinBlockNum: 1,
+      });
+      setTimeout(
+        function () {
+          this.breakEnd();
+        }.bind(this),
+        0
+      );
+    } else if (whichButton === 3 && curInstructNum === 3) {
       //12
       setTimeout(
         function () {
@@ -280,11 +292,6 @@ class Task extends React.Component {
       fbCss = style.nfb;
     }
 
-    console.log(choice + " choice!");
-    console.log(stimPos + " stimPos!");
-    console.log(stimCond + " stimCond!");
-    console.log(correct + " correct!");
-
     if (correct === 1) {
       //if it is correct, then it is the less aversive noise
       if (Math.random() < this.state.contingency) {
@@ -302,9 +309,8 @@ class Task extends React.Component {
       soundPlay = null;
     }
 
-    console.log(soundPlay + " soundPlay!");
-
     //  console.log("response: " + response);
+    var correctMatReset = this.state.correctMatReset.concat(correct);
     var correctMat = this.state.correctMat.concat(correct);
     var correctPer =
       Math.round((utils.getAvg(correctMat) + Number.EPSILON) * 100) / 100; //2 dec pl
@@ -316,6 +322,7 @@ class Task extends React.Component {
       choice: choice,
       respTime: respTime,
       correct: correct,
+      correctMatReset: correctMatReset, // this one resets to determine the swaps
       correctMat: correctMat,
       correctPer: correctPer,
       stimPicChosen1: stimPicChosen1,
@@ -408,6 +415,10 @@ class Task extends React.Component {
           relationship throughout the task.
           <br />
           <br />
+          This time, you will not be told whether you selected the correct
+          fractal or not.
+          <br />
+          <br />
           You will have {this.state.trialNumTotal} chances to chose, split over{" "}
           {this.state.blockNumTotal} blocks.
           <br />
@@ -456,6 +467,7 @@ class Task extends React.Component {
         <span>
           <br />
           Well done! You have completed the task!
+          <br /> <br />
           <center>
             Press [<strong>SPACEBAR</strong>] to continue.
           </center>
@@ -482,14 +494,11 @@ class Task extends React.Component {
     document.removeEventListener("keyup", this._handleBeginKey);
 
     var trialNumTotal = this.state.trialNumTotal;
-    var trialinBlockNum = this.state.trialinBlockNum;
-    var stimPosList = this.state.stimPosList;
 
     this.setState({
       trialNum: 0,
       trialNumTotal: trialNumTotal,
       trialinBlockNum: 0,
-      stimPosList: stimPosList,
     });
     setTimeout(
       function () {
@@ -500,13 +509,31 @@ class Task extends React.Component {
   }
 
   breakEnd() {
+    // remove access to left/right/space keys for the instructions
+    document.removeEventListener("keyup", this._handleInstructKey);
+    document.removeEventListener("keyup", this._handleBeginKey);
+
+    this.setState({
+      trialinBlockNum: 0,
+    });
+    setTimeout(
+      function () {
+        this.trialReset();
+      }.bind(this),
+      10
+    );
+  }
+
+  breakBegin() {
     // change state to make sure the screen is changed for the task
+
+    var trialNum = this.state.trialNum - 1;
     this.setState({
       instructScreen: true,
       taskScreen: false,
       instructNum: 2,
       taskSection: null,
-      trialinBlockNum: 0,
+      trialNum: trialNum,
     });
   }
 
@@ -528,7 +555,12 @@ class Task extends React.Component {
     var trialNumTotal = this.state.trialNumTotal;
     var trialNumPerBlock = this.state.trialNumPerBlock;
     var stimPosList = this.state.stimPosList;
-    var stimCond = this.state.stimCond;
+
+    if (trialNum === 1) {
+      var stimCond = 1;
+    } else {
+      var stimCond = this.state.stimCond;
+    }
 
     var stimPos = stimPosList[trialNum - 1]; //shuffle the order for the dotDiffLeft
     var stimPicPosition1;
@@ -569,26 +601,30 @@ class Task extends React.Component {
       correctPer: null,
       stimPos: stimPos,
       stimCond: stimCond,
+      newStimCond: null,
     });
 
-    console.log(trialNum);
-    console.log(trialNumTotal);
+    console.log("TrialNum: " + trialNum);
+    console.log("TrialNumPerBlock: " + trialNumPerBlock);
+    console.log("TrialNumTotal: " + trialNumTotal);
 
-    if (trialNum === 1) {
-      setTimeout(
-        function () {
-          this.renderFix();
-        }.bind(this),
-        0
-      );
-    } else if (trialinBlockNum === trialNumPerBlock) {
-      setTimeout(
-        function () {
-          this.breakEnd();
-        }.bind(this),
-        0
-      );
-    } else if (trialNum === trialNumTotal + 1) {
+    if (trialNum < trialNumTotal + 1) {
+      if (trialinBlockNum === trialNumPerBlock + 1) {
+        setTimeout(
+          function () {
+            this.breakBegin();
+          }.bind(this),
+          0
+        );
+      } else {
+        setTimeout(
+          function () {
+            this.renderFix();
+          }.bind(this),
+          0
+        );
+      }
+    } else {
       // if the trials have reached the total trial number
       document.removeEventListener("keyup", this._handleRespKey);
       setTimeout(
@@ -661,8 +697,6 @@ class Task extends React.Component {
       Math.round(performance.now()) -
       [this.state.trialTime + this.state.fixTime + this.state.respTime];
 
-    console.log(postrespTimeLag2);
-
     this.setState({
       instructScreen: false,
       taskScreen: true,
@@ -719,7 +753,6 @@ class Task extends React.Component {
   renderITI() {
     var itiTimeLag = this.state.itiTimeLag;
     var itiTimeLag2 = itiTimeLag[Math.floor(Math.random() * itiTimeLag.length)];
-    console.log(itiTimeLag2);
 
     var fbTime =
       Math.round(performance.now()) -
@@ -797,8 +830,10 @@ class Task extends React.Component {
       itiTime: this.state.itiTime,
       choice: this.state.choice,
       correct: this.state.correct,
+      correctMatReset: this.state.correctMatReset,
       correctMat: this.state.correctMat,
       correctPer: this.state.correctPer,
+      continSwap: this.state.continSwap,
     };
 
     //   try {
@@ -813,6 +848,79 @@ class Task extends React.Component {
     //  } catch (e) {
     //     console.log("Cant post?");
     //   }
+
+    setTimeout(
+      function () {
+        this.detStimCond();
+      }.bind(this),
+      10
+    );
+  }
+
+  // determine the conditions before trial Reset
+  //if 6 to 10 correct responses have passed
+  //if the last three answers were correct
+  detStimCond() {
+    var correctMatReset = this.state.correctMatReset;
+    var lastresp = correctMatReset[correctMatReset.length - 1];
+    var secondlastresp = correctMatReset[correctMatReset.length - 2];
+    var thirdlastresp = correctMatReset[correctMatReset.length - 3];
+
+    var stimCond = this.state.stimCond;
+    var correctMatResetSum = correctMatReset.reduce((a, b) => a + b, 0); //add all the corrects together
+
+    var continSwap;
+    var newStimCond;
+
+    if (
+      correctMatResetSum >= 6 &&
+      correctMatResetSum <= 9 &&
+      lastresp === 1 &&
+      secondlastresp === 1 &&
+      thirdlastresp === 1
+    ) {
+      //there is a 50% chance that it will swap contingencys
+      if (Math.random() <= 0.5) {
+        continSwap = 1;
+        correctMatReset = [];
+        if (stimCond === 1) {
+          newStimCond = 2;
+        } else if (stimCond === 2) {
+          newStimCond = 1;
+        }
+      } else {
+        continSwap = 0;
+        newStimCond = stimCond;
+        correctMatReset = correctMatReset;
+      }
+    } else if (
+      correctMatResetSum === 10 &&
+      lastresp === 1 &&
+      secondlastresp === 1 &&
+      thirdlastresp === 1
+    ) {
+      continSwap = 1;
+      correctMatReset = [];
+      if (stimCond === 1) {
+        newStimCond = 2;
+      } else if (stimCond === 2) {
+        newStimCond = 1;
+      }
+    } else {
+      continSwap = 0;
+      newStimCond = stimCond;
+      correctMatReset = correctMatReset;
+    }
+
+    console.log("Correct Matrx: " + correctMatReset);
+    console.log("Correct MatrxSum: " + correctMatResetSum);
+    console.log("Stim Cond for next trial: " + stimCond);
+
+    this.setState({
+      correctMatReset: correctMatReset,
+      continSwap: continSwap,
+      stimCond: newStimCond,
+    });
 
     setTimeout(
       function () {
@@ -990,27 +1098,28 @@ class Task extends React.Component {
           </div>
         );
       } else if (this.state.debug === true) {
-      document.addEventListener("keyup", this._handleDebugKey);
-      text = (
-        <div>
-          <p>
-            <span>DEBUG MODE</span>
-            <br />
-            <span>
-              Press [<strong>SPACEBAR</strong>] to skip to next section.
-            </span>
-          </p>
+        document.addEventListener("keyup", this._handleDebugKey);
+        text = (
+          <div>
+            <p>
+              <span>DEBUG MODE</span>
+              <br />
+              <span>
+                Press [<strong>SPACEBAR</strong>] to skip to next section.
+              </span>
+            </p>
+          </div>
+        );
+      }
+
+      return (
+        <div className={style.bg}>
+          <div className={style.textFrame}>
+            <div className={style.fontStyle}>{text}</div>
+          </div>
         </div>
       );
     }
-
-    return (
-      <div className={style.bg}>
-        <div className={style.textFrame}>
-          <div className={style.fontStyle}>{text}</div>
-        </div>
-      </div>
-    );
   }
 }
 

@@ -6,73 +6,10 @@ import averSound from "./sounds/task/morriss_scream_1000.wav";
 import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus20.wav";
 
 import * as RatingSlider from "./sliders/RatingSlider2.js";
+import * as utils from "./utils.js";
 import style from "./style/taskStyle.module.css";
 import PlayButton from "./PlayButton";
 import { DATABASE_URL } from "./config";
-
-////////////////////////////////////////////////////////////////////////////////
-//Functions
-////////////////////////////////////////////////////////////////////////////////
-//for volume and frequency?, it is in log scale
-function logslider(position) {
-  // position will be between 0 and 100
-  var minp = 0;
-  var maxp = 100;
-
-  // The bounds of the slider
-  var minv = Math.log(1);
-  var maxv = Math.log(100);
-
-  // calculate adjustment factor
-  var scale = (maxv - minv) / (maxp - minp);
-
-  return Math.exp(minv + scale * (position - minp));
-}
-
-//return slider position
-function logposition(value) {
-  // position will be between 0 and 100
-  var minp = 0;
-  var maxp = 100;
-
-  // The bounds of the slider
-  var minv = Math.log(1);
-  var maxv = Math.log(100);
-
-  // calculate adjustment factor
-  var scale = (maxv - minv) / (maxp - minp);
-
-  return (Math.log(value) - minv) / scale + minp;
-}
-
-//shuffleSingle
-function shuffleSingle(array) {
-  var currentIndex = array.length,
-    temporaryValue,
-    randomIndex;
-
-  // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
-
-    // And swap it with the current element.
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-  }
-
-  return array;
-}
-
-//array of certain length within a certain range
-function randomArray(length, min, max) {
-  let range = max - min + 1;
-  return Array.apply(null, Array(length)).map(function () {
-    return Math.round(Math.random() * range) + min;
-  });
-}
 
 /////// REACT
 // This version, I change the calibration
@@ -84,7 +21,7 @@ var varPlayColour = ["#d02f33", "#cd5a7e"];
 var soundArray = [averSound, neuSound];
 // Total number of audio bites for the first part of the rating (4)
 var qnNumTotal = soundArray.length;
-shuffleSingle(varPlayColour); // shuffling the color of the play button
+utils.shuffle(varPlayColour); // shuffling the color of the play button
 
 varPlayColour = varPlayColour.filter(function (val) {
   return val !== undefined;
@@ -93,7 +30,7 @@ varPlayColour = varPlayColour.filter(function (val) {
 // write index for the sound array
 var qnNumTotalIndex = Array.from(Array(qnNumTotal).keys());
 //shuffle order of presentation
-shuffleSingle(qnNumTotalIndex);
+utils.shuffle(qnNumTotalIndex);
 
 qnNumTotalIndex = qnNumTotalIndex.filter(function (val) {
   return val !== undefined;
@@ -123,7 +60,7 @@ class SoundCal extends React.Component {
     var volume = 80;
     var volumeNotLog = 39;
 
-    var averRatingDef = randomArray(qnNumTotal, 35, 65);
+    var averRatingDef = utils.randomArray(qnNumTotal, 35, 65);
 
     // keys for the slider
     var sliderKey = Array.from(Array(qnNumTotal).keys());
@@ -163,10 +100,6 @@ class SoundCal extends React.Component {
       volumeDef: volume,
       volumeNotLogDef: volumeNotLog,
 
-      // this is for storage
-      volumeHalfAver: 0,
-      volumeNotLogHalfAver: 0,
-
       volumeFullAver: 0,
       volumeNotLogFullAver: 0,
 
@@ -183,7 +116,6 @@ class SoundCal extends React.Component {
 
       // these are the markers for the staircase
       fullAverRating: 0,
-      halfAverRating: 0,
 
       debug: false,
     };
@@ -323,14 +255,9 @@ class SoundCal extends React.Component {
     // normal rating section
     var qnIndx = qnNum - 1;
     var qnNumShow = this.state.qnNumShow;
-    var key1;
-    var averRatingDef;
+    var averRatingDef = this.state.averRatingDef[qnIndx];
     var varPlayColour = this.state.varPlayColour[qnNumShow - 1];
     var volume = this.state.volume;
-
-    key1 = this.state.sliderKey[qnIndx];
-    averRatingDef = this.state.averRatingDef[qnIndx];
-
     let question_text = (
       <div>
         <span>
@@ -371,13 +298,12 @@ class SoundCal extends React.Component {
       <div>
         <span>
           <center>
-            <strong>Q{qnNumShow}a:</strong> How pleasant is this sound?
+            <strong>Q{qnNumShow}:</strong> How pleasant is this sound?
             <br />
             <br />
             <br />
             <br />
             <RatingSlider.AverSlider
-              key={key1}
               callBackValue={this.callbackAver.bind(this)}
               initialValue={averRatingDef}
             />
@@ -393,7 +319,7 @@ class SoundCal extends React.Component {
             <button
               disabled={this.state.btnDisNext}
               onClick={() => {
-                this.saveData.bind(this);
+                this.saveData();
               }}
             >
               NEXT
@@ -417,6 +343,7 @@ class SoundCal extends React.Component {
   ////////////////////////////////////////////////////////////////////////////////
   saveData() {
     //if it is the full aversive sound or the neutral sound, keep so as to compare the ratings
+
     var qnRT = Math.round(performance.now()) - this.state.qnTime;
     var userID = this.state.userID;
     var quizbehaviour;
@@ -448,10 +375,8 @@ class SoundCal extends React.Component {
     // console.log("volumePer: " + this.state.volumePer);
     // console.log("volume: " + this.state.volume);
     // console.log("volumeNotLog: " + this.state.volumeNotLog);
-    // console.log("volumeHalf: " + this.state.volumeHalfAver);
-    // console.log("volumeNotLogHalf: " + this.state.volumeNotLogHalfAver);
 
-    fetch(`${DATABASE_URL}/vol_cal/` + userID, {
+    /*    fetch(`${DATABASE_URL}/vol_cal/` + userID, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -459,9 +384,7 @@ class SoundCal extends React.Component {
       },
       body: JSON.stringify(quizbehaviour),
     });
-
-    // console.log(quizbehaviour);
-
+*/
     //lag a bit to make sure statestate is saved
     setTimeout(
       function () {
@@ -472,25 +395,51 @@ class SoundCal extends React.Component {
   }
 
   updateRate() {
-    if (this.state.soundIndex === 1) {
-      this.setState({
-        fullAverRating: Number(this.state.averRating),
-        volumeFullAver: Number(this.state.volume),
-        volumeNotLogFullAver: Number(this.state.volumeNotLog),
-      });
-    } else if (this.state.soundIndex === 2) {
-      this.setState({
-        halfAverRating: Number(this.state.averRating),
-        volumeHalfAver: Number(this.state.volume),
-        volumeNotLogHalfAver: Number(this.state.volumeNotLog),
-      });
-    }
+    this.setState({
+      fullAverRating: Number(this.state.averRating),
+      volumeFullAver: Number(this.state.volume),
+      volumeNotLogFullAver: Number(this.state.volumeNotLog),
+    });
     setTimeout(
       function () {
-        this.tutorTask();
+        this.quizNext();
       }.bind(this),
       5
     );
+  }
+
+  quizNext() {
+    this.useEffect();
+    var qnTime = Math.round(performance.now());
+    var qnNum = this.state.qnNum + 1;
+    var qnNumShow = this.state.qnNumShow + 1;
+    var averRatingDef = utils.randomArray(1, 35, 65);
+
+    if (qnNum <= this.state.qnNumTotal) {
+      var qnNumTotalIndex = this.state.qnNumTotalIndex;
+      var soundIndex = qnNumTotalIndex[qnNum - 1];
+      var soundbite = this.state.sounds[soundIndex];
+
+      this.setState({
+        qnNum: qnNum,
+        qnNumShow: qnNumShow,
+        qnTime: qnTime,
+        soundIndex: soundIndex,
+        playNum: 0,
+        averRatingDef: averRatingDef,
+        averRating: null,
+        btnDisNext: true,
+        active: false,
+        soundFocus: soundbite,
+      });
+    } else {
+      setTimeout(
+        function () {
+          this.tutorTask();
+        }.bind(this),
+        5
+      );
+    }
   }
 
   tutorTask() {
@@ -550,7 +499,6 @@ class SoundCal extends React.Component {
         date: this.state.date,
         startTime: this.state.startTime,
         volume: this.state.volume,
-        volumeHalfAver: this.state.volumeHalfAver,
         volumeFullAver: this.state.volumeFullAver,
       },
     });

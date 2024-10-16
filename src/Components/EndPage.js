@@ -1,6 +1,5 @@
 import React from "react";
-import style from "./style/memTaskStyle.module.css";
-import astrodude from "./img/astronaut.png";
+import style from "./style/taskStyle.module.css";
 import withRouter from "./withRouter.js";
 
 class EndPage extends React.Component {
@@ -12,27 +11,28 @@ class EndPage extends React.Component {
     var sectionTime = Math.round(performance.now());
 
     //when deug
-    //  const userID = 100;
-    //  const date = 100;
-    //  const startTime = 100;
+    const userID = 100;
+    const prolificID = 100;
+    const sessionID = 100;
+    const date = 100;
+    const startTime = 100;
 
-    const userID = this.props.state.userID;
-    const prolificID = this.props.state.prolificID;
-    const condition = this.props.state.condition;
-    const date = this.props.state.date;
-    const startTime = this.props.state.startTime;
+    // const userID = this.props.state.userID;
+    // const prolificID = this.props.state.prolificID;
+    // const sessionID = this.props.state.sessionID;
+    // const date = this.props.state.date;
+    // const startTime = this.props.state.startTime;
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////
     // SET STATES
     this.state = {
       // demo paramters
-      prolific: prolificID,
-      condition: condition,
       userID: userID,
+      prolificID: prolificID,
+      sessionID: sessionID,
       date: date,
       startTime: startTime,
-      astrodude: astrodude,
 
       //section paramters
       sectionTime: sectionTime,
@@ -78,12 +78,12 @@ class EndPage extends React.Component {
     } else if (whichButton === 2 && curText < 3) {
       this.setState({ instructNum: curText + 1 });
     } else if (whichButton === 3 && curText === 3) {
-      // setTimeout(
-      //   function () {
-      //     this.redirectToEnd();
-      //   }.bind(this),
-      //   0
-      // );
+      setTimeout(
+        function () {
+          this.redirectToEnd();
+        }.bind(this),
+        0
+      );
     }
   }
   // handle key keyPressed
@@ -124,8 +124,8 @@ class EndPage extends React.Component {
           mental health.
           <br />
           <br />
-          In the two tasks, we were interested in how you evaluate your
-          perceptual decision-making.
+          In this tasks, we were interested in how you learn from aversive
+          outcomes, like an unpleasant sound.
           <br /> <br />
           Previous work have linked differences in behaviour to psychiatric
           disorders, which we are aiming to understand better.
@@ -136,9 +136,6 @@ class EndPage extends React.Component {
             <br />
             <br />[<strong>→</strong>]
           </center>
-        </span>
-        <span className={style.astro}>
-          <img src={this.state.astrodude} width={280} alt="astrodude" />
         </span>
       </div>
     );
@@ -214,12 +211,16 @@ class EndPage extends React.Component {
           You have finished the study!
           <br />
           <br />
+          Press the [<strong>SPACEBAR</strong>] to submit study completion on
+          Prolific. Click 'OK' on the pop up.
           <br />
-          Please send a message to us on Proflic that you have completed the
-          task.
           <br />
-          <br />
-          You may close the tab.
+          If the page fails to be directed to Prolific, please use the
+          completion code <strong>XXXXX</strong> and send a message to us on
+          Prolific.
+          <center>
+            [<strong>←</strong>]
+          </center>
         </span>
       </div>
     );
@@ -246,12 +247,11 @@ class EndPage extends React.Component {
     document.body.style.overflow = "hidden";
   }
 
-  // redirectToEnd() {
-  //   alert("You will now be redirected to Prolific's validation page.");
-  //   document.removeEventListener("keyup", this._handleInstructKey);
-  //   window.location =
-  //     "https://app.prolific.co/submissions/complete?cc=C1FUHKFG"; //this will the prolific validation code
-  // }
+  redirectToEnd() {
+    alert("You will now be redirected to Prolific's validation page.");
+    document.removeEventListener("keyup", this._handleInstructKey);
+    window.location = "https://app.prolific.co/submissions/complete?cc=XXXXXXX"; //this will the prolific validation code
+  }
 
   ///////////////////////////////////////////////////////////////
   render() {

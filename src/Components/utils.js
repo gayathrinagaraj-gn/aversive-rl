@@ -64,48 +64,19 @@ export function shuffleSame() {
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
-// function to generate dot positions given the x and y of the box
+// Function to shuffle Audio and Answers
+export function shuffleDouble(fileNames, trackTitles) {
+  var tempA;
+  var tempB;
+  for (var a = 0; a < fileNames.length; a++) {
+    tempA = fileNames[a];
+    tempB = Math.floor(Math.random() * fileNames.length);
+    fileNames[a] = fileNames[tempB];
+    fileNames[tempB] = tempA;
 
-export function genDotPos(
-  sqxstartpoint,
-  sqystartpoint,
-  squareWidth,
-  dotRadius
-) {
-  var dotXArray = [];
-  var dotYArray = [];
-  for (
-    var x = sqxstartpoint + dotRadius;
-    x < sqxstartpoint + squareWidth;
-    x += dotRadius
-  ) {
-    for (
-      var y = sqystartpoint + dotRadius;
-      y < sqystartpoint + squareWidth;
-      y += dotRadius
-    ) {
-      dotXArray.push(x);
-      dotYArray.push(y);
-    }
-  }
-  return [dotXArray, dotYArray];
-}
-
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-// function to generate the x and y coor for all of the dots
-
-export function genDots(dotPosX, dotPosY) {
-  if (dotPosX.length === dotPosY.length) {
-    return [...Array(dotPosX.length)].map((_, i) => ({
-      id: i.toString(),
-      x: dotPosX[i],
-      y: dotPosY[i],
-      isDragging: false,
-    }));
-  } else {
-    const e = new Error("Dot coordinates not same length!");
-    throw e;
+    tempA = trackTitles[a];
+    trackTitles[a] = trackTitles[tempB];
+    trackTitles[tempB] = tempA;
   }
 }
 
@@ -125,4 +96,32 @@ export function randomInt(min, max) {
 export function getAvg(vec) {
   const total = vec.reduce((acc, c) => acc + c, 0);
   return total / vec.length;
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+//array of certain length within a certain range
+export function randomArray(length, min, max) {
+  let range = max - min + 1;
+  return Array.apply(null, Array(length)).map(function () {
+    return Math.round(Math.random() * range) + min;
+  });
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+export function logslider(position) {
+  // position will be between 0 and 100
+  var minp = 0;
+  var maxp = 100;
+
+  // The bounds of the slider
+  var minv = Math.log(1);
+  var maxv = Math.log(100);
+
+  // calculate adjustment factor
+  var scale = (maxv - minv) / (maxp - minp);
+
+  return Math.exp(minv + scale * (position - minp));
 }

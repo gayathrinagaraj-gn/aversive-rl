@@ -10,68 +10,13 @@ import audioCheck5 from "./sounds/headphone/antiphase_HC_OSI.wav";
 import audioCheck6 from "./sounds/headphone/antiphase_HC_OIS.wav";
 
 import * as SliderVol from "./sliders/VolumeSlider2.js";
+import * as utils from "./utils.js";
 
 import style from "./style/taskStyle.module.css";
 
 import PlayButton from "./PlayButton";
 //import { DATABASE_URL } from "./config";
-
-////////////////////////////////////////////////////////////////////////////////
-//Functions
-////////////////////////////////////////////////////////////////////////////////
-//for volume, it is in log scale
-function logslider(position) {
-  // position will be between 0 and 100
-  var minp = 0;
-  var maxp = 100;
-
-  // The bounds of the slider
-  var minv = Math.log(1);
-  var maxv = Math.log(100);
-
-  // calculate adjustment factor
-  var scale = (maxv - minv) / (maxp - minp);
-
-  return Math.exp(minv + scale * (position - minp));
-}
-
-//shuffleSingle
-function shuffleSingle(array) {
-  var currentIndex = array.length,
-    temporaryValue,
-    randomIndex;
-
-  // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
-
-    // And swap it with the current element.
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-  }
-
-  return array;
-}
-
-// Function to shuffle Audio and Answers
-function shuffleDouble(fileNames, trackTitles) {
-  var tempA;
-  var tempB;
-  for (var a = 0; a < fileNames.length; a++) {
-    tempA = fileNames[a];
-    tempB = Math.floor(Math.random() * fileNames.length);
-    fileNames[a] = fileNames[tempB];
-    fileNames[tempB] = tempA;
-
-    tempA = trackTitles[a];
-    trackTitles[a] = trackTitles[tempB];
-    trackTitles[tempB] = tempA;
-  }
-}
-
+///////////////////////////////////////////////////////////////////
 var quizSounds = [
   audioCheck1,
   audioCheck2,
@@ -92,8 +37,8 @@ var varPlayColour = [
 
 var quizAns = [2, 3, 1, 1, 2, 3];
 
-shuffleSingle(varPlayColour);
-shuffleDouble(quizSounds, quizAns);
+utils.shuffle(varPlayColour);
+utils.shuffleDouble(quizSounds, quizAns);
 
 quizSounds = quizSounds.filter(function (val) {
   return val !== undefined;
@@ -124,7 +69,7 @@ class HeadphoneCheck extends React.Component {
 
     var currTime = Math.round(performance.now());
     var volNtLog = 80;
-    var vol = logslider(80);
+    var vol = utils.logslider(80);
 
     ////////////////////////////////////////////////////////////////////////////////
     //Set state
@@ -657,7 +602,7 @@ class HeadphoneCheck extends React.Component {
   redirectToBack() {
     document.removeEventListener("keydown", this._handleRestartKey);
     var checkTry = this.state.checkTry + 1;
-    var vol = logslider(80);
+    var vol = utils.logslider(80);
     this.setState({
       checkTry: checkTry,
       volCalStage: "volCalib",
@@ -689,8 +634,8 @@ class HeadphoneCheck extends React.Component {
     var quizAns = this.state.quizAns;
     var varPlayColour = this.state.varPlayColour;
 
-    shuffleSingle(varPlayColour);
-    shuffleDouble(quizSounds, quizAns);
+    utils.shuffle(varPlayColour);
+    utils.shuffleDouble(quizSounds, quizAns);
 
     this.setState({
       quizSounds: quizSounds,
