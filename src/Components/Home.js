@@ -67,8 +67,8 @@ class Home extends React.Component {
     text = (
       <div>
         <span>
-          Please use either <strong>Chrome</strong> or <strong>Firefox</strong>{" "}
-          - we cannot guarantee support on other browsers.
+          Please use <strong>Chrome</strong> - we cannot guarantee support on
+          other browsers.
           <br />
           <br />
           To take part in the experiment, your browser must be{" "}

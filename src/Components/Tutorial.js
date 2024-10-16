@@ -8,10 +8,15 @@ import { DATABASE_URL } from "./config.js";
 
 import stim1 from "./fractals/bandit01.png";
 import stim2 from "./fractals/bandit02.png";
+import stim3 from "./fractals/bandit03.png";
+import stim4 from "./fractals/bandit04.png";
+import stim5 from "./fractals/bandit05.png";
+import stim6 from "./fractals/bandit06.png";
+
 import fbPic from "./fractals/audio-sound.png";
 
 import averSound from "./sounds/task/morriss_scream_1000.wav";
-import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus20.wav";
+import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus15.wav";
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,12 +43,16 @@ class Tutorial extends React.Component {
     const sessionID = 100;
     const date = 100;
     const startTime = 100;
+    const volume = 80;
+    const volumeFullAver = 10;
 
     // const userID = this.props.state.userID;
     //const prolificID = this.props.state.prolificID;
     //const sessionID = this.props.state.sessionID;
     // const date = this.props.state.date;
     //const startTime = this.props.state.startTime;
+    //const volumme = this.props.state.volume;
+    //const volumeFullAver = this.props.state.volumeFullAver;
 
     var trialNumTotal1 = 2; // first tutorial, learn to chose one stimuli
     var trialNumTotal2 = 12; // second tutorial, learn the switch
@@ -71,6 +80,8 @@ class Tutorial extends React.Component {
     console.log(pracStimCond1);
     console.log(pracStimCond2);
 
+    var stimPic = [stim1, stim2, stim3, stim4, stim5, stim6];
+    utils.shuffle(stimPic);
     // so if cond is == 1, and stim pos is 1, the correct answer is left
     // so if cond is == 1, and stim pos is 2, the correct answer is right
     // so if cond is == 2, and stim pos is 1, the correct answer is right
@@ -102,6 +113,9 @@ class Tutorial extends React.Component {
       averSound: averSound,
       neuSound: neuSound,
 
+      volume: volume,
+      volumeFullAver: volumeFullAver,
+
       //trial parameters
       tutorial: 1, // first or second tutorial
       trialNumTotal1: trialNumTotal1,
@@ -117,7 +131,7 @@ class Tutorial extends React.Component {
       respKeyCode: [87, 79], // for left and right choice keys, currently it is W and O
       tutorialTry: 1,
 
-      stimPic: [stim1, stim2],
+      stimPic: stimPic,
       fbPic: fbPic,
 
       //trial by trial paramters
@@ -181,6 +195,9 @@ class Tutorial extends React.Component {
 
     this.averSound = new Audio(this.state.averSound);
     this.neuSound = new Audio(this.state.neuSound);
+
+    this.averSound.volume = this.state.volume / 100;
+    this.neuSound.volume = this.state.volume / 100;
     //////////////////////////////////////////////////////////////////////////////////////////////
     //End constructor props
   }
@@ -1463,6 +1480,8 @@ class Tutorial extends React.Component {
         sessionID: this.state.sessionID,
         date: this.state.date,
         startTime: this.state.startTime,
+        stimPic: this.state.stimPic,
+        volume: this.state.volume,
       },
     });
 

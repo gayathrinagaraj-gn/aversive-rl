@@ -6,12 +6,16 @@ import withRouter from "./withRouter.js";
 
 import { DATABASE_URL } from "./config.js";
 
-import stim1 from "./fractals/bandit01.png";
-import stim2 from "./fractals/bandit02.png";
+import stim1 from "./fractals/bandit07.png";
+import stim2 from "./fractals/bandit08.png";
+import stim3 from "./fractals/bandit09.png";
+import stim4 from "./fractals/bandit10.png";
+import stim5 from "./fractals/bandit11.png";
+import stim6 from "./fractals/bandit12.png";
 import fbPic from "./fractals/audio-sound.png";
 
 import averSound from "./sounds/task/morriss_scream_1000.wav";
-import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus20.wav";
+import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus15.wav";
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,12 +36,15 @@ class Task extends React.Component {
     const sessionID = 100;
     const date = 100;
     const startTime = 100;
+    const volume = 80;
 
     // const userID = this.props.state.userID;
     //const prolificID = this.props.state.prolificID;
     //const sessionID = this.props.state.sessionID;
     // const date = this.props.state.date;
     //const startTime = this.props.state.startTime;
+    // const stimPic = this.props.state.stimPic;
+    //const volume = this.props.state.volume;
 
     var trialNumTotal = 12;
     var blockNumTotal = 3;
@@ -48,6 +55,9 @@ class Task extends React.Component {
       .fill(1)
       .concat(Array(Math.round(trialNumTotal / 2)).fill(2));
     utils.shuffle(taskStimPos);
+
+    var stimPic = [stim1, stim2, stim3, stim4, stim5, stim6];
+    utils.shuffle(stimPic);
 
     //cond is determined by number of corrects - inside the code
 
@@ -76,6 +86,7 @@ class Task extends React.Component {
 
       averSound: averSound,
       neuSound: neuSound,
+      volume: volume,
 
       //trial parameters
       trialNumTotal: trialNumTotal,
@@ -87,7 +98,7 @@ class Task extends React.Component {
       respKeyCode: [87, 79], // for left and right choice keys, currently it is W and O
       tutorialTry: 1,
 
-      stimPic: [stim1, stim2],
+      stimPic: stimPic,
       fbPic: fbPic,
 
       //trial by trial paramters
@@ -104,6 +115,7 @@ class Task extends React.Component {
       fbTime: 0,
       itiTime: 0,
       continSwap: 0,
+      whenSwap: null,
 
       choice: null,
       correct: null,
@@ -141,6 +153,9 @@ class Task extends React.Component {
     this.instructText = this.instructText.bind(this);
     this.averSound = new Audio(this.state.averSound);
     this.neuSound = new Audio(this.state.neuSound);
+
+    this.averSound.volume = this.state.volume / 100;
+    this.neuSound.volume = this.state.volume / 100;
     //////////////////////////////////////////////////////////////////////////////////////////////
     //End constructor props
   }
@@ -211,11 +226,13 @@ class Task extends React.Component {
     var curInstructNum = this.state.instructNum;
     var whichButton = keyPressed;
     if (whichButton === 3 && curInstructNum === 1) {
+      var whenSwap = utils.randomArray(6, 10);
       this.setState({
         trialNum: 1,
         trialinBlockNum: 1,
         correctMat: [], //put correct in vector, to cal perf %
         correctMatReset: [],
+        whenSwap: whenSwap,
       });
       setTimeout(
         function () {
@@ -869,10 +886,35 @@ class Task extends React.Component {
     var stimCond = this.state.stimCond;
     var correctMatResetSum = correctMatReset.reduce((a, b) => a + b, 0); //add all the corrects together
 
-    var continSwap;
+    var continSwap = this.state.continSwap;
     var newStimCond;
 
+    var whenSwap = this.state.whenSwap;
+
+    // this is if I determined a random number from 6 to 10 before swap
     if (
+      correctMatResetSum >= whenSwap &&
+      lastresp === 1 &&
+      secondlastresp === 1 &&
+      thirdlastresp === 1
+    ) {
+      continSwap = 1;
+      correctMatReset = [];
+      whenSwap = utils.randomInt(6, 10); // random new number for the next round
+      if (stimCond === 1) {
+        newStimCond = 2;
+      } else if (stimCond === 2) {
+        newStimCond = 1;
+      }
+    } else {
+      continSwap = 0;
+      newStimCond = stimCond;
+      correctMatReset = correctMatReset;
+      whenSwap = whenSwap;
+    }
+
+    // this is if i use the 50% probablity of swapping
+    /*  if (
       correctMatResetSum >= 6 &&
       correctMatResetSum <= 9 &&
       lastresp === 1 &&
@@ -911,14 +953,16 @@ class Task extends React.Component {
       newStimCond = stimCond;
       correctMatReset = correctMatReset;
     }
-
+*/
     console.log("Correct Matrx: " + correctMatReset);
     console.log("Correct MatrxSum: " + correctMatResetSum);
     console.log("Stim Cond for next trial: " + stimCond);
+    console.log("When swap: " + whenSwap);
 
     this.setState({
       correctMatReset: correctMatReset,
       continSwap: continSwap,
+      whenSwap: whenSwap,
       stimCond: newStimCond,
     });
 
@@ -935,7 +979,7 @@ class Task extends React.Component {
     document.removeEventListener("keyup", this._handleBeginKey);
 
     var condUrl =
-      "/EndPage?PROLIFIC_PID=" +
+      "/Quest?PROLIFIC_PID=" +
       this.state.prolificID +
       "?SESSION_ID=" +
       this.state.sessionID;

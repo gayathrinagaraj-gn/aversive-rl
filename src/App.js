@@ -7,6 +7,7 @@ import SoundCal from "./Components/SoundCal";
 import HeadphoneCheck from "./Components/HeadphoneCheck";
 import Tutorial from "./Components/Tutorial";
 import Task from "./Components/Task";
+import Questionnaires from "./Components/Questionnaires";
 import EndPage from "./Components/EndPage";
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
       <Route path="/SoundCal" element={<SoundCal />} />
       <Route path="/Tutorial" element={<Tutorial />} />
       <Route path="/Task" element={<Task />} />
+      <Route path="/Quest" element={<Questionnaires />} />
       <Route path="/EndPage" element={<EndPage />} />
     </Routes>
   );

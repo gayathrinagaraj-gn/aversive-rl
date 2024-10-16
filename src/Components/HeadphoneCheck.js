@@ -727,7 +727,7 @@ class HeadphoneCheck extends React.Component {
                 appropriate level.
                 <br /> <br />
                 Please set your computer system volume level to{" "}
-                <strong>30% of the maximum</strong>. Now, click the play button
+                <strong>20% of the maximum</strong>. Now, click the play button
                 below.
                 <br />
                 <br />
@@ -777,9 +777,6 @@ class HeadphoneCheck extends React.Component {
           text = (
             <div>
               <span>
-                <center>
-                  <strong>AUDIO TEST: PART I</strong>
-                </center>
                 <br />
                 To ensure that all is working properly, you will now complete an
                 audio screening task.
@@ -816,10 +813,6 @@ class HeadphoneCheck extends React.Component {
               text = (
                 <div>
                   <span>
-                    <center>
-                      <strong>END AUDIO CHECK</strong>
-                    </center>
-                    <br />
                     <br />
                     Sorry, you failed the screening test.
                     <br />

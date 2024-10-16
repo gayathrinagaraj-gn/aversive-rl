@@ -1,9 +1,8 @@
 import React from "react";
-//import { Button } from "react-bootstrap";
 import withRouter from "./withRouter.js";
 
 import averSound from "./sounds/task/morriss_scream_1000.wav";
-import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus20.wav";
+import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus15.wav";
 
 import * as RatingSlider from "./sliders/RatingSlider2.js";
 import * as utils from "./utils.js";
@@ -258,6 +257,8 @@ class SoundCal extends React.Component {
     var averRatingDef = this.state.averRatingDef[qnIndx];
     var varPlayColour = this.state.varPlayColour[qnNumShow - 1];
     var volume = this.state.volume;
+    console.log("Volume: " + volume);
+
     let question_text = (
       <div>
         <span>
@@ -584,9 +585,6 @@ class SoundCal extends React.Component {
                 <br />
                 Remember to <u>keep your headphones on</u> and{" "}
                 <u>do not adjust</u> your sound settings.
-                <br />
-                <br />
-                Some sounds may repeat.
                 <br />
                 <br />
                 <center>
