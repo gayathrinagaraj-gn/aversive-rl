@@ -1399,7 +1399,7 @@ class Tutorial extends React.Component {
     };
 
     //   try {
-    //     fetch(`${DATABASE_URL}/per_tutorial_data/` + userID, {
+    //     fetch(`${DATABASE_URL}/tutorial_data/` + userID, {
     //       method: "POST",
     //      headers: {
     //        Accept: "application/json",
@@ -1443,7 +1443,7 @@ class Tutorial extends React.Component {
     };
 
     //    try {
-    //      fetch(`${DATABASE_URL}/per_quiz_test/` + userID, {
+    //      fetch(`${DATABASE_URL}/tut_quiz/` + userID, {
     //        method: "POST",
     //       headers: {
     //         Accept: "application/json",

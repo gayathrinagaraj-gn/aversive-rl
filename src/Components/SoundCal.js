@@ -352,6 +352,8 @@ class SoundCal extends React.Component {
     //first normal rating quiz
     quizbehaviour = {
       userID: this.state.userID,
+      prolificID: this.state.prolificID,
+      sessionID: this.state.sessionID,
       date: this.state.date,
       startTime: this.state.startTime,
       volCalStage: this.state.volCalStage,

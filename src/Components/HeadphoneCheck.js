@@ -464,9 +464,7 @@ class HeadphoneCheck extends React.Component {
         qnPressKey: null,
         qnCorrIndiv: null,
         averRating: null, //no ratings in this script, but there is in sound Cal
-        arouRating: null,
         averRatingDef: null,
-        arouRatingDef: null,
       };
 
       //      fetch(`${DATABASE_URL}/vol_cal/` + userID, {
@@ -508,9 +506,7 @@ class HeadphoneCheck extends React.Component {
         qnPressKey: this.state.qnPressKey,
         qnCorrIndiv: this.state.qnCorrIndiv,
         averRating: null, //no ratings in this script, but there is in sound Cal
-        arouRating: null,
         averRatingDef: null,
-        arouRatingDef: null,
       };
 
       //    fetch(`${DATABASE_URL}/vol_cal/` + userID, {
