@@ -89,14 +89,14 @@ class Questionnaires extends React.Component {
 
     //  console.log("resultAsString", resultAsString);
 
-    //   fetch(`${DATABASE_URL}/psych_quiz/` + prolificID, {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: resultAsString,
-    //    });
+    fetch(`${DATABASE_URL}/psych_quiz/` + prolificID, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: resultAsString,
+    });
 
     this.setState({
       resultAsString: resultAsString,

@@ -853,18 +853,18 @@ class Task extends React.Component {
       continSwap: this.state.continSwap,
     };
 
-    //   try {
-    //     fetch(`${DATABASE_URL}/task_data/` + userID, {
-    //       method: "POST",
-    //      headers: {
-    //        Accept: "application/json",
-    //        "Content-Type": "application/json",
-    //      },
-    //      body: JSON.stringify(saveString),
-    //     });
-    //  } catch (e) {
-    //     console.log("Cant post?");
-    //   }
+    try {
+      fetch(`${DATABASE_URL}/task_data/` + userID, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(saveString),
+      });
+    } catch (e) {
+      console.log("Cant post?");
+    }
 
     setTimeout(
       function () {

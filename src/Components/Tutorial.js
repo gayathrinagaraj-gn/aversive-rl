@@ -1398,18 +1398,18 @@ class Tutorial extends React.Component {
       correctPer: this.state.correctPer,
     };
 
-    //   try {
-    //     fetch(`${DATABASE_URL}/tutorial_data/` + userID, {
-    //       method: "POST",
-    //      headers: {
-    //        Accept: "application/json",
-    //        "Content-Type": "application/json",
-    //      },
-    //      body: JSON.stringify(saveString),
-    //     });
-    //  } catch (e) {
-    //     console.log("Cant post?");
-    //   }
+    try {
+      fetch(`${DATABASE_URL}/tutorial_data/` + userID, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(saveString),
+      });
+    } catch (e) {
+      console.log("Cant post?");
+    }
 
     setTimeout(
       function () {

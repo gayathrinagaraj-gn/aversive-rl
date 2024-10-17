@@ -15,7 +15,7 @@ import * as utils from "./utils.js";
 import style from "./style/taskStyle.module.css";
 
 import PlayButton from "./PlayButton";
-//import { DATABASE_URL } from "./config";
+import { DATABASE_URL } from "./config";
 ///////////////////////////////////////////////////////////////////
 var quizSounds = [
   audioCheck1,
@@ -467,16 +467,16 @@ class HeadphoneCheck extends React.Component {
         averRatingDef: null,
       };
 
-      //      fetch(`${DATABASE_URL}/vol_cal/` + userID, {
-      //        method: "POST",
-      //       headers: {
-      //       Accept: "application/json",
-      //       "Content-Type": "application/json",
-      //      },
-      //      body: JSON.stringify(quizbehaviour),
-      //     });
+      fetch(`${DATABASE_URL}/vol_cal/` + userID, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(quizbehaviour),
+      });
 
-      // console.log(quizbehaviour);
+      console.log(quizbehaviour);
 
       setTimeout(
         function () {
@@ -509,16 +509,16 @@ class HeadphoneCheck extends React.Component {
         averRatingDef: null,
       };
 
-      //    fetch(`${DATABASE_URL}/vol_cal/` + userID, {
-      //      method: "POST",
-      //      headers: {
-      //        Accept: "application/json",
-      //        "Content-Type": "application/json",
-      //      },
-      //      body: JSON.stringify(quizbehaviour),
-      //    });
+      fetch(`${DATABASE_URL}/vol_cal/` + userID, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(quizbehaviour),
+      });
 
-      // console.log(quizbehaviour);
+      console.log(quizbehaviour);
 
       setTimeout(
         function () {

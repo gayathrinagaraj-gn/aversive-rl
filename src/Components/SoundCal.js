@@ -379,7 +379,7 @@ class SoundCal extends React.Component {
     // console.log("volume: " + this.state.volume);
     // console.log("volumeNotLog: " + this.state.volumeNotLog);
 
-    /*    fetch(`${DATABASE_URL}/vol_cal/` + userID, {
+    fetch(`${DATABASE_URL}/vol_cal/` + userID, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -387,7 +387,7 @@ class SoundCal extends React.Component {
       },
       body: JSON.stringify(quizbehaviour),
     });
-*/
+
     //lag a bit to make sure statestate is saved
     setTimeout(
       function () {
