@@ -6,12 +6,10 @@ import withRouter from "./withRouter.js";
 
 import { DATABASE_URL } from "./config.js";
 
-import stim1 from "./fractals/bandit07.png";
-import stim2 from "./fractals/bandit08.png";
-import stim3 from "./fractals/bandit09.png";
-import stim4 from "./fractals/bandit10.png";
-import stim5 from "./fractals/bandit11.png";
-import stim6 from "./fractals/bandit12.png";
+import stim1 from "./fractals/bandit04.png";
+import stim2 from "./fractals/bandit24.png";
+import stim3 from "./fractals/bandit26.png";
+import stim4 from "./fractals/bandit27.png";
 import fbPic from "./fractals/audio-sound.png";
 
 import averSound from "./sounds/task/morriss_scream_1000.wav";
@@ -56,7 +54,7 @@ class Task extends React.Component {
       .concat(Array(Math.round(trialNumTotal / 2)).fill(2));
     utils.shuffle(taskStimPos);
 
-    var stimPic = [stim1, stim2, stim3, stim4, stim5, stim6];
+    var stimPic = [stim1, stim2, stim3, stim4];
     utils.shuffle(stimPic);
 
     //cond is determined by number of corrects - inside the code

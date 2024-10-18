@@ -6,12 +6,8 @@ import withRouter from "./withRouter.js";
 
 import { DATABASE_URL } from "./config.js";
 
-import stim1 from "./fractals/bandit01.png";
-import stim2 from "./fractals/bandit02.png";
-import stim3 from "./fractals/bandit03.png";
-import stim4 from "./fractals/bandit04.png";
-import stim5 from "./fractals/bandit05.png";
-import stim6 from "./fractals/bandit06.png";
+import stim1 from "./fractals/bandit30.png";
+import stim2 from "./fractals/bandit31.png";
 
 import fbPic from "./fractals/audio-sound.png";
 
@@ -80,7 +76,7 @@ class Tutorial extends React.Component {
     console.log(pracStimCond1);
     console.log(pracStimCond2);
 
-    var stimPic = [stim1, stim2, stim3, stim4, stim5, stim6];
+    var stimPic = [stim1, stim2];
     utils.shuffle(stimPic);
     // so if cond is == 1, and stim pos is 1, the correct answer is left
     // so if cond is == 1, and stim pos is 2, the correct answer is right
