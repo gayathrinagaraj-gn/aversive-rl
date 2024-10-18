@@ -107,7 +107,7 @@ class SoundCal extends React.Component {
       qnTime: qnTime,
       qnRT: 0,
       playNum: 0,
-      averRatingDef: averRatingDef,
+      averRatingDef: averRatingDef, // this is predetermined in an array
       averRating: null,
       active: false,
       soundFocus: null,
@@ -347,6 +347,7 @@ class SoundCal extends React.Component {
 
     var qnRT = Math.round(performance.now()) - this.state.qnTime;
     var userID = this.state.userID;
+    var averRatingDef = this.state.averRatingDef[this.state.qnNum - 1];
     var quizbehaviour;
 
     //first normal rating quiz
@@ -371,7 +372,7 @@ class SoundCal extends React.Component {
       qnPressKey: null,
       qnCorrIndiv: null,
       averRating: this.state.averRating,
-      averRatingDef: this.state.averRatingDef[this.state.qnNum - 1],
+      averRatingDef: averRatingDef,
     };
 
     // console.log("averRating: " + this.state.averRating);
@@ -416,7 +417,6 @@ class SoundCal extends React.Component {
     var qnTime = Math.round(performance.now());
     var qnNum = this.state.qnNum + 1;
     var qnNumShow = this.state.qnNumShow + 1;
-    var averRatingDef = utils.randomArray(1, 35, 65);
 
     if (qnNum <= this.state.qnNumTotal) {
       var qnNumTotalIndex = this.state.qnNumTotalIndex;
@@ -429,7 +429,6 @@ class SoundCal extends React.Component {
         qnTime: qnTime,
         soundIndex: soundIndex,
         playNum: 0,
-        averRatingDef: averRatingDef,
         averRating: null,
         btnDisNext: true,
         active: false,

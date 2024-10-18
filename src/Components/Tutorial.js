@@ -106,7 +106,7 @@ class Tutorial extends React.Component {
       fixTimeLag: 500, // the very first fixation
       // stimTimeLag: 1500, // there is no fixed time for stim
       respFbTimeLag: 500, //
-      postrespTimeLag: [500, 600, 700], // post choice fixation jitter
+      postRespTimeLag: [500, 600, 700], // post choice fixation jitter
       fbTimeLag: 1250, // how long the sound is played
       itiTimeLag: [250, 350, 450], // this adds to the first fixation, iti jitter
 
@@ -144,7 +144,7 @@ class Tutorial extends React.Component {
       responseKey: 0,
       respTime: 0,
       respFbTime: 0,
-      postrespTime: 0,
+      postRespTime: 0,
       fbTime: 0,
       itiTime: 0,
 
@@ -1162,7 +1162,7 @@ class Tutorial extends React.Component {
       responseKey: 0,
       respTime: 0,
       respFbTime: 0,
-      postrespTime: 0,
+      postRespTime: 0,
       fbTime: 0,
       soundPlay: null,
       stimPicPosition1: stimPicPosition1,
@@ -1251,15 +1251,15 @@ class Tutorial extends React.Component {
   //////////////////////////////////////////////////////////////////////////////////////////////
   // jitter
   renderPostChJitter() {
-    var postrespTimeLag = this.state.postrespTimeLag;
-    var postrespTimeLag2 =
-      postrespTimeLag[Math.floor(Math.random() * postrespTimeLag.length)];
+    var postRespTimeLag = this.state.postRespTimeLag;
+    var postRespTimeLag2 =
+      postRespTimeLag[Math.floor(Math.random() * postRespTimeLag.length)];
 
     var respFbTime =
       Math.round(performance.now()) -
       [this.state.trialTime + this.state.fixTime + this.state.respTime];
 
-    console.log(postrespTimeLag2);
+    console.log(postRespTimeLag2);
 
     this.setState({
       instructScreen: false,
@@ -1272,13 +1272,13 @@ class Tutorial extends React.Component {
       function () {
         this.renderCorFb();
       }.bind(this),
-      postrespTimeLag2
+      postRespTimeLag2
     );
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////
   renderCorFb() {
-    var postrespTime =
+    var postRespTime =
       Math.round(performance.now()) -
       [
         this.state.trialTime +
@@ -1302,7 +1302,7 @@ class Tutorial extends React.Component {
       instructScreen: false,
       taskScreen: true,
       taskSection: "corFeedback",
-      postrespTime: postrespTime,
+      postRespTime: postRespTime,
     });
 
     setTimeout(
@@ -1326,7 +1326,7 @@ class Tutorial extends React.Component {
           this.state.fixTime +
           this.state.respTime +
           this.state.respFbTime +
-          this.state.postrespTime,
+          this.state.postRespTime,
       ];
 
     this.setState({
@@ -1352,7 +1352,7 @@ class Tutorial extends React.Component {
           this.state.fixTime +
           this.state.respTime +
           this.state.respFbTime +
-          this.state.postrespTime +
+          this.state.postRespTime +
           this.state.fbTime,
       ];
 
@@ -1389,7 +1389,7 @@ class Tutorial extends React.Component {
       responseKey: this.state.responseKey,
       respTime: this.state.respTime,
       respFbTime: this.state.respFbTime,
-      postrespTime: this.state.postrespTime,
+      postRespTime: this.state.postRespTime,
       fbTime: this.state.fbTime,
       itiTime: this.state.itiTime,
       choice: this.state.choice,
