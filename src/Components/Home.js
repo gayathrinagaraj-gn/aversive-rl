@@ -4,16 +4,24 @@ import withRouter from "./withRouter.js";
 import style from "./style/taskStyle.module.css";
 // import queryString from "query-string";
 
+var debug = true;
+
 class Home extends React.Component {
   constructor(props) {
     super(props);
 
     // ID number - either set or get from url
-    const queryParams = new URLSearchParams(window.location.search);
-    const prolific_id = queryParams.get("PROLIFIC_PID");
-    const session_id = queryParams.get("SESSION_ID");
-    console.log("PID: " + prolific_id); //pizza
-    console.log("SID: " + session_id); //pizza
+
+    if (debug === true) {
+      var prolific_id = 1000;
+      var session_id = 1000;
+    } else {
+      const queryParams = new URLSearchParams(window.location.search);
+      const prolific_id = queryParams.get("PROLIFIC_PID");
+      const session_id = queryParams.get("SESSION_ID");
+      // console.log("PID: " + prolific_id); //pizza
+      // console.log("SID: " + session_id); //pizza
+    }
 
     // Set state
     this.state = {
@@ -39,8 +47,8 @@ class Home extends React.Component {
       }
     );
 
-    console.log("prolificID: " + this.state.prolificID);
-    console.log("sessionID: " + this.state.sessionID);
+    //console.log("prolificID: " + this.state.prolificID);
+    //console.log("sessionID: " + this.state.sessionID);
   }
 
   componentDidMount() {

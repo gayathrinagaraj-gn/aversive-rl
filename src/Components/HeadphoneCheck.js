@@ -16,6 +16,12 @@ import style from "./style/taskStyle.module.css";
 
 import PlayButton from "./PlayButton";
 import { DATABASE_URL } from "./config";
+
+///////////////////////////////////////////////////////////////////
+
+var debug = false;
+var skip = false;
+
 ///////////////////////////////////////////////////////////////////
 var quizSounds = [
   audioCheck1,
@@ -54,12 +60,20 @@ quizAns = quizAns.filter(function (val) {
 class HeadphoneCheck extends React.Component {
   constructor(props) {
     super(props);
-    // Constructor and props
-    /*  const userID = this.props.state.userID;
-    const prolificID = this.props.state.prolificID;
-    const sessionID = this.props.state.sessionID;
-    const date = this.props.state.date;
-    const startTime = this.props.state.startTime; */
+
+    if (debug === true) {
+      var userID = 1000;
+      var prolificID = 1000;
+      var sessionID = 1000;
+      var date = 1000;
+      var startTime = 1000;
+    } else {
+      const userID = this.props.state.userID;
+      const prolificID = this.props.state.prolificID;
+      const sessionID = this.props.state.sessionID;
+      const date = this.props.state.date;
+      const startTime = this.props.state.startTime;
+    }
 
     var userID = 1000;
     var prolificID = 1000;
@@ -109,7 +123,8 @@ class HeadphoneCheck extends React.Component {
       volumeNotLog: volNtLog, //this is what you feed into the slider and convert back
       checkTry: 1,
 
-      debug: false,
+      debug: debug,
+      skip: skip,
     };
 
     /* prevents page from going down when space bar is hit .*/
@@ -679,7 +694,7 @@ class HeadphoneCheck extends React.Component {
   ////////////////////////////////////////////////////////////////////////////////
   render() {
     let text;
-    if (this.state.debug === false) {
+    if (this.state.skip === false) {
       if (this.state.volCalStage === "volCalib") {
         //this is to adjust sound volume
         if (this.state.currentInstructionText === 1) {
@@ -832,7 +847,7 @@ class HeadphoneCheck extends React.Component {
           }
         }
       }
-    } else if (this.state.debug === true) {
+    } else if (this.state.skip === true) {
       document.addEventListener("keyup", this._handleDebugKey);
       text = (
         <div>

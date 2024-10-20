@@ -1,6 +1,6 @@
 export const demo = [
   {
-    name: "number",
+    name: "age",
     type: "text",
     title: "What is your age?",
     inputType: "number",
@@ -11,7 +11,7 @@ export const demo = [
   },
   {
     type: "radiogroup",
-    name: "car",
+    name: "gender",
     title: "What is your gender?",
     isRequired: true,
     showNoneItem: false,

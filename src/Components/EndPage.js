@@ -2,6 +2,9 @@ import React from "react";
 import style from "./style/taskStyle.module.css";
 import withRouter from "./withRouter.js";
 
+var debug = false;
+var skip = false;
+
 class EndPage extends React.Component {
   //////////////////////////////////////////////////////////////////////////////////////////////
   // CONSTRUCTOR
@@ -10,18 +13,19 @@ class EndPage extends React.Component {
 
     var sectionTime = Math.round(performance.now());
 
-    //when deug
-    const userID = 100;
-    const prolificID = 100;
-    const sessionID = 100;
-    const date = 100;
-    const startTime = 100;
-
-    // const userID = this.props.state.userID;
-    // const prolificID = this.props.state.prolificID;
-    // const sessionID = this.props.state.sessionID;
-    // const date = this.props.state.date;
-    // const startTime = this.props.state.startTime;
+    if (debug === true) {
+      var userID = 1000;
+      var prolificID = 1000;
+      var sessionID = 1000;
+      var date = 1000;
+      var startTime = 1000;
+    } else {
+      const userID = this.props.state.userID;
+      const prolificID = this.props.state.prolificID;
+      const sessionID = this.props.state.sessionID;
+      const date = this.props.state.date;
+      const startTime = this.props.state.startTime;
+    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,7 +46,8 @@ class EndPage extends React.Component {
       instructScreen: true,
       instructNum: 1, //start from 1
 
-      debug: false,
+      debug: debug,
+      skip: skip,
     };
 
     //////////////////////////////////////////////////////////////////////////////////////////////

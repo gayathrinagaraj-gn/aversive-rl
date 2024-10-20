@@ -13,22 +13,26 @@ import { demo } from "./quest/demo.js";
 
 import { DATABASE_URL } from "./config";
 
+var debug = false;
+var skip = false;
+
 class Questionnaires extends React.Component {
   constructor(props) {
     super(props);
 
-    //  const userID = this.props.state.userID;
-    //  const prolificID = this.props.state.prolificID;
-    //  const sessionID = this.props.state.sessionID;
-    //  const date = this.props.state.date;
-    //   const startTime = this.props.state.startTime;
-
-    //when deug
-    const userID = 100;
-    const prolificID = 100;
-    const sessionID = 100;
-    const date = 100;
-    const startTime = 100;
+    if (debug === true) {
+      var userID = 1000;
+      var prolificID = 1000;
+      var sessionID = 1000;
+      var date = 1000;
+      var startTime = 1000;
+    } else {
+      const userID = this.props.state.userID;
+      const prolificID = this.props.state.prolificID;
+      const sessionID = this.props.state.sessionID;
+      const date = this.props.state.date;
+      const startTime = this.props.state.startTime;
+    }
 
     var sectionTime = Math.round(performance.now());
 
@@ -57,7 +61,8 @@ class Questionnaires extends React.Component {
 
       instructScreen: true,
       questScreen: false,
-      debug: false,
+      debug: debug,
+      skip: skip,
     };
   }
 
@@ -65,18 +70,20 @@ class Questionnaires extends React.Component {
   onComplete(survey, options) {
     // //Write survey results into database
 
-    //   var qnTime = Math.round(performance.now());
-    // var quizText = "IQ_image";
-    // var quizPgFinish = "PgFinish_" + quizText;
-    // var quizRT = "PgRT_" + quizText;
-    // var qnRT = qnTime - this.state.qnTime;
-    // survey.setValue(quizPgFinish, qnTime);
-    // survey.setValue(quizRT, qnRT);
+    var quizText = this.state.quizLabel[this.state.quizLabel.length - 1];
+    console.log(quizText);
+
+    var questPgFinish = "PgFinish_" + quizText;
+    var questRT = "PgRT_" + quizText;
+    var qnTime = Math.round(performance.now());
+    var qnRT = qnTime - this.state.qnTime;
+    survey.setValue(questPgFinish, qnTime);
+    survey.setValue(questRT, qnRT);
 
     var qnEnd = Math.round(performance.now());
     var prolificID = this.state.prolificID;
     survey.setValue("prolificID", prolificID);
-    survey.setValue("condition", this.state.condition);
+    survey.setValue("sessionID", this.state.sessionID);
     survey.setValue("userID", this.state.userID);
     survey.setValue("date", this.state.date);
     survey.setValue("startTime", this.state.startTime);
@@ -132,6 +139,8 @@ class Questionnaires extends React.Component {
     } else {
       quizText = this.state.quizLabel[page - 2];
     }
+
+    console.log(quizText);
 
     var questPgFinish = "PgFinish_" + quizText;
     var questRT = "PgRT_" + quizText;
@@ -221,7 +230,7 @@ class Questionnaires extends React.Component {
 
   render() {
     let text;
-    if (this.state.debug === false) {
+    if (this.state.skip === false) {
       if (
         this.state.instructScreen === true &&
         this.state.questScreen === false
@@ -294,7 +303,7 @@ class Questionnaires extends React.Component {
           </div>
         );
       }
-    } else if (this.state.debug === true) {
+    } else if (this.state.skip === true) {
       text = (
         <div className={style.bg}>
           <div className={style.textFrame}>

@@ -6,6 +6,8 @@ import withRouter from "./withRouter";
 
 import { json } from "./consent/consentFull.js";
 
+///////////////////////////////////////////////////////////////////
+
 class StartPage extends React.Component {
   constructor(props) {
     super(props);

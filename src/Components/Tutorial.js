@@ -25,6 +25,9 @@ import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus15.wav";
 // 5) Quiz on instructions
 // 6) If quiz fail once, bring to instructions ver 2 if fail twice, bring to the start of instructions
 
+var debug = false;
+var skip = false;
+
 class Tutorial extends React.Component {
   //////////////////////////////////////////////////////////////////////////////////////////////
   // CONSTRUCTOR
@@ -33,25 +36,24 @@ class Tutorial extends React.Component {
 
     var sectionTime = Math.round(performance.now());
 
-    //when deug
-    const userID = 100;
-    const prolificID = 100;
-    const sessionID = 100;
-    const date = 100;
-    const startTime = 100;
-    const volume = 80;
-    const volumeFullAver = 10;
+    if (debug === true) {
+      var userID = 1000;
+      var prolificID = 1000;
+      var sessionID = 1000;
+      var date = 1000;
+      var startTime = 1000;
+      var volume = 80;
+    } else {
+      const userID = this.props.state.userID;
+      const prolificID = this.props.state.prolificID;
+      const sessionID = this.props.state.sessionID;
+      const date = this.props.state.date;
+      const startTime = this.props.state.startTime;
+      const volume = this.props.state.volume;
+    }
 
-    // const userID = this.props.state.userID;
-    //const prolificID = this.props.state.prolificID;
-    //const sessionID = this.props.state.sessionID;
-    // const date = this.props.state.date;
-    //const startTime = this.props.state.startTime;
-    //const volumme = this.props.state.volume;
-    //const volumeFullAver = this.props.state.volumeFullAver;
-
-    var trialNumTotal1 = 2; // first tutorial, learn to chose one stimuli
-    var trialNumTotal2 = 12; // second tutorial, learn the switch
+    var trialNumTotal1 = 6; // first tutorial, learn to chose one stimuli
+    var trialNumTotal2 = 18; // second tutorial, learn the switch
 
     //the stim position
     var pracStimPos1 = Array(Math.round(trialNumTotal1 / 2))
@@ -110,7 +112,7 @@ class Tutorial extends React.Component {
       neuSound: neuSound,
 
       volume: volume,
-      volumeFullAver: volumeFullAver,
+      // volumeFullAver: volumeFullAver,
 
       //trial parameters
       tutorial: 1, // first or second tutorial
@@ -165,7 +167,8 @@ class Tutorial extends React.Component {
       instructNum: 1, //start from 1
       taskScreen: false,
       taskSection: null,
-      debug: false,
+      debug: debug,
+      skip: skip,
     };
 
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -1438,18 +1441,18 @@ class Tutorial extends React.Component {
       quizCorTotal: this.state.quizCorTotal,
     };
 
-    //    try {
-    //      fetch(`${DATABASE_URL}/tut_quiz/` + userID, {
-    //        method: "POST",
-    //       headers: {
-    //         Accept: "application/json",
-    //          "Content-Type": "application/json",
-    //        },
-    //        body: JSON.stringify(saveString),
-    //      });
-    //   } catch (e) {
-    console.log("Cant post?");
-    //   }
+    try {
+      fetch(`${DATABASE_URL}/tut_quiz/` + userID, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(saveString),
+      });
+    } catch (e) {
+      console.log("Cant post?");
+    }
 
     setTimeout(
       function () {
@@ -1476,7 +1479,6 @@ class Tutorial extends React.Component {
         sessionID: this.state.sessionID,
         date: this.state.date,
         startTime: this.state.startTime,
-        stimPic: this.state.stimPic,
         volume: this.state.volume,
       },
     });
@@ -1508,7 +1510,7 @@ class Tutorial extends React.Component {
   ///////////////////////////////////////////////////////////////
   render() {
     let text;
-    if (this.state.debug === false) {
+    if (this.state.skip === false) {
       if (
         this.state.instructScreen === true &&
         this.state.taskScreen === false
@@ -1642,7 +1644,7 @@ class Tutorial extends React.Component {
           </div>
         );
       }
-    } else if (this.state.debug === true) {
+    } else if (this.state.skip === true) {
       document.addEventListener("keyup", this._handleDebugKey);
       text = (
         <div>

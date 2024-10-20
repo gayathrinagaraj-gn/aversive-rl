@@ -20,6 +20,9 @@ import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus15.wav";
 // THIS CODES THE TASK
 // n=120 trials, break every 40 trials?
 
+var debug = false;
+var skip = false;
+
 class Task extends React.Component {
   //////////////////////////////////////////////////////////////////////////////////////////////
   // CONSTRUCTOR
@@ -28,23 +31,24 @@ class Task extends React.Component {
 
     var sectionTime = Math.round(performance.now());
 
-    //when deug
-    const userID = 100;
-    const prolificID = 100;
-    const sessionID = 100;
-    const date = 100;
-    const startTime = 100;
-    const volume = 80;
+    if (debug === true) {
+      var userID = 1000;
+      var prolificID = 1000;
+      var sessionID = 1000;
+      var date = 1000;
+      var startTime = 1000;
+      var volume = 80;
+    } else {
+      const userID = this.props.state.userID;
+      const prolificID = this.props.state.prolificID;
+      const sessionID = this.props.state.sessionID;
+      const date = this.props.state.date;
+      const startTime = this.props.state.startTime;
+      const volume = this.props.state.volume;
+    }
 
-    // const userID = this.props.state.userID;
-    //const prolificID = this.props.state.prolificID;
-    //const sessionID = this.props.state.sessionID;
-    // const date = this.props.state.date;
-    //const startTime = this.props.state.startTime;
-    // const stimPic = this.props.state.stimPic;
-    //const volume = this.props.state.volume;
-
-    var trialNumTotal = 12;
+    //total should be 120
+    var trialNumTotal = 120;
     var blockNumTotal = 3;
     var trialNumPerBlock = Math.round(trialNumTotal / blockNumTotal);
 
@@ -128,7 +132,8 @@ class Task extends React.Component {
       instructNum: 1, //start from 1
       taskScreen: false,
       taskSection: null,
-      debug: false,
+      debug: debug,
+      skip: skip,
     };
 
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -1019,7 +1024,7 @@ class Task extends React.Component {
   ///////////////////////////////////////////////////////////////
   render() {
     let text;
-    if (this.state.debug === false) {
+    if (this.state.skip === false) {
       if (
         this.state.instructScreen === true &&
         this.state.taskScreen === false
@@ -1139,7 +1144,7 @@ class Task extends React.Component {
             <DrawFix />
           </div>
         );
-      } else if (this.state.debug === true) {
+      } else if (this.state.skip === true) {
         document.addEventListener("keyup", this._handleDebugKey);
         text = (
           <div>

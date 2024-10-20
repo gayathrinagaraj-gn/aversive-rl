@@ -1,9 +1,7 @@
 import React from "react";
 import withRouter from "./withRouter.js";
-
 import averSound from "./sounds/task/morriss_scream_1000.wav";
 import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus15.wav";
-
 import * as RatingSlider from "./sliders/RatingSlider2.js";
 import * as utils from "./utils.js";
 import style from "./style/taskStyle.module.css";
@@ -11,9 +9,12 @@ import PlayButton from "./PlayButton";
 import { DATABASE_URL } from "./config";
 
 /////// REACT
+
+var debug = false;
+var skip = false;
+
 // This version, I change the calibration
 // They have to rate aver and avoid sounds TWO times at least, the second rating is where we base the calibration
-
 var varPlayColour = ["#d02f33", "#cd5a7e"];
 
 // this is the main sound array
@@ -42,28 +43,25 @@ class SoundCal extends React.Component {
   constructor(props) {
     super(props);
 
-    /*   const userID = this.props.state.userID;
-    const prolificID = this.props.state.prolificID;
-    const sessionID = this.props.state.sessionID;
-    const date = this.props.state.date;
-    const startTime = this.props.state.startTime;
-    const volume = this.props.state.volume;
-    const volumeNotLog = this.props.state.volumeNotLog;
-*/
-
-    var userID = 1000;
-    var prolificID = 1000;
-    var sessionID = 1000;
-    var date = 1000;
-    var startTime = 1000;
-    var volume = 80;
-    var volumeNotLog = 39;
+    if (debug === true) {
+      var userID = 1000;
+      var prolificID = 1000;
+      var sessionID = 1000;
+      var date = 1000;
+      var startTime = 1000;
+      var volume = 80;
+      var volumeNotLog = 39;
+    } else {
+      const userID = this.props.state.userID;
+      const prolificID = this.props.state.prolificID;
+      const sessionID = this.props.state.sessionID;
+      const date = this.props.state.date;
+      const startTime = this.props.state.startTime;
+      const volume = this.props.state.volume;
+      const volumeNotLog = this.props.state.volumeNotLog;
+    }
 
     var averRatingDef = utils.randomArray(qnNumTotal, 35, 65);
-
-    // keys for the slider
-    var sliderKey = Array.from(Array(qnNumTotal).keys());
-
     var qnTime = Math.round(performance.now());
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -83,7 +81,6 @@ class SoundCal extends React.Component {
 
       //arrays
       sounds: soundArray,
-      sliderKey: sliderKey,
       varPlayColour: varPlayColour,
 
       //by trial variables
@@ -99,8 +96,8 @@ class SoundCal extends React.Component {
       volumeDef: volume,
       volumeNotLogDef: volumeNotLog,
 
-      volumeFullAver: 0,
-      volumeNotLogFullAver: 0,
+      //    volumeFullAver: 0,
+      //  volumeNotLogFullAver: 0,
 
       volumePer: 1, //this is wrt to the chosen volume
       soundIndex: 0,
@@ -114,14 +111,16 @@ class SoundCal extends React.Component {
       btnDisNext: true,
 
       // these are the markers for the staircase
-      fullAverRating: 0,
+      //    fullAverRating: 0,
 
-      debug: false,
+      debug: debug,
+      skip: skip,
     };
 
     this.handleInstructionsLocal = this.handleInstructionsLocal.bind(this);
     this.togglePlaying = this.togglePlaying.bind(this);
     this.handleDebugKeyLocal = this.handleDebugKeyLocal.bind(this);
+
     /* prevents page from going down when space bar is hit .*/
     window.addEventListener("keydown", function (e) {
       if (e.keyCode === 32 && e.target === document.body) {
@@ -400,9 +399,9 @@ class SoundCal extends React.Component {
 
   updateRate() {
     this.setState({
-      fullAverRating: Number(this.state.averRating),
-      volumeFullAver: Number(this.state.volume),
-      volumeNotLogFullAver: Number(this.state.volumeNotLog),
+      //  fullAverRating: Number(this.state.averRating),
+      //   volumeFullAver: Number(this.state.volume),
+      //   volumeNotLogFullAver: Number(this.state.volumeNotLog),
     });
     setTimeout(
       function () {
@@ -501,7 +500,7 @@ class SoundCal extends React.Component {
         date: this.state.date,
         startTime: this.state.startTime,
         volume: this.state.volume,
-        volumeFullAver: this.state.volumeFullAver,
+        //     volumeFullAver: this.state.volumeFullAver,
       },
     });
   }
@@ -511,7 +510,7 @@ class SoundCal extends React.Component {
   ////////////////////////////////////////////////////////////////////////////////
   render() {
     let text;
-    if (this.state.debug === false) {
+    if (this.state.skip === false) {
       if (this.state.quizScreen === false) {
         this.useEffect();
         if (this.state.currentInstructionText === 1) {
@@ -621,7 +620,7 @@ class SoundCal extends React.Component {
 
         text = <div>{this.ratingTask(this.state.qnNum)}</div>;
       }
-    } else if (this.state.debug === true) {
+    } else if (this.state.skip === true) {
       document.addEventListener("keyup", this._handleDebugKey);
       text = (
         <div>
