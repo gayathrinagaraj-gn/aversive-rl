@@ -25,8 +25,8 @@ class StartPage extends React.Component {
     // Random ID number in case this is necessary
     var userID = Math.floor(100000 + Math.random() * 900000);
 
-    const prolificID = this.props.state.prolificID;
-    const sessionID = this.props.state.sessionID;
+    var prolificID = this.props.state.prolificID;
+    var sessionID = this.props.state.sessionID;
 
     // Set state
     this.state = {

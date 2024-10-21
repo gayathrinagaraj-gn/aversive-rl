@@ -61,25 +61,25 @@ class HeadphoneCheck extends React.Component {
   constructor(props) {
     super(props);
 
-    if (debug === true) {
-      var userID = 1000;
-      var prolificID = 1000;
-      var sessionID = 1000;
-      var date = 1000;
-      var startTime = 1000;
-    } else {
-      const userID = this.props.state.userID;
-      const prolificID = this.props.state.prolificID;
-      const sessionID = this.props.state.sessionID;
-      const date = this.props.state.date;
-      const startTime = this.props.state.startTime;
-    }
+    var userID;
+    var prolificID;
+    var sessionID;
+    var date;
+    var startTime;
 
-    var userID = 1000;
-    var prolificID = 1000;
-    var sessionID = 1000;
-    var date = 1000;
-    var startTime = 1000;
+    if (debug === true) {
+      userID = 1000;
+      prolificID = 1000;
+      sessionID = 1000;
+      date = 1000;
+      startTime = 1000;
+    } else {
+      userID = this.props.state.userID;
+      prolificID = this.props.state.prolificID;
+      sessionID = this.props.state.sessionID;
+      date = this.props.state.date;
+      startTime = this.props.state.startTime;
+    }
 
     var currTime = Math.round(performance.now());
     var volNtLog = 80;
@@ -675,6 +675,9 @@ class HeadphoneCheck extends React.Component {
       this.state.prolificID +
       "?SESSION_ID=" +
       this.state.sessionID;
+
+    console.log("Send volume? " + this.state.volume);
+    console.log("Url? " + condUrl);
 
     this.props.navigate(condUrl, {
       state: {

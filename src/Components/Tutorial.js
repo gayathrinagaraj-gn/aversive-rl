@@ -11,8 +11,8 @@ import stim2 from "./fractals/bandit31.png";
 
 import fbPic from "./fractals/audio-sound.png";
 
-import averSound from "./sounds/task/morriss_scream_1000.wav";
-import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus15.wav";
+import averSound from "./sounds/task/morriss_scream_1000minus10.wav";
+import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus20.wav";
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,20 +36,27 @@ class Tutorial extends React.Component {
 
     var sectionTime = Math.round(performance.now());
 
+    var userID;
+    var prolificID;
+    var sessionID;
+    var date;
+    var startTime;
+    var volume;
+
     if (debug === true) {
-      var userID = 1000;
-      var prolificID = 1000;
-      var sessionID = 1000;
-      var date = 1000;
-      var startTime = 1000;
-      var volume = 80;
+      userID = 1000;
+      prolificID = 1000;
+      sessionID = 1000;
+      date = 1000;
+      startTime = 1000;
+      volume = 80;
     } else {
-      const userID = this.props.state.userID;
-      const prolificID = this.props.state.prolificID;
-      const sessionID = this.props.state.sessionID;
-      const date = this.props.state.date;
-      const startTime = this.props.state.startTime;
-      const volume = this.props.state.volume;
+      userID = this.props.state.userID;
+      prolificID = this.props.state.prolificID;
+      sessionID = this.props.state.sessionID;
+      date = this.props.state.date;
+      startTime = this.props.state.startTime;
+      volume = this.props.state.volume;
     }
 
     var trialNumTotal1 = 6; // first tutorial, learn to chose one stimuli
@@ -104,7 +111,7 @@ class Tutorial extends React.Component {
       fixTimeLag: 500, // the very first fixation
       // stimTimeLag: 1500, // there is no fixed time for stim
       respFbTimeLag: 500, //
-      postRespTimeLag: [500, 600, 700], // post choice fixation jitter
+      postRespTimeLag: [300, 350, 400], // post choice fixation jitter
       fbTimeLag: 1250, // how long the sound is played
       itiTimeLag: [250, 350, 450], // this adds to the first fixation, iti jitter
 
@@ -1269,9 +1276,39 @@ class Tutorial extends React.Component {
 
     setTimeout(
       function () {
-        this.renderCorFb();
+        this.renderSound();
       }.bind(this),
       postRespTimeLag2
+    );
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  // render sound first because otherwise it lags
+
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  renderSound() {
+    var soundPlay = this.state.soundPlay;
+    if (soundPlay === 1) {
+      this.neuSound.load();
+      this.neuSound.play();
+    } else if (soundPlay === 2) {
+      this.averSound.load();
+      this.averSound.play();
+    } else {
+      console.log("no sound?");
+    }
+
+    this.setState({
+      instructScreen: false,
+      taskScreen: true,
+      taskSection: "postChoiceJitter",
+    });
+
+    setTimeout(
+      function () {
+        this.renderCorFb();
+      }.bind(this),
+      1000
     );
   }
 
@@ -1285,17 +1322,6 @@ class Tutorial extends React.Component {
           this.state.respTime +
           this.state.respFbTime,
       ];
-
-    var soundPlay = this.state.soundPlay;
-    if (soundPlay === 1) {
-      this.neuSound.load();
-      this.neuSound.play();
-    } else if (soundPlay === 2) {
-      this.averSound.load();
-      this.averSound.play();
-    } else {
-      console.log("no sound?");
-    }
 
     this.setState({
       instructScreen: false,
@@ -1385,10 +1411,12 @@ class Tutorial extends React.Component {
       fixTime: this.state.fixTime,
       stimPos: this.state.stimPos,
       stimCond: this.state.stimCond,
+      contingency: this.state.contingency,
       responseKey: this.state.responseKey,
       respTime: this.state.respTime,
       respFbTime: this.state.respFbTime,
       postRespTime: this.state.postRespTime,
+      soundPlay: this.state.soundPlay,
       fbTime: this.state.fbTime,
       itiTime: this.state.itiTime,
       choice: this.state.choice,
@@ -1548,25 +1576,30 @@ class Tutorial extends React.Component {
         text = (
           <div>
             <span className={style.frame}>
-              <center>
-                <img
-                  src={this.state.stimPic[this.state.stimPicPosition1]}
-                  className={style.stimLeft}
-                  alt="stim1"
-                />
-                <img
-                  src={this.state.stimPic[this.state.stimPicPosition2]}
-                  className={style.stimRight}
-                  alt="stim2"
-                />
-              </center>
-            </span>
-            <span className={style.textSmall}>
-              <center>
-                Press W for left choice.
-                <br />
-                Press O for right choice.
-              </center>
+              <span className={style.centerScreen}>
+                <center>
+                  <br />
+                  <img
+                    src={this.state.stimPic[this.state.stimPicPosition1]}
+                    className={style.stimLeft}
+                    alt="stim1"
+                  />
+                  <img
+                    src={this.state.stimPic[this.state.stimPicPosition2]}
+                    className={style.stimRight}
+                    alt="stim2"
+                  />
+                </center>
+              </span>
+              <span className={style.lowerScreen}>
+                <span className={style.textSmall}>
+                  <center>
+                    Press W for left choice.
+                    <br />
+                    Press O for right choice.
+                  </center>
+                </span>
+              </span>
             </span>
           </div>
         );
@@ -1580,18 +1613,21 @@ class Tutorial extends React.Component {
         text = (
           <div>
             <span className={style.frame}>
-              <center>
-                <img
-                  src={this.state.stimPic[this.state.stimPicPosition1]}
-                  className={stimPicChosen1}
-                  alt="stim1"
-                />
-                <img
-                  src={this.state.stimPic[this.state.stimPicPosition2]}
-                  className={stimPicChosen2}
-                  alt="stim2"
-                />
-              </center>
+              <span className={style.centerScreen}>
+                <center>
+                  <br />
+                  <img
+                    src={this.state.stimPic[this.state.stimPicPosition1]}
+                    className={stimPicChosen1}
+                    alt="stim1"
+                  />
+                  <img
+                    src={this.state.stimPic[this.state.stimPicPosition2]}
+                    className={stimPicChosen2}
+                    alt="stim2"
+                  />
+                </center>
+              </span>
             </span>
           </div>
         );
@@ -1614,9 +1650,12 @@ class Tutorial extends React.Component {
         text = (
           <div>
             <span className={style.frame}>
-              <center>
-                <img src={this.state.fbPic} className={fbCss} alt="fbsound" />
-              </center>
+              <span className={style.centerScreen}>
+                <center>
+                  <br />
+                  <img src={this.state.fbPic} className={fbCss} alt="fbsound" />
+                </center>
+              </span>
             </span>
           </div>
         );

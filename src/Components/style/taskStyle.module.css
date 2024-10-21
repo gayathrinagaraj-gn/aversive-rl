@@ -122,6 +122,22 @@ img.incorrect {
   padding-bottom: 100px;
 }
 
+.centerScreen {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}
+
+.lowerScreen {
+  position: absolute;
+  top: 65%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}
+
 .textFrame {
   position: relative;
   background-color: #d3d3d3;

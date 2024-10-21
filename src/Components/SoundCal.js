@@ -1,13 +1,13 @@
 import React from "react";
 import withRouter from "./withRouter.js";
-import averSound from "./sounds/task/morriss_scream_1000.wav";
-import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus15.wav";
 import * as RatingSlider from "./sliders/RatingSlider2.js";
 import * as utils from "./utils.js";
 import style from "./style/taskStyle.module.css";
 import PlayButton from "./PlayButton";
 import { DATABASE_URL } from "./config";
 
+import averSound from "./sounds/task/morriss_scream_1000minus15.wav";
+import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus20.wav";
 /////// REACT
 
 var debug = false;
@@ -43,23 +43,33 @@ class SoundCal extends React.Component {
   constructor(props) {
     super(props);
 
+    var userID;
+    var prolificID;
+    var sessionID;
+    var date;
+    var startTime;
+    var volume;
+    var volumeNotLog;
+
     if (debug === true) {
-      var userID = 1000;
-      var prolificID = 1000;
-      var sessionID = 1000;
-      var date = 1000;
-      var startTime = 1000;
-      var volume = 80;
-      var volumeNotLog = 39;
+      userID = 1000;
+      prolificID = 1000;
+      sessionID = 1000;
+      date = 1000;
+      startTime = 1000;
+      volume = 80;
+      volumeNotLog = 39;
     } else {
-      const userID = this.props.state.userID;
-      const prolificID = this.props.state.prolificID;
-      const sessionID = this.props.state.sessionID;
-      const date = this.props.state.date;
-      const startTime = this.props.state.startTime;
-      const volume = this.props.state.volume;
-      const volumeNotLog = this.props.state.volumeNotLog;
+      userID = this.props.state.userID;
+      prolificID = this.props.state.prolificID;
+      sessionID = this.props.state.sessionID;
+      date = this.props.state.date;
+      startTime = this.props.state.startTime;
+      volume = this.props.state.volume;
+      volumeNotLog = this.props.state.volumeNotLog;
     }
+
+    console.log("Port over volume? " + volume);
 
     var averRatingDef = utils.randomArray(qnNumTotal, 35, 65);
     var qnTime = Math.round(performance.now());

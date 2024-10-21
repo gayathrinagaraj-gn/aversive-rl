@@ -11,14 +11,15 @@ class Home extends React.Component {
     super(props);
 
     // ID number - either set or get from url
-
+    var prolific_id;
+    var session_id;
     if (debug === true) {
-      var prolific_id = 1000;
-      var session_id = 1000;
+      prolific_id = Math.floor(100000 + Math.random() * 900000);
+      session_id = Math.floor(100000 + Math.random() * 900000);
     } else {
-      const queryParams = new URLSearchParams(window.location.search);
-      const prolific_id = queryParams.get("PROLIFIC_PID");
-      const session_id = queryParams.get("SESSION_ID");
+      var queryParams = new URLSearchParams(window.location.search);
+      prolific_id = queryParams.get("PROLIFIC_PID");
+      session_id = queryParams.get("SESSION_ID");
       // console.log("PID: " + prolific_id); //pizza
       // console.log("SID: " + session_id); //pizza
     }

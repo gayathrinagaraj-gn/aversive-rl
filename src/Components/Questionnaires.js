@@ -20,18 +20,24 @@ class Questionnaires extends React.Component {
   constructor(props) {
     super(props);
 
+    var userID;
+    var prolificID;
+    var sessionID;
+    var date;
+    var startTime;
+
     if (debug === true) {
-      var userID = 1000;
-      var prolificID = 1000;
-      var sessionID = 1000;
-      var date = 1000;
-      var startTime = 1000;
+      userID = 1000;
+      prolificID = 1000;
+      sessionID = 1000;
+      date = 1000;
+      startTime = 1000;
     } else {
-      const userID = this.props.state.userID;
-      const prolificID = this.props.state.prolificID;
-      const sessionID = this.props.state.sessionID;
-      const date = this.props.state.date;
-      const startTime = this.props.state.startTime;
+      userID = this.props.state.userID;
+      prolificID = this.props.state.prolificID;
+      sessionID = this.props.state.sessionID;
+      date = this.props.state.date;
+      startTime = this.props.state.startTime;
     }
 
     var sectionTime = Math.round(performance.now());
