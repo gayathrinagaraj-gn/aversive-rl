@@ -6,10 +6,9 @@ import withRouter from "./withRouter.js";
 
 import { DATABASE_URL } from "./config.js";
 
-import stim1 from "./fractals/bandit04.png";
-import stim2 from "./fractals/bandit24.png";
-import stim3 from "./fractals/bandit26.png";
-import stim4 from "./fractals/bandit27.png";
+import stim1 from "./fractals/bandit30.png";
+import stim2 from "./fractals/bandit31.png";
+
 import fbPic from "./fractals/audio-sound.png";
 
 import averSound from "./sounds/task/morriss_scream_1000minus10.wav";
@@ -17,13 +16,19 @@ import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus20.wav";
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
-// THIS CODES THE TASK
-// n=120 trials, break every 40 trials?
+// THIS CODES THE TUTORIAL SESSION + QUIZ FOR THE TASK
+// Session includes:
+// 1) Introduction to task
+// 2) Practice on left/right box with feedback
+// 3) Instructions to the change in contigencies
+// 4) Longer practice
+// 5) Quiz on instructions
+// 6) If quiz fail once, bring to instructions ver 2 if fail twice, bring to the start of instructions
 
-var debug = false;
+var debug = true;
 var skip = false;
 
-class Task extends React.Component {
+class Tutorial extends React.Component {
   //////////////////////////////////////////////////////////////////////////////////////////////
   // CONSTRUCTOR
   constructor(props) {
@@ -54,21 +59,38 @@ class Task extends React.Component {
       volume = this.props.state.volume;
     }
 
-    //total should be 120
-    var trialNumTotal = 120;
-    var blockNumTotal = 3;
-    var trialNumPerBlock = Math.round(trialNumTotal / blockNumTotal);
+    var trialNumTotal1 = 6; // first tutorial, learn to chose one stimuli
+    var trialNumTotal2 = 18; // second tutorial, learn the switch
 
     //the stim position
-    var taskStimPos = Array(Math.round(trialNumTotal / 2))
+    var pracStimPos1 = Array(Math.round(trialNumTotal1 / 2))
       .fill(1)
-      .concat(Array(Math.round(trialNumTotal / 2)).fill(2));
-    utils.shuffle(taskStimPos);
+      .concat(Array(Math.round(trialNumTotal1 / 2)).fill(2));
+    utils.shuffle(pracStimPos1);
 
-    var stimPic = [stim1, stim2, stim3, stim4];
+    var pracStimPos2 = Array(Math.round(trialNumTotal2 / 2))
+      .fill(1)
+      .concat(Array(Math.round(trialNumTotal2 / 2)).fill(2));
+    utils.shuffle(pracStimPos2);
+
+    //trial conditions
+    // code 1 for 80/20 for one config, then code 2 for 20/80 config
+    var pracStimCond1 = Array(Math.round(trialNumTotal1)).fill(1);
+    var pracStimCond2 = Array(Math.round(trialNumTotal2 / 2))
+      .fill(1)
+      .concat(Array(Math.round(trialNumTotal2 / 2)).fill(2));
+
+    console.log(pracStimPos1);
+    console.log(pracStimPos2);
+    console.log(pracStimCond1);
+    console.log(pracStimCond2);
+
+    var stimPic = [stim1, stim2];
     utils.shuffle(stimPic);
-
-    //cond is determined by number of corrects - inside the code
+    // so if cond is == 1, and stim pos is 1, the correct answer is left
+    // so if cond is == 1, and stim pos is 2, the correct answer is right
+    // so if cond is == 2, and stim pos is 1, the correct answer is right
+    // so if cond is == 2, and stim pos is 2, the correct answer is left
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,11 +105,11 @@ class Task extends React.Component {
 
       //section paramters
       sectionTime: sectionTime,
-      section: "task",
+      section: "tutorial",
 
       // trial timings in ms
       fixTimeLag: 500, // the very first fixation
-      stimTimeLag: 1500, // there is no fixed time for stim
+      // stimTimeLag: 1500, // there is no fixed time for stim
       respFbTimeLag: 500, //
       postRespTimeLag: [300, 350, 400], // post choice fixation jitter
       fbTimeLag: 1250, // how long the sound is played
@@ -95,13 +117,20 @@ class Task extends React.Component {
 
       averSound: averSound,
       neuSound: neuSound,
+
       volume: volume,
+      // volumeFullAver: volumeFullAver,
 
       //trial parameters
-      trialNumTotal: trialNumTotal,
-      blockNumTotal: blockNumTotal,
-      trialNumPerBlock: trialNumPerBlock,
-      stimPosList: taskStimPos,
+      tutorial: 1, // first or second tutorial
+      trialNumTotal1: trialNumTotal1,
+      stimPosList1: pracStimPos1,
+      stimCondList1: pracStimCond1,
+      trialNumTotal2: trialNumTotal2,
+      stimPosList2: pracStimPos2,
+      stimCondList2: pracStimCond2,
+      trialNumTotal: null,
+      stimPosList: null,
       stimCondList: null,
 
       respKeyCode: [87, 79], // for left and right choice keys, currently it is W and O
@@ -112,9 +141,9 @@ class Task extends React.Component {
 
       //trial by trial paramters
       trialNum: 0,
-      trialinBlockNum: 0,
       trialTime: 0,
       fixTime: 0,
+      //stimTime: 0,
       stimPos: 0,
       stimCond: 0,
       responseKey: 0,
@@ -123,16 +152,22 @@ class Task extends React.Component {
       postRespTime: 0,
       fbTime: 0,
       itiTime: 0,
-      continSwap: 0,
-      whenSwap: null,
 
       choice: null,
       correct: null,
       correctMat: [], //put correct in vector, to cal perf %
-      correctMatReset: [], // resets with every swap
       correctPer: 0,
-      contingency: 0.8,
+      contingency: 0.9,
       soundPlay: null,
+
+      //quiz paramters
+      quizTry: 1,
+      quizNumTotal: 3,
+      quizNum: 0,
+      quizPressed: null,
+      quizCor: null,
+      quizCorTotal: null,
+      quizAns: [2, 2, 3],
 
       // screen parameters
       instructScreen: true,
@@ -157,10 +192,13 @@ class Task extends React.Component {
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     this.handleDebugKey = this.handleDebugKey.bind(this);
-    //this.handleInstruct = this.handleInstruct.bind(this);
+    this.handleInstruct = this.handleInstruct.bind(this);
     this.handleBegin = this.handleBegin.bind(this);
     this.handleResp = this.handleResp.bind(this);
+    this.handleQuizResp = this.handleQuizResp.bind(this);
     this.instructText = this.instructText.bind(this);
+    this.quizText = this.quizText.bind(this);
+
     this.averSound = new Audio(this.state.averSound);
     this.neuSound = new Audio(this.state.neuSound);
 
@@ -199,7 +237,7 @@ class Task extends React.Component {
       default:
     }
   };
-  /* 
+
   // This handles instruction screen within the component USING KEYBOARD
   handleInstruct(keyPressed) {
     var curInstructNum = this.state.instructNum;
@@ -230,40 +268,45 @@ class Task extends React.Component {
     ) {
       this.setState({ instructNum: curInstructNum - 1 });
     }
-  } */
+  }
 
   handleBegin(keyPressed) {
     var curInstructNum = this.state.instructNum;
     var whichButton = keyPressed;
-
-    if (whichButton === 3 && curInstructNum === 1) {
-      var whenSwap = utils.randomInt(6, 10);
-      console.log("whenSwap: " + whenSwap);
-
+    if (whichButton === 3 && curInstructNum === 5) {
       this.setState({
+        tutorial: 1,
         trialNum: 1,
-        trialinBlockNum: 1,
         correctMat: [], //put correct in vector, to cal perf %
-        correctMatReset: [],
-        whenSwap: whenSwap,
       });
       setTimeout(
         function () {
-          this.taskBegin();
+          this.tutorBegin();
         }.bind(this),
         0
       );
-    } else if (whichButton === 3 && curInstructNum === 2) {
+    } else if (whichButton === 3 && curInstructNum === 8) {
+      //11
       this.setState({
-        trialinBlockNum: 1,
+        tutorial: 2,
+        trialNum: 1,
+        correctMat: [], //put correct in vector, to cal perf %
       });
       setTimeout(
         function () {
-          this.breakEnd();
+          this.tutorBegin();
         }.bind(this),
         0
       );
-    } else if (whichButton === 3 && curInstructNum === 3) {
+    } else if (whichButton === 3 && curInstructNum === 9) {
+      //11
+      setTimeout(
+        function () {
+          this.quizBegin();
+        }.bind(this),
+        0
+      );
+    } else if (whichButton === 3 && curInstructNum === 10) {
       //12
       setTimeout(
         function () {
@@ -294,13 +337,13 @@ class Task extends React.Component {
       stimPicChosen2 = style.stimRightNotChosen;
       if (stimPos === 1 && stimCond === 1) {
         correct = 1;
-        //  fbCss = style.correct;
+        fbCss = style.correct;
       } else if (stimPos === 2 && stimCond === 2) {
         correct = 1;
-        //  fbCss = style.correct;
+        fbCss = style.correct;
       } else {
         correct = 0;
-        //  fbCss = style.incorrect;
+        fbCss = style.incorrect;
       }
     } else if (keyPressed === 2) {
       choice = "right";
@@ -308,21 +351,24 @@ class Task extends React.Component {
       stimPicChosen2 = style.stimRightChosen;
       if (stimPos === 2 && stimCond === 1) {
         correct = 1;
-        //  fbCss = style.correct;
+        fbCss = style.correct;
       } else if (stimPos === 1 && stimCond === 2) {
         correct = 1;
-        //  fbCss = style.correct;
+        fbCss = style.correct;
       } else {
         correct = 0;
-        // fbCss = style.incorrect;
+        fbCss = style.incorrect;
       }
     } else {
       choice = null;
       correct = null;
-      //  fbCss = style.nofb;
+      fbCss = style.nfb;
     }
 
-    var fbCss = style.nofb;
+    console.log(choice + " choice!");
+    console.log(stimPos + " stimPos!");
+    console.log(stimCond + " stimCond!");
+    console.log(correct + " correct!");
 
     if (correct === 1) {
       //if it is correct, then it is the less aversive noise
@@ -341,20 +387,18 @@ class Task extends React.Component {
       soundPlay = null;
     }
 
+    console.log(soundPlay + " soundPlay!");
+
     //  console.log("response: " + response);
-    var correctMatReset = this.state.correctMatReset.concat(correct);
     var correctMat = this.state.correctMat.concat(correct);
     var correctPer =
       Math.round((utils.getAvg(correctMat) + Number.EPSILON) * 100) / 100; //2 dec pl
-
-    // determine if we switch stimCond here if 6-10 times have been won, and 3 consectuive correct responses, then stimCond swaps
 
     this.setState({
       responseKey: keyPressed,
       choice: choice,
       respTime: respTime,
       correct: correct,
-      correctMatReset: correctMatReset, // this one resets to determine the swaps
       correctMat: correctMat,
       correctPer: correctPer,
       stimPicChosen1: stimPicChosen1,
@@ -370,7 +414,52 @@ class Task extends React.Component {
       10
     );
   }
-  /* 
+
+  handleQuizResp(keyPressed, timePressed) {
+    var quizNum = this.state.quizNum;
+    var whichButton = keyPressed;
+
+    var quizTime = timePressed - this.state.trialTime;
+
+    var quizCorTotal = this.state.quizCorTotal;
+    var quizCor;
+
+    // calculate if quiz was correct or not
+    if (whichButton === this.state.quizAns[quizNum - 1]) {
+      quizCorTotal = quizCorTotal + 1;
+      quizCor = 1;
+      this.setState({
+        quizPressed: whichButton,
+        quizCor: quizCor,
+        quizCorTotal: quizCorTotal,
+        quizTime: quizTime,
+      });
+    } else {
+      //if was incorrect
+      quizCor = 0;
+      this.setState({
+        quizPressed: whichButton,
+        quizCor: quizCor,
+        quizTime: quizTime,
+      });
+    }
+
+    //  console.log("Keypress: " + whichButton);
+    //  console.log("QuizTime: " + quizTime);
+    //  console.log("QuizNum: " + quizNum);
+    //  console.log("QuizCor: " + quizCor);
+    //  console.log("QuizCorTotal: " + quizCorTotal);
+    //  console.log("QuizAns: " + this.state.quizAns);
+    //  console.log("quizNumTotal: " + this.state.quizNumTotal);
+
+    setTimeout(
+      function () {
+        this.renderQuizSave();
+      }.bind(this),
+      0
+    );
+  }
+
   // handle key keyPressed
   _handleInstructKey = (event) => {
     var keyPressed;
@@ -389,7 +478,7 @@ class Task extends React.Component {
       default:
     }
   };
- */
+
   // handle key keyPressed
   _handleBeginKey = (event) => {
     var keyPressed;
@@ -410,7 +499,6 @@ class Task extends React.Component {
     var timePressed;
     var leftKey = this.state.respKeyCode[0];
     var rightKey = this.state.respKeyCode[1];
-    clearInterval(this.stopWatchID);
 
     switch (event.keyCode) {
       case leftKey:
@@ -429,42 +517,109 @@ class Task extends React.Component {
     }
   };
 
+  // handle key keyPressed
+  _handleQuizKey = (event) => {
+    var keyPressed;
+    var timePressed;
+
+    switch (event.keyCode) {
+      case 49:
+        keyPressed = 1;
+        timePressed = Math.round(performance.now());
+        this.handleQuizResp(keyPressed, timePressed);
+        break;
+      case 50:
+        keyPressed = 2;
+        timePressed = Math.round(performance.now());
+        this.handleQuizResp(keyPressed, timePressed);
+        break;
+      case 51:
+        keyPressed = 3;
+        timePressed = Math.round(performance.now());
+        this.handleQuizResp(keyPressed, timePressed);
+        break;
+      case 52:
+        keyPressed = 4;
+        timePressed = Math.round(performance.now());
+        this.handleQuizResp(keyPressed, timePressed);
+        break;
+      default:
+    }
+  };
+
   //////////////////////////////////////////////////////////////////////////////////////////////
   /// INSTRUCTION TEXT ////
 
   // To ask them for the valence rating of the noises
   // before we start the task
   instructText(instructNum) {
+    let text;
+    let text2;
+
+    //If fail quiz once, this brings me to instruct before confidence
+    if (this.state.quizTry === 2 && this.state.quizTry === 3) {
+      text2 = (
+        <span>
+          You scored {this.state.quizCorTotal}/{this.state.quizNumTotal} on the
+          quiz. Please read the instructions carefully.
+          <br />
+          <br />
+          Your task is to choose the fractal that more often leads to the more
+          pleasant sound.
+        </span>
+      );
+    }
+    //If fail quiz more than once, this brings me to the beginning of the instruct
+    else if (this.state.quizTry >= 4) {
+      text = (
+        <span>
+          You scored {this.state.quizCorTotal}/{this.state.quizNumTotal} on the
+          quiz. We will restart the tutorial from the beginning. Please read the
+          instructions carefully.
+          <br />
+          <br />
+        </span>
+      );
+
+      text2 = (
+        <span>
+          Well done!
+          <br />
+          <br />
+          You saw that choosing the fractal that more often leads to the more
+          pleasant sound was the correct answer.
+          <br />
+          <br />
+        </span>
+      );
+    }
+
     let instruct_text1 = (
       <div>
         <span>
+          {text}
           <br />
-          You are ready to begin the main task!
-          <br />
-          <br />
-          Remember: Your goal is to choose the fractal that leads you to the
-          more pleasant sound most of the time. Over time, there will be swaps
-          of the fractals and sounds, so you will have to keep track of their
-          relationship throughout the task.
-          <br />
-          <br />
-          This time, you will not be told whether you selected the correct
-          fractal or not.
-          <br />
-          <br />
-          You will have {this.state.trialNumTotal} chances to chose, split over{" "}
-          {this.state.blockNumTotal} blocks.
-          <br />
-          <br />
-          <strong>Press W</strong> to choose the fractal on the{" "}
-          <strong>left</strong>.
-          <br />
-          <strong>Press O</strong> to choose the fractal on the{" "}
-          <strong>right</strong>.
-          <br />
-          <br />
+          Welcome to the task! Today, we will be making choices between two
+          fractals.
           <center>
-            Press [<strong>SPACEBAR</strong>] to begin.
+            <img
+              src={this.state.stimPic[0]}
+              className={style.stim}
+              alt="stim1"
+            />
+            <img
+              src={this.state.stimPic[1]}
+              className={style.stim}
+              alt="stim2"
+            />
+          </center>
+          Your aim is to choose the fractal that more often leads to the more
+          pleasant sound.
+          <br /> <br />
+          <center>
+            Use the ← and → keys to navigate the pages.
+            <br />
+            <br />[<strong>→</strong>]
           </center>
         </span>
       </div>
@@ -473,12 +628,122 @@ class Task extends React.Component {
     let instruct_text2 = (
       <div>
         <span>
+          Choosing one of fractals will result in an unpleasant noise most of
+          the time.
+        </span>
+        <center>
+          <img
+            src={this.state.stimPic[0]}
+            className={style.stim}
+            alt="stim1"
+            onClick={() => {
+              this.averSound.load();
+              this.averSound.play();
+            }}
+          />
+        </center>
+        <span>
+          Click on the fractal to hear what sound it will give you most of the
+          time.
           <br />
-          Great job, you have completed {this.state.trialNum} out of{" "}
-          {this.state.trialNumTotal} choices.
+          <br />
+          <center>
+            [<strong>←</strong>] [<strong>→</strong>]
+          </center>
+        </span>
+      </div>
+    );
+
+    let instruct_text3 = (
+      <div>
+        <span>
+          Choosing the other fractal will result in a slightly more pleasant
+          noise most of the time.
+        </span>
+
+        <center>
+          <img
+            src={this.state.stimPic[1]}
+            className={style.stim}
+            alt="stim2"
+            onClick={() => {
+              this.neuSound.load();
+              this.neuSound.play();
+            }}
+          />{" "}
+        </center>
+        <span>
+          Click on the fractal to hear what sound it will give you most of the
+          time.
           <br />
           <br />
-          Remember:
+          <center>
+            [<strong>←</strong>] [<strong>→</strong>]
+          </center>
+        </span>
+      </div>
+    );
+
+    let instruct_text4 = (
+      <div>
+        <span>
+          You can select the fractal of your choice with a keypress.
+          <br />
+          <br />
+          If the fractal on the <strong>left</strong> leads to the more pleasant
+          noise more often, <strong>press W</strong>.
+          <br />
+          If the fractal on the <strong>right</strong> leads to the more
+          pleasant noise more often, <strong>press O</strong>.
+          <br />
+          <br />
+          Your selected fractal will be outlined in{" "}
+          <font color="#87C1FF">
+            <strong>light blue</strong>
+          </font>
+          .
+          <br />
+          <br />
+          Let&apos;s start with a practice. In this phase we will tell you
+          whether your choices are right or wrong.
+          <br />
+          <br />
+          If you are <strong>correct</strong>, the sound feedback will have its
+          outline turn{" "}
+          <font color="green">
+            <strong>green</strong>
+          </font>
+          .
+          <br />
+          <br />
+          If you are <strong>incorrect</strong>, the sound feedback will have
+          its outline turn{" "}
+          <font color="red">
+            <strong>red</strong>
+          </font>
+          .
+          <br />
+          <br />
+          <center>
+            [<strong>←</strong>] [<strong>→</strong>]
+          </center>
+        </span>
+      </div>
+    );
+
+    let instruct_text5 = (
+      <div>
+        <span>
+          You will have {this.state.trialNumTotal1} chances to choose the
+          fractal that most often leads to the more pleasant noise.
+          <br />
+          <br />
+          For every choice, you will be presented with a white cross in the
+          middle of the screen first before the fractals appear. After a short
+          delay, the sound will play.
+          <br />
+          <br />
+          As a reminder:
           <br />
           <br />
           <strong>Press W</strong> to choose the fractal on the{" "}
@@ -489,22 +754,151 @@ class Task extends React.Component {
           <br />
           <br />
           <center>
-            Press [<strong>SPACEBAR</strong>] to continue.
+            Press [<strong>SPACEBAR</strong>] to begin the practice.
+          </center>
+          <br />
+          <center>
+            [<strong>←</strong>]
           </center>
         </span>
       </div>
     );
 
-    let instruct_text3 = (
+    let instruct_text6 = (
       <div>
         <span>
+          {text2}
+          Now, we will introduce a new rule in this task. After some time, the
+          sounds that are more often associated to each fractal may swap.
           <br />
-          Well done! You have completed the task!
-          <br /> <br />
+          <br />
+          This means that this fractal that previously lead to the unpleasant
+          noise most of time now leads to the more pleasant sound.
+          <br />
           <center>
-            Press [<strong>SPACEBAR</strong>] to continue.
+            <img
+              src={this.state.stimPic[1]}
+              className={style.stim}
+              alt="stim1"
+              onClick={() => {
+                this.neuSound.load();
+                this.neuSound.play();
+              }}
+            />
+          </center>
+          Click on the fractal to hear what sound it will give you most of the
+          time after the swap.
+          <br />
+          <br />
+          <center>
+            [<strong>→</strong>]
+            <br />
+            <br />
+            <br />
+            <br />
+          </center>
+          <br />
+          <br />
+        </span>
+      </div>
+    );
+
+    let instruct_text7 = (
+      <div>
+        <span>
+          This means also that this fractal that previously lead to the more
+          pleasant noise most of time now leads to the unpleasant sound.
+          <br />
+          <center>
+            <img
+              src={this.state.stimPic[0]}
+              className={style.stim}
+              alt="stim2"
+              onClick={() => {
+                this.averSound.load();
+                this.averSound.play();
+              }}
+            />
+          </center>
+          Click on the fractal to hear what sound it will give you most of the
+          time after the swap.
+          <br />
+          <br />
+          <center>
+            [<strong>←</strong>] [<strong>→</strong>]
           </center>
         </span>
+      </div>
+    );
+
+    let instruct_text8 = (
+      <div>
+        <span>
+          This swap will occur at some point during the task, so you will have
+          to keep track of the relationship between the fractals and sounds.
+          <br />
+          <br />
+          Let's play a short practice with {this.state.trialNumTotal2} chances
+          to choose the fractals to demostrate how this would play out.
+          <br />
+          <br />
+          As a reminder:
+          <br />
+          <br />
+          <strong>Press W</strong> to choose the fractal on the{" "}
+          <strong>left</strong>.
+          <br />
+          <strong>Press O</strong> to choose the fractal on the{" "}
+          <strong>right</strong>.
+          <br />
+          <br />
+          <center>
+            Press [<strong>SPACEBAR</strong>] to begin the practice.
+          </center>
+          <br />
+          <center>
+            [<strong>←</strong>]
+          </center>
+        </span>
+      </div>
+    );
+
+    let instruct_text9 = (
+      <div>
+        <span>
+          Great job! You should have noticed that the relationship between the
+          fractals and sounds swapped halfway through.
+          <br />
+          <br />
+          Before you begin the main task, you have to pass a quick quiz to make
+          sure that you have understood the key points of your task for today.
+          <br />
+          <br />
+          Note: You will have to get <strong>all</strong> quiz questions
+          correct. If not, you will be sent back to the instructions, and will
+          have to replay the tutorial and retake the quiz!
+          <br />
+          <br />
+          <center>
+            Press [<strong>SPACEBAR</strong>] to begin the quiz.
+          </center>
+          <br />
+        </span>
+      </div>
+    );
+
+    let instruct_text10 = (
+      <div>
+        Amazing! You scored {this.state.quizCorTotal}/{this.state.quizNumTotal}{" "}
+        for the quiz.
+        <br />
+        <br />
+        You are ready to start the main task.
+        <br />
+        <br />
+        <center>
+          Press [<strong>SPACEBAR</strong>] to begin.
+        </center>
       </div>
     );
 
@@ -515,23 +909,123 @@ class Task extends React.Component {
         return <div>{instruct_text2}</div>;
       case 3:
         return <div>{instruct_text3}</div>;
+      case 4:
+        return <div>{instruct_text4}</div>;
+      case 5:
+        return <div>{instruct_text5}</div>;
+      case 6:
+        return <div>{instruct_text6}</div>;
+      case 7:
+        return <div>{instruct_text7}</div>;
+      case 8:
+        return <div>{instruct_text8}</div>;
+      case 9:
+        return <div>{instruct_text9}</div>;
+      case 10:
+        return <div>{instruct_text10}</div>;
+    }
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  /// QUIZ TEXT ////
+  // Do I need to randomise this?
+
+  quizText(quizNum) {
+    let quiz_text1 = (
+      <div>
+        <strong>Q{this.state.quizNum}:</strong> You are shown two fractals to
+        choose from. What do you do?
+        <br />
+        <br />
+        [1] - I choose the fractal that more often leads to the unpleasant
+        sound.
+        <br />
+        [2] - I choose the fractal that more often leads to the more pleasant
+        sound.
+        <br />
+        [3] - I choose both fractals as fast as possible.
+        <br />
+        [4] - I am unsure.
+      </div>
+    );
+
+    let quiz_text2 = (
+      <div>
+        <strong>Q{this.state.quizNum}:</strong> After some time, you notice that
+        the fractal that most often led to the unpleasant sound now leads more
+        often to the more pleasant sound. What do you do?
+        <br />
+        <br />
+        [1] - I continue to choose this fractal that more often leads to the
+        unpleasant sound.
+        <br />
+        [2] - I now choose the other fractal that more often leads to the more
+        pleasant sound.
+        <br />
+        [3] - I pick the one that has the brightest color.
+        <br />
+        [4] - I am unsure.
+      </div>
+    );
+
+    let quiz_text3 = (
+      <div>
+        <strong>Q{this.state.quizNum}:</strong> How do I know when the swap of
+        the relationship between fractals and sounds will occur?
+        <br />
+        <br />
+        [1] - The fractal leading to with more pleasant sound more often will be
+        outlined in blue.
+        <br />
+        [2] - There will be a unqiue sound played in the background to signal
+        the swap.
+        <br />
+        [3] - I have to pay attention to the sounds linked to the fractals.
+        <br />
+        [4] - I am unsure.
+      </div>
+    );
+
+    switch (quizNum) {
+      case 1:
+        return <div>{quiz_text1}</div>;
+      case 2:
+        return <div>{quiz_text2}</div>;
+      case 3:
+        return <div>{quiz_text3}</div>;
+      default:
     }
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////
   /// TASK TOGGLES ////
 
-  taskBegin() {
+  tutorBegin() {
     // remove access to left/right/space keys for the instructions
     document.removeEventListener("keyup", this._handleInstructKey);
     document.removeEventListener("keyup", this._handleBeginKey);
 
-    var trialNumTotal = this.state.trialNumTotal;
+    var tutorial = this.state.tutorial;
+    var trialNumTotal;
+    var stimPosList;
+    var stimCondList;
+
+    //reset tutorial if need to do again
+    if (tutorial === 1) {
+      trialNumTotal = this.state.trialNumTotal1;
+      stimPosList = this.state.stimPosList1;
+      stimCondList = this.state.stimCondList1;
+    } else if (tutorial === 2) {
+      trialNumTotal = this.state.trialNumTotal2;
+      stimPosList = this.state.stimPosList2;
+      stimCondList = this.state.stimCondList2;
+    }
 
     this.setState({
       trialNum: 0,
       trialNumTotal: trialNumTotal,
-      trialinBlockNum: 0,
+      stimPosList: stimPosList,
+      stimCondList: stimCondList,
     });
     setTimeout(
       function () {
@@ -541,61 +1035,114 @@ class Task extends React.Component {
     );
   }
 
-  breakEnd() {
+  tutorEnd() {
+    // change state to make sure the screen is changed for the task
+
+    if (this.state.tutorial === 1) {
+      this.setState({
+        instructScreen: true,
+        taskScreen: false,
+        instructNum: 6,
+        taskSection: null,
+        tutorial: 2,
+      });
+    } else if (this.state.tutorial === 2) {
+      this.setState({
+        instructScreen: true,
+        taskScreen: false,
+        instructNum: 9,
+        taskSection: null,
+      });
+    }
+  }
+
+  quizBegin() {
     // remove access to left/right/space keys for the instructions
     document.removeEventListener("keyup", this._handleInstructKey);
     document.removeEventListener("keyup", this._handleBeginKey);
+    document.addEventListener("keyup", this._handleQuizKey);
+
+    // If I want to shuffle quiz answers?
 
     this.setState({
-      trialinBlockNum: 0,
-    });
-    setTimeout(
-      function () {
-        this.trialReset();
-      }.bind(this),
-      10
-    );
-  }
-
-  breakBegin() {
-    // change state to make sure the screen is changed for the task
-
-    var trialNum = this.state.trialNum - 1;
-    this.setState({
-      instructScreen: true,
-      taskScreen: false,
-      instructNum: 2,
-      taskSection: null,
-      trialNum: trialNum,
+      instructScreen: false,
+      taskScreen: true,
+      taskSection: "quiz",
+      quizPressed: null,
+      quizNum: 1,
+      quizCorTotal: 0,
+      quizCor: null,
     });
   }
 
-  taskEnd() {
-    // change state to make sure the screen is changed for the task
-    this.setState({
-      instructScreen: true,
-      taskScreen: false,
-      instructNum: 3,
-      taskSection: null,
-    });
+  quizReset() {
+    var quizNum = this.state.quizNum;
+    var quizCorTotal = this.state.quizCorTotal;
+    var trialTime = Math.round(performance.now());
+
+    if (quizNum < this.state.quizNumTotal) {
+      //go to next quiz qn
+      this.setState({
+        quizNum: quizNum + 1,
+        trialTime: trialTime,
+      });
+    } else if (quizNum === this.state.quizNumTotal) {
+      document.removeEventListener("keyup", this._handleQuizKey);
+      //end quiz, head back to instructions
+      var quizTry = this.state.quizTry;
+      var tutorialTry = this.state.tutorialTry;
+      //if full marks
+      if (quizCorTotal === this.state.quizNumTotal) {
+        //  console.log("PASS QUIZ");
+        this.setState({
+          instructScreen: true,
+          taskScreen: false,
+          instructNum: 10,
+          taskSection: "instruct",
+        });
+      } else if (quizCorTotal !== this.state.quizNumTotal && quizTry < 4) {
+        //if they got one wrong
+        //  console.log("FAIL QUIZ");
+        tutorialTry = tutorialTry + 1;
+        quizTry = quizTry + 1;
+
+        this.setState({
+          instructScreen: true,
+          taskScreen: false,
+          tutorial: 2,
+          instructNum: 6,
+          taskSection: "instruct",
+          quizTry: quizTry,
+          tutorialTry: tutorialTry,
+        });
+      } else {
+        //if they got more than one wrong
+        tutorialTry = tutorialTry + 1;
+        //  console.log("FAIL QUIZ");
+        quizTry = quizTry + 1;
+        this.setState({
+          tutorial: 1,
+          instructScreen: true,
+          taskScreen: false,
+          instructNum: 1,
+          taskSection: "instruct",
+          quizTry: quizTry,
+          tutorialTry: tutorialTry,
+        });
+      }
+    }
   }
 
   //////////////////////////////////////////////////////////////////////////////////
   // FOUR COMPONENTS OF THE TASK, Fixation, Stimulus/Response, Feedback and Confidence
   trialReset() {
     var trialNum = this.state.trialNum + 1; //trialNum is 0, so it starts from 1
-    var trialinBlockNum = this.state.trialinBlockNum + 1;
     var trialNumTotal = this.state.trialNumTotal;
-    var trialNumPerBlock = this.state.trialNumPerBlock;
     var stimPosList = this.state.stimPosList;
-
-    if (trialNum === 1) {
-      var stimCond = 1;
-    } else {
-      var stimCond = this.state.stimCond;
-    }
+    var stimCondList = this.state.stimCondList;
 
     var stimPos = stimPosList[trialNum - 1]; //shuffle the order for the dotDiffLeft
+    var stimCond = stimCondList[trialNum - 1]; //shuffle the order for the dotDiffLeft
     var stimPicPosition1;
     var stimPicPosition2;
 
@@ -617,7 +1164,6 @@ class Task extends React.Component {
       taskSection: "trialReset",
       trialNum: trialNum,
       trialNumTotal: trialNumTotal,
-      trialinBlockNum: trialinBlockNum,
       fixTime: 0,
       responseKey: 0,
       respTime: 0,
@@ -634,35 +1180,24 @@ class Task extends React.Component {
       correctPer: null,
       stimPos: stimPos,
       stimCond: stimCond,
-      newStimCond: null,
     });
 
-    console.log("TrialNum: " + trialNum);
-    console.log("TrialNumPerBlock: " + trialNumPerBlock);
-    console.log("TrialNumTotal: " + trialNumTotal);
+    console.log(trialNum);
+    console.log(trialNumTotal);
 
     if (trialNum < trialNumTotal + 1) {
-      if (trialinBlockNum === trialNumPerBlock + 1) {
-        setTimeout(
-          function () {
-            this.breakBegin();
-          }.bind(this),
-          0
-        );
-      } else {
-        setTimeout(
-          function () {
-            this.renderFix();
-          }.bind(this),
-          0
-        );
-      }
+      setTimeout(
+        function () {
+          this.renderFix();
+        }.bind(this),
+        0
+      );
     } else {
       // if the trials have reached the total trial number
       document.removeEventListener("keyup", this._handleRespKey);
       setTimeout(
         function () {
-          this.taskEnd();
+          this.tutorEnd();
         }.bind(this),
         0
       );
@@ -689,19 +1224,6 @@ class Task extends React.Component {
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////
-
-  startHandler() {
-    this.stopWatchID = setInterval(() => {
-      setTimeout(
-        function () {
-          this.renderSlowChoiceFb();
-        }.bind(this),
-        0
-      );
-    }, this.state.stimTimeLag);
-  }
-
-  //////////////////////////////////////////////////////////////////////////////////////////////
   renderStim() {
     var fixTime = Math.round(performance.now()) - this.state.trialTime;
     document.addEventListener("keyup", this._handleRespKey);
@@ -712,53 +1234,11 @@ class Task extends React.Component {
       taskSection: "stimulus",
       fixTime: fixTime,
     });
-
-    setTimeout(
-      function () {
-        this.startHandler();
-      }.bind(this),
-      0
-    );
-  }
-
-  //////////////////////////////////////////////////////////////////////////////////////////////
-
-  renderSlowChoiceFb() {
-    document.removeEventListener("keyup", this._handleRespKey);
-    var respTime =
-      Math.round(performance.now()) -
-      [this.state.trialTime + this.state.fixTime];
-
-    clearInterval(this.stopWatchID);
-
-    var correctMatReset = this.state.correctMatReset.concat(0);
-    var correctMat = this.state.correctMat.concat(0);
-    var correctPer =
-      Math.round((utils.getAvg(correctMat) + Number.EPSILON) * 100) / 100; //2 dec pl
-
-    this.setState({
-      instructScreen: false,
-      taskScreen: true,
-      taskSection: "choiceSlowFeedback",
-      resptime: respTime,
-      correct: 0,
-      correctMatReset: correctMatReset,
-      correctMat: correctMat,
-      correctPer: correctPer,
-    });
-
-    setTimeout(
-      function () {
-        this.renderITI();
-      }.bind(this),
-      this.state.fbTimeLag
-    );
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////
   renderChoiceFb() {
     document.removeEventListener("keyup", this._handleRespKey);
-    clearInterval(this.stopWatchID);
 
     this.setState({
       instructScreen: false,
@@ -785,6 +1265,8 @@ class Task extends React.Component {
       Math.round(performance.now()) -
       [this.state.trialTime + this.state.fixTime + this.state.respTime];
 
+    console.log(postRespTimeLag2);
+
     this.setState({
       instructScreen: false,
       taskScreen: true,
@@ -799,6 +1281,9 @@ class Task extends React.Component {
       postRespTimeLag2
     );
   }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  // render sound first because otherwise it lags
 
   //////////////////////////////////////////////////////////////////////////////////////////////
   renderSound() {
@@ -823,7 +1308,7 @@ class Task extends React.Component {
       function () {
         this.renderCorFb();
       }.bind(this),
-      10
+      1000
     );
   }
 
@@ -857,6 +1342,7 @@ class Task extends React.Component {
   renderITI() {
     var itiTimeLag = this.state.itiTimeLag;
     var itiTimeLag2 = itiTimeLag[Math.floor(Math.random() * itiTimeLag.length)];
+    console.log(itiTimeLag2);
 
     var fbTime =
       Math.round(performance.now()) -
@@ -882,7 +1368,6 @@ class Task extends React.Component {
       itiTimeLag2
     );
   }
-  ///////
 
   saveITITime() {
     var itiTime =
@@ -907,7 +1392,6 @@ class Task extends React.Component {
       0
     );
   }
-  //////
 
   renderTutorSave() {
     var userID = this.state.userID;
@@ -923,7 +1407,6 @@ class Task extends React.Component {
       tutorial: this.state.tutorial,
       tutorialTry: this.state.tutorialTry,
       trialNum: this.state.trialNum,
-      trialNumPerBlock: this.state.trialNumPerBlock,
       trialTime: this.state.trialTime,
       fixTime: this.state.fixTime,
       stimPos: this.state.stimPos,
@@ -933,19 +1416,17 @@ class Task extends React.Component {
       respTime: this.state.respTime,
       respFbTime: this.state.respFbTime,
       postRespTime: this.state.postRespTime,
-      fbTime: this.state.fbTime,
       soundPlay: this.state.soundPlay,
+      fbTime: this.state.fbTime,
       itiTime: this.state.itiTime,
       choice: this.state.choice,
       correct: this.state.correct,
-      correctMatReset: this.state.correctMatReset,
       correctMat: this.state.correctMat,
       correctPer: this.state.correctPer,
-      continSwap: this.state.continSwap,
     };
 
     try {
-      fetch(`${DATABASE_URL}/task_data/` + userID, {
+      fetch(`${DATABASE_URL}/tutorial_data/` + userID, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -959,105 +1440,51 @@ class Task extends React.Component {
 
     setTimeout(
       function () {
-        this.detStimCond();
+        this.trialReset();
       }.bind(this),
       10
     );
   }
 
-  // determine the conditions before trial Reset
-  //if 6 to 10 correct responses have passed
-  //if the last three answers were correct
-  detStimCond() {
-    var correctMatReset = this.state.correctMatReset;
-    var lastresp = correctMatReset[correctMatReset.length - 1];
-    var secondlastresp = correctMatReset[correctMatReset.length - 2];
-    var thirdlastresp = correctMatReset[correctMatReset.length - 3];
+  renderQuizSave() {
+    var userID = this.state.userID;
 
-    var stimCond = this.state.stimCond;
-    var correctMatResetSum = correctMatReset.reduce((a, b) => a + b, 0); //add all the corrects together
+    let saveString = {
+      userID: this.state.userID,
+      prolificID: this.state.prolificID,
+      sessionID: this.state.sessionID,
+      date: this.state.date,
+      startTime: this.state.startTime,
+      section: this.state.section,
+      sectionTime: this.state.sectionTime,
+      //quiz paramters
+      quizTry: this.state.quizTry,
+      quizNumTotal: this.state.quizNumTotal,
+      quizNum: this.state.quizNum,
+      quizTime: this.state.trialTime,
+      quizResp: this.state.quizPressed,
+      quizRT: this.state.quizTime,
+      quizAns: this.state.quizAns,
+      quizCor: this.state.quizCor,
+      quizCorTotal: this.state.quizCorTotal,
+    };
 
-    var continSwap = this.state.continSwap;
-    var newStimCond;
-
-    var whenSwap = this.state.whenSwap;
-
-    // this is if I determined a random number from 6 to 10 before swap
-    if (
-      correctMatResetSum >= whenSwap &&
-      lastresp === 1 &&
-      secondlastresp === 1 &&
-      thirdlastresp === 1
-    ) {
-      continSwap = 1;
-      correctMatReset = [];
-      whenSwap = utils.randomInt(6, 10); // random new number for the next round
-      if (stimCond === 1) {
-        newStimCond = 2;
-      } else if (stimCond === 2) {
-        newStimCond = 1;
-      }
-    } else {
-      continSwap = 0;
-      newStimCond = stimCond;
+    try {
+      fetch(`${DATABASE_URL}/tut_quiz/` + userID, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(saveString),
+      });
+    } catch (e) {
+      console.log("Cant post?");
     }
-
-    // this is if i use the 50% probablity of swapping
-    /*  if (
-      correctMatResetSum >= 6 &&
-      correctMatResetSum <= 9 &&
-      lastresp === 1 &&
-      secondlastresp === 1 &&
-      thirdlastresp === 1
-    ) {
-      //there is a 50% chance that it will swap contingencys
-      if (Math.random() <= 0.5) {
-        continSwap = 1;
-        correctMatReset = [];
-        if (stimCond === 1) {
-          newStimCond = 2;
-        } else if (stimCond === 2) {
-          newStimCond = 1;
-        }
-      } else {
-        continSwap = 0;
-        newStimCond = stimCond;
-        correctMatReset = correctMatReset;
-      }
-    } else if (
-      correctMatResetSum === 10 &&
-      lastresp === 1 &&
-      secondlastresp === 1 &&
-      thirdlastresp === 1
-    ) {
-      continSwap = 1;
-      correctMatReset = [];
-      if (stimCond === 1) {
-        newStimCond = 2;
-      } else if (stimCond === 2) {
-        newStimCond = 1;
-      }
-    } else {
-      continSwap = 0;
-      newStimCond = stimCond;
-      correctMatReset = correctMatReset;
-    }
-*/
-    console.log("Correct Matrx: " + correctMatReset);
-    console.log("Correct MatrxSum: " + correctMatResetSum);
-    console.log("Stim Cond for next trial: " + stimCond);
-    console.log("When swap: " + whenSwap);
-
-    this.setState({
-      correctMatReset: correctMatReset,
-      continSwap: continSwap,
-      whenSwap: whenSwap,
-      stimCond: newStimCond,
-    });
 
     setTimeout(
       function () {
-        this.trialReset();
+        this.quizReset();
       }.bind(this),
       10
     );
@@ -1068,7 +1495,7 @@ class Task extends React.Component {
     document.removeEventListener("keyup", this._handleBeginKey);
 
     var condUrl =
-      "/Quest?PROLIFIC_PID=" +
+      "/Task?PROLIFIC_PID=" +
       this.state.prolificID +
       "?SESSION_ID=" +
       this.state.sessionID;
@@ -1080,6 +1507,7 @@ class Task extends React.Component {
         sessionID: this.state.sessionID,
         date: this.state.date,
         startTime: this.state.startTime,
+        volume: this.state.volume,
       },
     });
 
@@ -1115,7 +1543,7 @@ class Task extends React.Component {
         this.state.instructScreen === true &&
         this.state.taskScreen === false
       ) {
-        //  document.addEventListener("keyup", this._handleInstructKey);
+        document.addEventListener("keyup", this._handleInstructKey);
         document.addEventListener("keyup", this._handleBeginKey);
         text = <div> {this.instructText(this.state.instructNum)}</div>;
         // console.log("THIS SHOULD BE INSTRUCTION BLOCK");
@@ -1150,6 +1578,7 @@ class Task extends React.Component {
             <span className={style.frame}>
               <span className={style.centerScreen}>
                 <center>
+                  <br />
                   <img
                     src={this.state.stimPic[this.state.stimPicPosition1]}
                     className={style.stimLeft}
@@ -1161,6 +1590,15 @@ class Task extends React.Component {
                     alt="stim2"
                   />
                 </center>
+              </span>
+              <span className={style.lowerScreen}>
+                <span className={style.textSmall}>
+                  <center>
+                    Press W for left choice.
+                    <br />
+                    Press O for right choice.
+                  </center>
+                </span>
               </span>
             </span>
           </div>
@@ -1177,6 +1615,7 @@ class Task extends React.Component {
             <span className={style.frame}>
               <span className={style.centerScreen}>
                 <center>
+                  <br />
                   <img
                     src={this.state.stimPic[this.state.stimPicPosition1]}
                     className={stimPicChosen1}
@@ -1189,18 +1628,6 @@ class Task extends React.Component {
                   />
                 </center>
               </span>
-            </span>
-          </div>
-        );
-      } else if (
-        this.state.instructScreen === false &&
-        this.state.taskScreen === true &&
-        this.state.taskSection === "choiceSlowFeedback"
-      ) {
-        text = (
-          <div>
-            <span className={style.centerScreen}>
-              <center>Too slow! Respond faster!</center>
             </span>
           </div>
         );
@@ -1242,31 +1669,45 @@ class Task extends React.Component {
             <DrawFix />
           </div>
         );
-      } else if (this.state.skip === true) {
-        document.addEventListener("keyup", this._handleDebugKey);
+      } else if (
+        this.state.instructScreen === false &&
+        this.state.taskScreen === true &&
+        this.state.taskSection === "quiz"
+      ) {
         text = (
           <div>
-            <p>
-              <span>DEBUG MODE</span>
-              <br />
-              <span>
-                Press [<strong>SPACEBAR</strong>] to skip to next section.
-              </span>
-            </p>
+            {this.quizText(this.state.quizNum)}
+            <br />
+            <br />
+            <center>Please use the top row number keys to respond.</center>
           </div>
         );
       }
-
-      return (
-        <div className={style.bg}>
-          <div className={style.textFrame}>
-            <div className={style.fontStyle}>{text}</div>
-          </div>
+    } else if (this.state.skip === true) {
+      document.addEventListener("keyup", this._handleDebugKey);
+      text = (
+        <div>
+          <p>
+            <span>DEBUG MODE</span>
+            <br />
+            <span>
+              Press [<strong>SPACEBAR</strong>] to skip to next section.
+            </span>
+          </p>
         </div>
       );
     }
+
+    return (
+      <div className={style.bg}>
+        <div className={style.textFrame}>
+          <div className={style.fontStyle}>{text}</div>
+        </div>
+      </div>
+    );
   }
 }
 
 //      If I want to disable mouse events to force them to use the keyboard <div style={{ pointerEvents: "none" }}>
-export default withRouter(Task);
+
+export default withRouter(Tutorial);
