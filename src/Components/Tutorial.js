@@ -1,5 +1,5 @@
 import React from "react";
-import DrawFix from "./DrawFix.js";
+//import DrawFix from "./DrawFix.js";
 import style from "./style/taskStyle.module.css";
 import * as utils from "./utils.js";
 import withRouter from "./withRouter.js";
@@ -620,7 +620,7 @@ class Tutorial extends React.Component {
             }}
           />
         </center>
-        That sounds more pleasant!
+        That sounds more neutral!
         <span>
           <br />
           <br />
@@ -634,9 +634,8 @@ class Tutorial extends React.Component {
     let instruct_text4 = (
       <div>
         <span>
-          On the other hand, the other fractal will lead to the more pleasant
-          sound <u> most of the time</u>. You can click on the fractal to hear
-          it.
+          On the other hand, the other fractal will lead to the neutral sound{" "}
+          <u> most of the time</u>. You can click on the fractal to hear it.
         </span>
         <center>
           <img
@@ -687,7 +686,7 @@ class Tutorial extends React.Component {
       <div>
         <span>
           Your aim in this task is to choose the fractal that{" "}
-          <u>more often leads to the pleasant sound</u>.
+          <u>more often leads to the neutral sound</u>.
           <br />
           <br />
           You can select the fractal of your choice with a keypress.
@@ -741,9 +740,8 @@ class Tutorial extends React.Component {
           that <u>most often leads to the more pleasant noise</u>.
           <br />
           <br />
-          For every choice, you will be presented with a white cross in the
-          middle of the screen first before the fractals appear. After a short
-          delay, the sound will play.
+          For every choice, you will be presented with two fractals. Once you
+          make your choice, after a short delay, the sound will play.
           <br />
           <br />
           There is a time limit to make your choice, so please choose as fast as
@@ -775,7 +773,7 @@ class Tutorial extends React.Component {
       <div>
         <span>
           Great job! You should have noticed that one fractal led to the
-          unpleasant sound most of the time, while the other led to the pleasant
+          unpleasant sound most of the time, while the other led to the neutral
           sound most of the time.
           <br />
           <br />
@@ -784,11 +782,11 @@ class Tutorial extends React.Component {
           <br />
           <br />
           This means that the fractal that previously led to the unpleasant
-          sound most of time will now lead to the more pleasant sound.
+          sound most of time will now lead to the neutral sound.
           <br />
           <br />
-          Likewise, the fractal that previously led to the pleasant sound most
-          of time will now lead to the unpleasant sound.
+          Likewise, the fractal that previously led to the neutral sound most of
+          time will now lead to the unpleasant sound.
           <br />
           <br />
           You will have to take note of this and change your selection
@@ -879,8 +877,7 @@ class Tutorial extends React.Component {
         [1] - I choose the fractal that more often leads to the unpleasant
         sound.
         <br />
-        [2] - I choose the fractal that more often leads to the more pleasant
-        sound.
+        [2] - I choose the fractal that more often leads to the neutral sound.
         <br />
         [3] - I choose both fractals as fast as possible.
         <br />
@@ -892,14 +889,14 @@ class Tutorial extends React.Component {
       <div>
         <strong>Q{this.state.quizNum}:</strong> After some time, you notice that
         the fractal that most often led to the unpleasant sound now leads more
-        often to the more pleasant sound. What do you do?
+        often to the neutral sound. What do you do?
         <br />
         <br />
         [1] - I continue to choose this fractal that more often leads to the
         unpleasant sound.
         <br />
-        [2] - I now choose the other fractal that more often leads to the more
-        pleasant sound.
+        [2] - I now choose the other fractal that more often leads to the
+        neutral sound.
         <br />
         [3] - I pick the one that has the brightest color.
         <br />
@@ -913,7 +910,7 @@ class Tutorial extends React.Component {
         the relationship between fractals and sounds will occur?
         <br />
         <br />
-        [1] - The fractal leading to with more pleasant sound more often will be
+        [1] - The fractal leading to the neutral sound more often will be
         outlined in blue.
         <br />
         [2] - There will be a unqiue sound played in the background to signal
@@ -1494,21 +1491,13 @@ class Tutorial extends React.Component {
         this.state.taskScreen === true &&
         this.state.taskSection === "trialReset"
       ) {
-        text = (
-          <div>
-            <DrawFix />
-          </div>
-        );
+        text = <div></div>;
       } else if (
         this.state.instructScreen === false &&
         this.state.taskScreen === true &&
         this.state.taskSection === "fixation"
       ) {
-        text = (
-          <div>
-            <DrawFix />
-          </div>
-        );
+        text = <div></div>;
       } else if (
         this.state.instructScreen === false &&
         this.state.taskScreen === true &&
@@ -1589,11 +1578,7 @@ class Tutorial extends React.Component {
         this.state.taskScreen === true &&
         this.state.taskSection === "postChoiceJitter"
       ) {
-        text = (
-          <div>
-            <DrawFix />
-          </div>
-        );
+        text = <div></div>;
       } else if (
         this.state.instructScreen === false &&
         this.state.taskScreen === true &&
@@ -1617,11 +1602,7 @@ class Tutorial extends React.Component {
         this.state.taskScreen === true &&
         this.state.taskSection === "iti"
       ) {
-        text = (
-          <div>
-            <DrawFix />
-          </div>
-        );
+        text = <div></div>;
       } else if (
         this.state.instructScreen === false &&
         this.state.taskScreen === true &&

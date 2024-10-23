@@ -39,7 +39,7 @@ export const json = {
         {
           type: "html",
           name: "info",
-          html: "<p>Adults aged between <strong>18 to 55 years old</strong>, are <strong>fluent in English</strong>, and have <strong>normal or corrected-to-normal vision</strong>. If you take part in this study, you confirm that you meet the eligibity criteria.</p>",
+          html: "<p>Adults aged between <strong>18 to 55 years old</strong>, are <strong>fluent in English</strong>, have <strong>normal or corrected-to-normal vision</strong>, and have no hearing-related issues. If you take part in this study, you confirm that you meet the eligibity criteria.</p>",
         },
 
         {
@@ -51,7 +51,7 @@ export const json = {
         {
           type: "html",
           name: "info",
-          html: "<p>You will play one or more online computer tasks, which will last around approximately <strong>15 mins</strong>. <br/><br/>You will also be asked some questions about yourself, your feelings, background, attitudes and behaviour in your everyday life. <br/><br/>You will receive <strong>2.20 GBP</strong> for helping us.<br/><br/>Remember, you are free to withdraw at any time without giving a reason.</p>",
+          html: "<p>You will play one or more online computer tasks, which will last around approximately <strong>15 mins</strong>. <br/><br/>You will also be asked some questions about yourself, your feelings, background, attitudes and behaviour in your everyday life. <br/><br/>You will receive <strong>2 GBP</strong> for helping us.<br/>Additional you may earn up to 1 GBP depending on your performance in the task.<br/><br/>Remember, you are free to withdraw at any time without giving a reason.</p>",
         },
 
         {

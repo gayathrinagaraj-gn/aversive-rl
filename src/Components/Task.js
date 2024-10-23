@@ -1,5 +1,5 @@
 import React from "react";
-import DrawFix from "./DrawFix.js";
+//import DrawFix from "./DrawFix.js";
 import style from "./style/taskStyle.module.css";
 import * as utils from "./utils.js";
 import withRouter from "./withRouter.js";
@@ -55,7 +55,7 @@ class Task extends React.Component {
     }
 
     //total should be 120
-    var trialNumTotal = 120;
+    var trialNumTotal = 12;
     var blockNumTotal = 3;
     var trialNumPerBlock = Math.round(trialNumTotal / blockNumTotal);
 
@@ -133,6 +133,7 @@ class Task extends React.Component {
       correctPer: 0,
       contingency: 0.8,
       soundPlay: null,
+      bonus: null,
 
       // screen parameters
       instructScreen: true,
@@ -443,8 +444,8 @@ class Task extends React.Component {
           <br />
           <br />
           Remember: Your goal is to choose the fractal that leads you to the
-          more pleasant sound most of the time. Over time, there will be swaps
-          of the fractals and sounds, so you will have to keep track of their
+          neutral sound most of the time. Over time, there will be swaps of the
+          fractals and sounds, so you will have to keep track of their
           relationship throughout the task.
           <br />
           <br />
@@ -1068,7 +1069,7 @@ class Task extends React.Component {
     document.removeEventListener("keyup", this._handleBeginKey);
 
     var condUrl =
-      "/Quest?PROLIFIC_PID=" +
+      "/Bonus?PROLIFIC_PID=" +
       this.state.prolificID +
       "?SESSION_ID=" +
       this.state.sessionID;
@@ -1080,6 +1081,7 @@ class Task extends React.Component {
         sessionID: this.state.sessionID,
         date: this.state.date,
         startTime: this.state.startTime,
+        correctPer: this.state.correctPer,
       },
     });
 
@@ -1125,21 +1127,13 @@ class Task extends React.Component {
         this.state.taskScreen === true &&
         this.state.taskSection === "trialReset"
       ) {
-        text = (
-          <div>
-            <DrawFix />
-          </div>
-        );
+        text = <div></div>;
       } else if (
         this.state.instructScreen === false &&
         this.state.taskScreen === true &&
         this.state.taskSection === "fixation"
       ) {
-        text = (
-          <div>
-            <DrawFix />
-          </div>
-        );
+        text = <div></div>;
       } else if (
         this.state.instructScreen === false &&
         this.state.taskScreen === true &&
@@ -1209,11 +1203,7 @@ class Task extends React.Component {
         this.state.taskScreen === true &&
         this.state.taskSection === "postChoiceJitter"
       ) {
-        text = (
-          <div>
-            <DrawFix />
-          </div>
-        );
+        text = <div></div>;
       } else if (
         this.state.instructScreen === false &&
         this.state.taskScreen === true &&
@@ -1237,11 +1227,7 @@ class Task extends React.Component {
         this.state.taskScreen === true &&
         this.state.taskSection === "iti"
       ) {
-        text = (
-          <div>
-            <DrawFix />
-          </div>
-        );
+        text = <div></div>;
       } else if (this.state.skip === true) {
         document.addEventListener("keyup", this._handleDebugKey);
         text = (
