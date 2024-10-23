@@ -101,7 +101,7 @@ class Tutorial extends React.Component {
       respFbTimeLag: 500, //
       postRespTimeLag: [400, 500, 600], // post choice fixation jitter
       fbTimeLag: 1250, // how long the sound is played
-      itiTimeLag: [250, 350, 450], // this adds to the first fixation, iti jitter
+      itiTimeLag: [200, 300, 400], // this adds to the first fixation, iti jitter
 
       averSound: averSound,
       neuSound: neuSound,
@@ -737,7 +737,7 @@ class Tutorial extends React.Component {
       <div>
         <span>
           You will have {this.state.trialNumTotal} chances to choose the fractal
-          that <u>most often leads to the more pleasant noise</u>.
+          that <u>most often leads to the neutral sound</u>.
           <br />
           <br />
           For every choice, you will be presented with two fractals. Once you

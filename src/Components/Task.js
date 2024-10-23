@@ -91,7 +91,7 @@ class Task extends React.Component {
       respFbTimeLag: 500, //
       postRespTimeLag: [300, 350, 400], // post choice fixation jitter
       fbTimeLag: 1250, // how long the sound is played
-      itiTimeLag: [250, 350, 450], // this adds to the first fixation, iti jitter
+      itiTimeLag: [200, 300, 400], // this adds to the first fixation, iti jitter
 
       averSound: averSound,
       neuSound: neuSound,
@@ -632,7 +632,6 @@ class Task extends React.Component {
       stimPicChosen2: null,
       choice: null,
       correct: null,
-      correctPer: null,
       stimPos: stimPos,
       stimCond: stimCond,
       newStimCond: null,
@@ -643,6 +642,10 @@ class Task extends React.Component {
     console.log("TrialNumTotal: " + trialNumTotal);
 
     if (trialNum < trialNumTotal + 1) {
+      this.setState({
+        correctPer: null,
+      });
+
       if (trialinBlockNum === trialNumPerBlock + 1) {
         setTimeout(
           function () {

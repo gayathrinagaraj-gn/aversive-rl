@@ -4,7 +4,7 @@ import withRouter from "./withRouter.js";
 import style from "./style/taskStyle.module.css";
 // import queryString from "query-string";
 
-var debug = true;
+var debug = false;
 
 class Home extends React.Component {
   constructor(props) {
