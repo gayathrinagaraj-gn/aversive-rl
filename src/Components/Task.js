@@ -55,7 +55,7 @@ class Task extends React.Component {
     }
 
     //total should be 120
-    var trialNumTotal = 12;
+    var trialNumTotal = 120;
     var blockNumTotal = 3;
     var trialNumPerBlock = Math.round(trialNumTotal / blockNumTotal);
 
