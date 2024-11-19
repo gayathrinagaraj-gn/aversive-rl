@@ -610,7 +610,8 @@ class Task extends React.Component {
     var stimPosList = this.state.stimPosList;
     var stimCondList = this.state.stimCondList;
     var stimCond = stimCondList[trialNum - 1];
-    var continSwap;
+    var correctMatReset = this.state.correctMatReset;
+    var continSwap = this.state.continSwap;
 
     if (trialNum === 1) {
       continSwap = 0;
@@ -619,6 +620,7 @@ class Task extends React.Component {
         continSwap = 0;
       } else if (stimCondList[trialNum - 2] !== stimCond) {
         continSwap = 1;
+        var correctMatReset = [];
       } else {
         console.log("ERROR?");
       }
@@ -664,6 +666,7 @@ class Task extends React.Component {
       stimPos: stimPos,
       stimCond: stimCond,
       continSwap: continSwap,
+      correctMatReset: correctMatReset,
       // newStimCond: null,
     });
 
