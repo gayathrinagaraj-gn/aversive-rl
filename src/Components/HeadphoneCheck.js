@@ -741,7 +741,7 @@ class HeadphoneCheck extends React.Component {
                 appropriate level.
                 <br /> <br />
                 Please set your computer system volume level to{" "}
-                <strong>20% of the maximum</strong>. Now, click the play button
+                <strong>25% of the maximum</strong>. Now, click the play button
                 below.
                 <br />
                 <br />
