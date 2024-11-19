@@ -13,17 +13,12 @@ import stim4 from "./fractals/bandit27.png";
 import fbPic from "./fractals/audio-sound.png";
 
 import averSound from "./sounds/task/morriss_scream_1000minus10.wav";
-//import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus20.wav";
-import neuSound from "./sounds/task/browniannoise_08amp_1000.wav";
+import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus20.wav";
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
 // THIS CODES THE TASK
 // n=120 trials, break every 40 trials?
-// this version, we follow the Waltzmann (https://link.springer.com/article/10.3758/s13428-021-01739-7#Sec18) paper
-// 160 trials, fixed schedule
-// After an initial acquisition phase (1st to 55th trials) the cards’ reward contingencies flipped
-//five times(after the 55th, 70th, 90th, 105th, and 125th trial)
 
 var debug = false;
 var skip = false;
@@ -59,25 +54,9 @@ class Task extends React.Component {
       volume = this.props.state.volume;
     }
 
-    //cond is determined by number of corrects - inside the code
-    var taskStimCond = Array(55)
-      .fill(1)
-      .concat(
-        Array(15)
-          .fill(2)
-          .concat(
-            Array(20)
-              .fill(1)
-              .concat(
-                Array(15)
-                  .fill(2)
-                  .concat(Array(20).fill(1).concat(Array(35).fill(2)))
-              )
-          )
-      );
-
-    var trialNumTotal = taskStimCond.length;
-    var blockNumTotal = 4;
+    //total should be 120
+    var trialNumTotal = 120;
+    var blockNumTotal = 3;
     var trialNumPerBlock = Math.round(trialNumTotal / blockNumTotal);
 
     //the stim position
@@ -88,6 +67,8 @@ class Task extends React.Component {
 
     var stimPic = [stim1, stim2, stim3, stim4];
     utils.shuffle(stimPic);
+
+    //cond is determined by number of corrects - inside the code
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,7 +102,7 @@ class Task extends React.Component {
       blockNumTotal: blockNumTotal,
       trialNumPerBlock: trialNumPerBlock,
       stimPosList: taskStimPos,
-      stimCondList: taskStimCond,
+      stimCondList: null,
 
       respKeyCode: [87, 79], // for left and right choice keys, currently it is W and O
       tutorialTry: 1,
@@ -608,22 +589,12 @@ class Task extends React.Component {
     var trialNumTotal = this.state.trialNumTotal;
     var trialNumPerBlock = this.state.trialNumPerBlock;
     var stimPosList = this.state.stimPosList;
-    var stimCondList = this.state.stimCondList;
-    var stimCond = stimCondList[trialNum - 1];
-    var continSwap;
 
     if (trialNum === 1) {
-      continSwap = 0;
+      var stimCond = 1;
     } else {
-      if (stimCondList[trialNum - 2] === stimCond) {
-        continSwap = 0;
-      } else if (stimCondList[trialNum - 2] !== stimCond) {
-        continSwap = 1;
-      } else {
-        console.log("ERROR?");
-      }
+      var stimCond = this.state.stimCond;
     }
-    console.log("Stim Cond for next trial: " + stimCond);
 
     var stimPos = stimPosList[trialNum - 1]; //shuffle the order for the dotDiffLeft
     var stimPicPosition1;
@@ -663,8 +634,7 @@ class Task extends React.Component {
       correct: null,
       stimPos: stimPos,
       stimCond: stimCond,
-      continSwap: continSwap,
-      // newStimCond: null,
+      newStimCond: null,
     });
 
     console.log("TrialNum: " + trialNum);
@@ -990,6 +960,104 @@ class Task extends React.Component {
     } catch (e) {
       console.log("Cant post?");
     }
+
+    setTimeout(
+      function () {
+        this.detStimCond();
+      }.bind(this),
+      10
+    );
+  }
+
+  // determine the conditions before trial Reset
+  //if 6 to 10 correct responses have passed
+  //if the last three answers were correct
+  detStimCond() {
+    var correctMatReset = this.state.correctMatReset;
+    var lastresp = correctMatReset[correctMatReset.length - 1];
+    var secondlastresp = correctMatReset[correctMatReset.length - 2];
+    var thirdlastresp = correctMatReset[correctMatReset.length - 3];
+
+    var stimCond = this.state.stimCond;
+    var correctMatResetSum = correctMatReset.reduce((a, b) => a + b, 0); //add all the corrects together
+
+    var continSwap = this.state.continSwap;
+    var newStimCond;
+
+    var whenSwap = this.state.whenSwap;
+
+    // this is if I determined a random number from 6 to 10 before swap
+    if (
+      correctMatResetSum >= whenSwap &&
+      lastresp === 1 &&
+      secondlastresp === 1 &&
+      thirdlastresp === 1
+    ) {
+      continSwap = 1;
+      correctMatReset = [];
+      whenSwap = utils.randomInt(6, 10); // random new number for the next round
+      if (stimCond === 1) {
+        newStimCond = 2;
+      } else if (stimCond === 2) {
+        newStimCond = 1;
+      }
+    } else {
+      continSwap = 0;
+      newStimCond = stimCond;
+    }
+
+    // this is if i use the 50% probablity of swapping
+    /*  if (
+      correctMatResetSum >= 6 &&
+      correctMatResetSum <= 9 &&
+      lastresp === 1 &&
+      secondlastresp === 1 &&
+      thirdlastresp === 1
+    ) {
+      //there is a 50% chance that it will swap contingencys
+      if (Math.random() <= 0.5) {
+        continSwap = 1;
+        correctMatReset = [];
+        if (stimCond === 1) {
+          newStimCond = 2;
+        } else if (stimCond === 2) {
+          newStimCond = 1;
+        }
+      } else {
+        continSwap = 0;
+        newStimCond = stimCond;
+        correctMatReset = correctMatReset;
+      }
+    } else if (
+      correctMatResetSum === 10 &&
+      lastresp === 1 &&
+      secondlastresp === 1 &&
+      thirdlastresp === 1
+    ) {
+      continSwap = 1;
+      correctMatReset = [];
+      if (stimCond === 1) {
+        newStimCond = 2;
+      } else if (stimCond === 2) {
+        newStimCond = 1;
+      }
+    } else {
+      continSwap = 0;
+      newStimCond = stimCond;
+      correctMatReset = correctMatReset;
+    }
+*/
+    console.log("Correct Matrx: " + correctMatReset);
+    console.log("Correct MatrxSum: " + correctMatResetSum);
+    console.log("Stim Cond for next trial: " + stimCond);
+    console.log("When swap: " + whenSwap);
+
+    this.setState({
+      correctMatReset: correctMatReset,
+      continSwap: continSwap,
+      whenSwap: whenSwap,
+      stimCond: newStimCond,
+    });
 
     setTimeout(
       function () {

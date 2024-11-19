@@ -9,6 +9,8 @@ import * as utils from "./utils.js";
 // quests
 import { dass } from "./quest/dass.js";
 import { rse } from "./quest/rse.js";
+import { staiy2 } from "./quest/staiy2.js";
+import { sds } from "./quest/sds.js";
 import { demo } from "./quest/demo.js";
 
 import { DATABASE_URL } from "./config";
@@ -42,8 +44,8 @@ class Questionnaires extends React.Component {
 
     var sectionTime = Math.round(performance.now());
 
-    var quizLabel = ["DASS", "RSE"];
-    var allQuizText = [dass, rse];
+    var quizLabel = ["DASS", "RSE", "STAIY2", "SDS"];
+    var allQuizText = [dass, rse, staiy2, sds];
 
     this.state = {
       userID: userID,

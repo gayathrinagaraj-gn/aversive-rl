@@ -7,7 +7,8 @@ import PlayButton from "./PlayButton";
 import { DATABASE_URL } from "./config";
 
 import averSound from "./sounds/task/morriss_scream_1000minus15.wav";
-import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus20.wav";
+import neuSound from "./sounds/task/browniannoise_08amp_1000.wav";
+import pleaSound from "./sounds/task/YangIADSE_cicada0335_1000.wav";
 /////// REACT
 
 var debug = false;
@@ -15,10 +16,24 @@ var skip = false;
 
 // This version, I change the calibration
 // They have to rate aver and avoid sounds TWO times at least, the second rating is where we base the calibration
-var varPlayColour = ["#d02f33", "#cd5a7e"];
+var varPlayColour = [
+  "#d02f33",
+  "#cd5a7e",
+  "#49458d",
+  "#c17860",
+  "#19cdc4",
+  "#430031",
+];
 
 // this is the main sound array
-var soundArray = [averSound, neuSound];
+var soundArray = [
+  averSound,
+  neuSound,
+  pleaSound,
+  averSound,
+  neuSound,
+  pleaSound,
+];
 // Total number of audio bites for the first part of the rating (4)
 var qnNumTotal = soundArray.length;
 utils.shuffle(varPlayColour); // shuffling the color of the play button
@@ -27,10 +42,15 @@ varPlayColour = varPlayColour.filter(function (val) {
   return val !== undefined;
 });
 
-// write index for the sound array
-var qnNumTotalIndex = Array.from(Array(qnNumTotal).keys());
-//shuffle order of presentation
-utils.shuffle(qnNumTotalIndex);
+// write index for the sound array - this is the shuffling for sounds being tested
+var qnNumTotalIndexTemp = Array.from(Array(qnNumTotal / 2).keys());
+var qnNumTotalIndexTemp2 = Array.from(Array(qnNumTotal / 2).keys());
+
+utils.shuffle(qnNumTotalIndexTemp);
+utils.shuffle(qnNumTotalIndexTemp2);
+var qnNumTotalIndexTemp2 = qnNumTotalIndexTemp2.map((v) => v + qnNumTotal / 2);
+
+var qnNumTotalIndex = qnNumTotalIndexTemp.concat(qnNumTotalIndexTemp2);
 
 qnNumTotalIndex = qnNumTotalIndex.filter(function (val) {
   return val !== undefined;

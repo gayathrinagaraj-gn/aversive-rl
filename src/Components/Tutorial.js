@@ -12,7 +12,8 @@ import stim2 from "./fractals/bandit31.png";
 import fbPic from "./fractals/audio-sound.png";
 
 import averSound from "./sounds/task/morriss_scream_1000minus10.wav";
-import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus20.wav";
+//import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus20.wav";
+import neuSound from "./sounds/task/browniannoise_08amp_1000.wav";
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -200,7 +201,7 @@ class Tutorial extends React.Component {
       document.removeEventListener("keyup", this._handleDebugKey);
       setTimeout(
         function () {
-          this.redirectToTarget();
+          this.redirectToNextTask();
         }.bind(this),
         0
       );
@@ -1623,7 +1624,7 @@ class Tutorial extends React.Component {
         <div>
           <p>
             <span>DEBUG MODE</span>
-            <br />
+            <br /> <br />
             <span>
               Press [<strong>SPACEBAR</strong>] to skip to next section.
             </span>
