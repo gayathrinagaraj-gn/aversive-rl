@@ -67,6 +67,8 @@ class Questionnaires extends React.Component {
 
       qnText1: [],
       qnText2: [],
+      qnText3: [],
+      qnText4: [],
 
       instructScreen: true,
       questScreen: false,
@@ -198,6 +200,8 @@ class Questionnaires extends React.Component {
     this.setState({
       qnText1: allQuizText[0],
       qnText2: allQuizText[1],
+      qnText3: allQuizText[2],
+      qnText4: allQuizText[3],
       quizLabel: quizLabel,
     });
   }
@@ -297,6 +301,12 @@ class Questionnaires extends React.Component {
             },
             {
               questions: this.state.qnText2,
+            },
+            {
+              questions: this.state.qnText3,
+            },
+            {
+              questions: this.state.qnText4,
             },
           ],
         };
