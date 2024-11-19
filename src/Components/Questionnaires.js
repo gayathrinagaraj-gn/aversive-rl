@@ -45,6 +45,7 @@ class Questionnaires extends React.Component {
     var sectionTime = Math.round(performance.now());
 
     var quizLabel = ["DASS", "RSE", "STAIY2", "SDS"];
+    var qnTotal = quizLabel.length;
     var allQuizText = [dass, rse, staiy2, sds];
 
     this.state = {
@@ -59,7 +60,7 @@ class Questionnaires extends React.Component {
 
       qnStart: sectionTime,
       qnTime: sectionTime,
-      qnTotal: 2,
+      qnTotal: qnTotal,
       quizLabel: quizLabel,
       allQuizText: allQuizText,
       demo: demo,
