@@ -22,6 +22,10 @@ export const sds = [
       { value: "SDS_8", text: "I have trouble with constipation." },
       { value: "SDS_9", text: "My heart beats faster than normal." },
       { value: "SDS_10", text: "I get tired for no reason." },
+      {
+        value: "CHECK_1",
+        text: "Select 'A little of the time' as your answer.",
+      },
       { value: "SDS_11", text: "My mind is as clear as it used to be." },
       {
         value: "SDS_12",

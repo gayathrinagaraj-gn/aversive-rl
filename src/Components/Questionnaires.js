@@ -15,7 +15,7 @@ import { demo } from "./quest/demo.js";
 
 import { DATABASE_URL } from "./config";
 
-var debug = true;
+var debug = false;
 var skip = false;
 
 class Questionnaires extends React.Component {
