@@ -13,7 +13,7 @@ import fbPic from "./fractals/audio-sound.png";
 
 import averSound from "./sounds/task/morriss_scream_1000minus10.wav";
 //import neuSound from "./sounds/task/bacigalupo_whitenoise_1000_minus20.wav";
-import neuSound from "./sounds/task/browniannoise_08amp_1000.wav";
+import neuSound from "./sounds/task/browniannoise_08amp_1000minus10.wav";
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
