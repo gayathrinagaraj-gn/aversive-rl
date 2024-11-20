@@ -7,8 +7,8 @@ import PlayButton from "./PlayButton";
 import { DATABASE_URL } from "./config";
 
 import averSound from "./sounds/task/morriss_scream_1000minus15.wav";
-import neuSound from "./sounds/task/browniannoise_08amp_1000minus5.wav";
-import pleaSound from "./sounds/task/YangIADSE_cicada0335_1000minus10.wav";
+import neuSound from "./sounds/task/browniannoise_08amp_1000minus10.wav";
+import pleaSound from "./sounds/task/YangIADSE_cicada0335_1000minus5.wav";
 /////// REACT
 
 var debug = false;
