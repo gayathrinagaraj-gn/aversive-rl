@@ -46,11 +46,11 @@ class Bonus extends React.Component {
 
     var bonus;
 
-    if (correctPer >= 0.6 && correctPer <= 0.64) {
+    if (correctPer >= 0.6 && correctPer <= 0.7) {
       bonus = 0.5;
-    } else if (correctPer >= 0.65 && correctPer <= 0.69) {
+    } else if (correctPer >= 0.7 && correctPer <= 0.8) {
       bonus = 0.75;
-    } else if (correctPer >= 0.7) {
+    } else if (correctPer >= 0.8) {
       bonus = 1;
     } else {
       bonus = 0;
