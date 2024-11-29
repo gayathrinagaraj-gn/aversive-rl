@@ -92,6 +92,8 @@ class SoundCal extends React.Component {
     console.log("Port over volume? " + volume);
 
     var averRatingDefList = utils.randomArray(qnNumTotal, 35, 65);
+
+    var sectionTime = Math.round(performance.now());
     var qnTime = Math.round(performance.now());
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -103,6 +105,11 @@ class SoundCal extends React.Component {
       sessionID: sessionID,
       date: date,
       startTime: startTime,
+
+      //section paramters
+      sectionTime: sectionTime,
+      section: "soundCal",
+
       volCalStage: "affRatings", //stage 1 is the normal rating and stage 2 is the staircase, if needed
 
       currentInstructionText: 1,
@@ -386,6 +393,8 @@ class SoundCal extends React.Component {
       sessionID: this.state.sessionID,
       date: this.state.date,
       startTime: this.state.startTime,
+      section: this.state.section,
+      sectionTime: this.state.sectionTime,
       volCalStage: this.state.volCalStage,
       checkTry: null, //this is in headphoneCheck.js
       qnTime: this.state.qnTime,

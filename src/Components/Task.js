@@ -25,6 +25,9 @@ import neuSound from "./sounds/task/browniannoise_08amp_1000minus10.wav";
 // After an initial acquisition phase (1st to 55th trials) the cards’ reward contingencies flipped
 //five times(after the 55th, 70th, 90th, 105th, and 125th trial)
 
+// 29/11/2024 We shorten the trials to 120, by removing the first 20 and last 20
+// swaps happen after the 35th, 50th, 70th, 85th, and 105th trial)
+
 var debug = false;
 var skip = false;
 
@@ -60,7 +63,7 @@ class Task extends React.Component {
     }
 
     //cond is determined by number of corrects - inside the code
-    var taskStimCond = Array(55)
+    var taskStimCond = Array(35)
       .fill(1)
       .concat(
         Array(15)
@@ -71,13 +74,13 @@ class Task extends React.Component {
               .concat(
                 Array(15)
                   .fill(2)
-                  .concat(Array(20).fill(1).concat(Array(35).fill(2)))
+                  .concat(Array(20).fill(1).concat(Array(15).fill(2)))
               )
           )
       );
 
     var trialNumTotal = taskStimCond.length;
-    var blockNumTotal = 4;
+    var blockNumTotal = 3;
     var trialNumPerBlock = Math.round(trialNumTotal / blockNumTotal);
 
     //the stim position
