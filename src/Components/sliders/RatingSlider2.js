@@ -40,7 +40,7 @@ const marks = [
   },
 ];
 
-export function AverSlider({ callBackValue, initialValue }) {
+export function AverSlider({ key, callBackValue, initialValue }) {
   const [averScale, setValue] = React.useState(initialValue);
 
   const handleChange = (event, newValue) => {
@@ -53,6 +53,7 @@ export function AverSlider({ callBackValue, initialValue }) {
       <Box sx={{ width: 500 }}>
         <ThemeProvider theme={theme}>
           <Slider
+            key={key}
             color="primary"
             aria-label="Always visible"
             step={1}

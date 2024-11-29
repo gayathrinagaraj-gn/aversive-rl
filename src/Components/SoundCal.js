@@ -342,6 +342,7 @@ class SoundCal extends React.Component {
             <br />
             <br />
             <RatingSlider.AverSlider
+              key={qnNumShow}
               callBackValue={this.callbackAver.bind(this)}
               initialValue={averRatingDef}
             />
