@@ -513,6 +513,8 @@ class HeadphoneCheck extends React.Component {
         sessionID: this.state.sessionID,
         date: this.state.date,
         startTime: this.state.startTime,
+        section: this.state.section,
+        sectionTime: this.state.sectionTime,
         volCalStage: this.state.volCalStage,
         checkTry: this.state.checkTry,
         qnTime: this.state.qnTime,
