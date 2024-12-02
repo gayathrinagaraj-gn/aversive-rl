@@ -85,6 +85,8 @@ class HeadphoneCheck extends React.Component {
     var volNtLog = 80;
     var vol = utils.logslider(80);
 
+    var sectionTime = Math.round(performance.now());
+
     ////////////////////////////////////////////////////////////////////////////////
     //Set state
     ////////////////////////////////////////////////////////////////////////////////
@@ -94,6 +96,9 @@ class HeadphoneCheck extends React.Component {
       sessionID: sessionID,
       date: date,
       startTime: startTime,
+      //section paramters
+      sectionTime: sectionTime,
+      section: "HeadphoneChk",
 
       volCalStage: "volCalib",
       currentInstructionText: 1,
@@ -464,6 +469,8 @@ class HeadphoneCheck extends React.Component {
         sessionID: this.state.sessionID,
         date: this.state.date,
         startTime: this.state.startTime,
+        section: this.state.section,
+        sectionTime: this.state.sectionTime,
         volCalStage: this.state.volCalStage,
         checkTry: this.state.checkTry,
         qnTime: this.state.qnTime,
