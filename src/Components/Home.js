@@ -11,23 +11,41 @@ class Home extends React.Component {
     super(props);
 
     // ID number - either set or get from url
-    var prolific_id;
-    var session_id;
+    //var prolific_id;
+    //var session_id;
+    var src_subject_id;
+    var subjectkey;
+    var time_pt;
+    var study;
+    
     if (debug === true) {
-      prolific_id = Math.floor(100000 + Math.random() * 900000);
-      session_id = Math.floor(100000 + Math.random() * 900000);
+      //prolific_id = Math.floor(100000 + Math.random() * 900000);
+      //session_id = Math.floor(100000 + Math.random() * 900000);
+      src_subject_id = Math.floor(100000 + Math.random() * 900000);
+      subjectkey = Math.floor(100000 + Math.random() * 900000);
+      time_pt = Math.floor(100000 + Math.random() * 900000);
+      study = Math.floor(100000 + Math.random() * 900000);
+      
     } else {
       var queryParams = new URLSearchParams(window.location.search);
-      prolific_id = queryParams.get("PROLIFIC_PID");
-      session_id = queryParams.get("SESSION_ID");
+      //prolific_id = queryParams.get("PROLIFIC_PID");
+     // session_id = queryParams.get("SESSION_ID");
+      src_subject_id = queryParams.get("src_subject_id");
+      subjectkey = queryParams.get("subjectkey");
+      time_pt = queryParams.get("time_pt");
+      study = queryParams.get("study");
       // console.log("PID: " + prolific_id); //pizza
       // console.log("SID: " + session_id); //pizza
     }
 
     // Set state
     this.state = {
-      prolificID: prolific_id,
-      sessionID: session_id,
+      //prolificID: prolific_id,
+      //sessionID: session_id,
+      src_subjectID: src_subject_id,
+      subject_KEY: subjectkey,
+      timePT: time_pt,
+      StudyName: study,
     };
 
     this.redirectToTarget = this.redirectToTarget.bind(this);
@@ -35,6 +53,7 @@ class Home extends React.Component {
 
   redirectToTarget() {
     //On click consent, sent to tutorial page with the props
+    /*
     this.props.navigate(
       "/Start?PROLIFIC_PID=" +
         this.state.prolificID +
@@ -44,6 +63,28 @@ class Home extends React.Component {
         state: {
           prolificID: this.state.prolificID,
           sessionID: this.state.sessionID,
+        },
+      }
+    ); */
+
+      this.props.navigate(
+      "/Start?src_subject_id=" +
+        this.state.src_subjectID +
+        "?subjectkey=" +
+        this.state.subject_KEY +
+         "?time_pt=" +
+        this.state.timePT +
+        "?study=" +
+        this.state.StudyName,
+      {
+        state: {
+          //prolificID: this.state.prolificID,
+          //sessionID: this.state.sessionID,
+          src_subjectID: this.state.src_subjectID,
+          subject_KEY: this.state.subject_KEY,
+          timePT: this.state.timePT,
+          StudyName: this.state.StudyName,
+          
         },
       }
     );
