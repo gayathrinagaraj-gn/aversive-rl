@@ -16,7 +16,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/Start" element={<StartPage />} />
-      <Route path="/HeadphoneCheck" element={<HeadphoneCheck />} />
+     // <Route path="/HeadphoneCheck" element={<HeadphoneCheck />} />
       <Route path="/SoundCal" element={<SoundCal />} />
       <Route path="/Tutorial" element={<Tutorial />} />
       <Route path="/Task" element={<Task />} />
