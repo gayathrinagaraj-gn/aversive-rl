@@ -25,14 +25,23 @@ class StartPage extends React.Component {
     // Random ID number in case this is necessary
     var userID = Math.floor(100000 + Math.random() * 900000);
 
-    var prolificID = this.props.state.prolificID;
-    var sessionID = this.props.state.sessionID;
+    //var prolificID = this.props.state.prolificID;
+    //var sessionID = this.props.state.sessionID;
+
+    var src_subjectID = this.state.src_subjectID;
+    var subject_KEY = this.state.subject_KEY;
+    var timePT =this.state.timePT;
+    var StudyName = this.state.StudyName;
 
     // Set state
     this.state = {
       userID: userID,
-      prolificID: prolificID,
-      sessionID: sessionID,
+      //prolificID: prolificID,
+      //sessionID: sessionID,
+      src_subjectID: src_subjectID,
+      subject_KEY: subject_KEY,
+      timePT: timePT,
+      StudyName: StudyName,
       date: dateString,
       dateTime: dateTime,
       startTime: timeString,
@@ -63,17 +72,31 @@ class StartPage extends React.Component {
       consentComplete: 1,
     });
 
-    var condUrl =
+    /*var condUrl =
       "/HeadphoneCheck?PROLIFIC_PID=" +
       this.state.prolificID +
       "?SESSION_ID=" +
-      this.state.sessionID;
+      this.state.sessionID; */
+
+     var condUrl =
+      "/SoundCal?src_subject_id=" +
+        this.state.src_subjectID +
+        "?subjectkey=" +
+        this.state.subject_KEY +
+         "?time_pt=" +
+        this.state.timePT +
+        "?study=" +
+        this.state.StudyName;
 
     this.props.navigate(condUrl, {
       state: {
         userID: this.state.userID,
-        prolificID: this.state.prolificID,
-        sessionID: this.state.sessionID,
+        //prolificID: this.state.prolificID,
+        //sessionID: this.state.sessionID,
+        src_subjectID: this.state.src_subjectID,
+        subject_KEY: this.state.subject_KEY,
+        timePT: this.state.timePT,
+        StudyName: this.state.StudyName,
         date: this.state.date,
         startTime: this.state.startTime,
       },
