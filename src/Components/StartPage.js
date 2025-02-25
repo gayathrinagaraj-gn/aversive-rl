@@ -79,7 +79,7 @@ class StartPage extends React.Component {
       this.state.sessionID; */
 
      var condUrl =
-      "/SoundCal?src_subject_id=" +
+      "/HeadphoneCheck?src_subject_id=" +
         this.state.src_subjectID +
         "?subjectkey=" +
         this.state.subject_KEY +
