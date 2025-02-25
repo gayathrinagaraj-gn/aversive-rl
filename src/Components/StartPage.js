@@ -28,10 +28,10 @@ class StartPage extends React.Component {
     //var prolificID = this.props.state.prolificID;
     //var sessionID = this.props.state.sessionID;
 
-    var src_subjectID = this.state.src_subjectID;
-    var subject_KEY = this.state.subject_KEY;
-    var timePT =this.state.timePT;
-    var studyName = this.state.studyName;
+    var src_subjectID = this.props.state.src_subjectID;
+    var subject_KEY = this.props.state.subject_KEY;
+    var timePT =this.props.state.timePT;
+    var studyName = this.props.state.studyName;
 
     // Set state
     this.state = {
