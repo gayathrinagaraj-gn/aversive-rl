@@ -108,7 +108,7 @@ class StartPage extends React.Component {
 
     if (this.state.consentComplete === 0) {
       return (
-        <div className="textBox">
+       /* <div className="textBox">
           <center>
             <strong>INFORMATION FOR THE PARTICIPANT</strong>
           </center>
@@ -124,7 +124,17 @@ class StartPage extends React.Component {
             showCompletedPage={false}
             onComplete={this.redirectToTarget}
           />
-        </div>
+        </div> */
+
+        <div className="textBox">
+        <center>
+          <strong>Welcome to the Study</strong>
+        </center>
+        <p>You will be redirected shortly...</p>
+        <button onClick={this.redirectToTarget}>Continue</button>
+      </div>
+
+    
       );
     } else {
       return null;
