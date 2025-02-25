@@ -81,11 +81,11 @@ class StartPage extends React.Component {
      var condUrl =
       "/HeadphoneCheck?src_subject_id=" +
         this.state.src_subjectID +
-        "?subjectkey=" +
+        "&subjectkey=" +
         this.state.subject_KEY +
-         "?time_pt=" +
+         "&time_pt=" +
         this.state.timePT +
-        "?study=" +
+        "&study=" +
         this.state.studyName;
 
     this.props.navigate(condUrl, {
