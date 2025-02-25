@@ -45,7 +45,7 @@ class Home extends React.Component {
       src_subjectID: src_subject_id,
       subject_KEY: subjectkey,
       timePT: time_pt,
-      StudyName: study,
+      studyName: study,
     };
 
     this.redirectToTarget = this.redirectToTarget.bind(this);
@@ -75,7 +75,7 @@ class Home extends React.Component {
          "?time_pt=" +
         this.state.timePT +
         "?study=" +
-        this.state.StudyName,
+        this.state.studyName,
       {
         state: {
           //prolificID: this.state.prolificID,
@@ -83,7 +83,7 @@ class Home extends React.Component {
           src_subjectID: this.state.src_subjectID,
           subject_KEY: this.state.subject_KEY,
           timePT: this.state.timePT,
-          StudyName: this.state.StudyName,
+          StudyName: this.state.studyName,
           
         },
       }
