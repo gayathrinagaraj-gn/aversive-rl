@@ -31,7 +31,7 @@ class StartPage extends React.Component {
     var src_subjectID = this.state.src_subjectID;
     var subject_KEY = this.state.subject_KEY;
     var timePT =this.state.timePT;
-    var StudyName = this.state.StudyName;
+    var studyName = this.state.studyName;
 
     // Set state
     this.state = {
@@ -41,7 +41,7 @@ class StartPage extends React.Component {
       src_subjectID: src_subjectID,
       subject_KEY: subject_KEY,
       timePT: timePT,
-      StudyName: StudyName,
+      studyName: studyName,
       date: dateString,
       dateTime: dateTime,
       startTime: timeString,
@@ -86,7 +86,7 @@ class StartPage extends React.Component {
          "?time_pt=" +
         this.state.timePT +
         "?study=" +
-        this.state.StudyName;
+        this.state.studyName;
 
     this.props.navigate(condUrl, {
       state: {
@@ -96,7 +96,7 @@ class StartPage extends React.Component {
         src_subjectID: this.state.src_subjectID,
         subject_KEY: this.state.subject_KEY,
         timePT: this.state.timePT,
-        StudyName: this.state.StudyName,
+        studyName: this.state.studyName,
         date: this.state.date,
         startTime: this.state.startTime,
       },
