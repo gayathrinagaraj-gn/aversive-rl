@@ -83,7 +83,7 @@ class Home extends React.Component {
           src_subjectID: this.state.src_subjectID,
           subject_KEY: this.state.subject_KEY,
           timePT: this.state.timePT,
-          StudyName: this.state.studyName,
+          studyName: this.state.studyName,
           
         },
       }
