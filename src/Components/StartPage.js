@@ -2,6 +2,7 @@ import React from "react";
 import * as Consent from "survey-react";
 import "../../node_modules/survey-react/survey.css";
 import "./style/surveyStyle.css";
+import style from "./style/taskStyle.module.css"; // apply the same style as the home page
 import withRouter from "./withRouter";
 
 import { json } from "./consent/consentFull.js";
@@ -126,7 +127,7 @@ class StartPage extends React.Component {
             showCompletedPage={false}
             onComplete={this.redirectToTarget}
           />
-        </div> */
+        </div> 
 
         <div className="textBox">
         <center>
@@ -134,7 +135,20 @@ class StartPage extends React.Component {
         </center>
         <p>You will be redirected shortly...</p>
         <button onClick={this.redirectToTarget}>Continue</button>
-      </div>
+      </div> */
+       <div className={style.bg}>
+          <div className={style.textFrame}>
+            <div className={style.fontStyle}>
+              <center>
+                <strong>Welcome to the Study</strong>
+              </center>
+              <p>You will be redirected shortly...</p>
+              <button className={style.button} onClick={this.redirectToTarget}>
+                Continue
+              </button>
+            </div>
+          </div>
+        </div>
 
     
       );
