@@ -22,23 +22,34 @@ class Bonus extends React.Component {
     var sectionTime = Math.round(performance.now());
 
     var userID;
-    var prolificID;
-    var sessionID;
+    //var prolificID;
+    //var sessionID;
+    var subject_KEY;
+    var timePT;
+    var studyName;
     var date;
     var startTime;
     var correctPer;
 
     if (debug === true) {
       userID = 1000;
-      prolificID = 1000;
-      sessionID = 1000;
+      //prolificID = 1000;
+      //sessionID = 1000;
+      src_subjectID = 1000;
+      subject_KEY = 1000;
+      timePT = 1000;
+      studyName = 1000;
       date = 1000;
       startTime = 1000;
       correctPer = 0.7;
     } else {
       userID = this.props.state.userID;
-      prolificID = this.props.state.prolificID;
-      sessionID = this.props.state.sessionID;
+      //prolificID = this.props.state.prolificID;
+      //sessionID = this.props.state.sessionID;
+      src_subjectID = this.props.state.src_subjectID;
+      subject_KEY = this.props.state.subject_KEY;
+      timePT =this.props.state.timePT;
+      studyName = this.props.state.studyName;
       date = this.props.state.date;
       startTime = this.props.state.startTime;
       correctPer = this.props.state.correctPer;
@@ -60,8 +71,12 @@ class Bonus extends React.Component {
 
     this.state = {
       userID: userID,
-      prolificID: prolificID,
-      sessionID: sessionID,
+      //prolificID: prolificID,
+      //sessionID: sessionID,
+      src_subjectID: src_subjectID,
+      subject_KEY: subject_KEY,
+      timePT: timePT,
+      studyName: studyName,
       date: date,
       startTime: startTime,
       section: "bonus",
@@ -187,8 +202,12 @@ class Bonus extends React.Component {
 
     let saveString = {
       userID: this.state.userID,
-      prolificID: this.state.prolificID,
-      sessionID: this.state.sessionID,
+      //prolificID: this.state.prolificID,
+      //sessionID: this.state.sessionID,
+      src_subjectID: this.state.src_subjectID,
+      subject_KEY: this.state.subject_KEY,
+      timePT: this.state.timePT,
+      studyName: this.state.studyName,
       date: this.state.date,
       startTime: this.state.startTime,
       section: this.state.section,
@@ -221,7 +240,7 @@ class Bonus extends React.Component {
   redirectToNextTask() {
     //  document.removeEventListener("keyup", this._handleInstructKey);
     document.removeEventListener("keyup", this._handleBeginKey);
-
+/*
     var condUrl =
       "/Quest?PROLIFIC_PID=" +
       this.state.prolificID +
@@ -236,7 +255,32 @@ class Bonus extends React.Component {
         date: this.state.date,
         startTime: this.state.startTime,
       },
-    });
+    }); */
+
+    var condUrl =
+    "/Quest?src_subject_id=" +
+      this.state.src_subjectID +
+      "&subjectkey=" +
+      this.state.subject_KEY +
+       "&time_pt=" +
+      this.state.timePT +
+      "&study=" +
+      this.state.studyName;
+
+  this.props.navigate(condUrl, {
+    state: {
+      userID: this.state.userID,
+      //prolificID: this.state.prolificID,
+      //sessionID: this.state.sessionID,
+      src_subjectID: this.state.src_subjectID,
+      subject_KEY: this.state.subject_KEY,
+      timePT: this.state.timePT,
+      studyName: this.state.studyName,
+      date: this.state.date,
+      startTime: this.state.startTime,
+    },
+  });
+
 
     //  console.log("UserID: " + this.state.userID);
   }

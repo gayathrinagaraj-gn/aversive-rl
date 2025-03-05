@@ -14,21 +14,33 @@ class EndPage extends React.Component {
     var sectionTime = Math.round(performance.now());
 
     var userID;
-    var prolificID;
-    var sessionID;
+    //var prolificID;
+    //var sessionID;
+    var src_subjectID;
+    var subject_KEY;
+    var timePT;
+    var studyName;
     var date;
     var startTime;
 
     if (debug === true) {
       userID = 1000;
-      prolificID = 1000;
-      sessionID = 1000;
+      //prolificID = 1000;
+      //sessionID = 1000;
+      src_subjectID = 1000;
+      subject_KEY = 1000;
+      timePT = 1000;
+      studyName = 1000;
       date = 1000;
       startTime = 1000;
     } else {
       userID = this.props.state.userID;
-      prolificID = this.props.state.prolificID;
-      sessionID = this.props.state.sessionID;
+      //prolificID = this.props.state.prolificID;
+      //sessionID = this.props.state.sessionID;
+      src_subjectID = this.props.state.src_subjectID;
+      subject_KEY = this.props.state.subject_KEY;
+      timePT =this.props.state.timePT;
+      studyName = this.props.state.studyName;
       date = this.props.state.date;
       startTime = this.props.state.startTime;
     }
@@ -39,8 +51,12 @@ class EndPage extends React.Component {
     this.state = {
       // demo paramters
       userID: userID,
-      prolificID: prolificID,
-      sessionID: sessionID,
+      //prolificID: prolificID,
+      //sessionID: sessionID,
+      src_subjectID: src_subjectID,
+      subject_KEY: subject_KEY,
+      timePT: timePT,
+      studyName: studyName,
       date: date,
       startTime: startTime,
 

@@ -23,21 +23,33 @@ class Questionnaires extends React.Component {
     super(props);
 
     var userID;
-    var prolificID;
-    var sessionID;
+    //var prolificID;
+    //var sessionID;
+    var src_subjectID;
+    var subject_KEY;
+    var timePT;
+    var studyName;
     var date;
     var startTime;
 
     if (debug === true) {
       userID = 1000;
-      prolificID = 1000;
-      sessionID = 1000;
+      //prolificID = 1000;
+      //sessionID = 1000;
+      src_subjectID = 1000;
+      subject_KEY = 1000;
+      timePT = 1000;
+      studyName = 1000;
       date = 1000;
       startTime = 1000;
     } else {
       userID = this.props.state.userID;
-      prolificID = this.props.state.prolificID;
-      sessionID = this.props.state.sessionID;
+      //prolificID = this.props.state.prolificID;
+      //sessionID = this.props.state.sessionID;
+      src_subjectID = this.props.state.src_subjectID;
+      subject_KEY = this.props.state.subject_KEY;
+      timePT =this.props.state.timePT;
+      studyName = this.props.state.studyName;
       date = this.props.state.date;
       startTime = this.props.state.startTime;
     }
@@ -50,8 +62,12 @@ class Questionnaires extends React.Component {
 
     this.state = {
       userID: userID,
-      prolificID: prolificID,
-      sessionID: sessionID,
+      //prolificID: prolificID,
+      //sessionID: sessionID,
+      src_subjectID: src_subjectID,
+      subject_KEY: subject_KEY,
+      timePT: timePT,
+      studyName: studyName,
       date: date,
       startTime: startTime,
       section: "psych",
@@ -93,8 +109,12 @@ class Questionnaires extends React.Component {
 
     var qnEnd = Math.round(performance.now());
     var prolificID = this.state.prolificID;
-    survey.setValue("prolificID", prolificID);
-    survey.setValue("sessionID", this.state.sessionID);
+    //survey.setValue("prolificID", prolificID);
+    //survey.setValue("sessionID", this.state.sessionID);
+    survey.setValue("src_subjectID", this.state.src_subjectID);
+    survey.setValue("subject_KEY", this.state.subject_KEY);
+    survey.setValue("timePT", this.state.timePT);
+    survey.setValue("studyName", this.state.studyName);
     survey.setValue("userID", this.state.userID);
     survey.setValue("date", this.state.date);
     survey.setValue("startTime", this.state.startTime);
@@ -106,8 +126,8 @@ class Questionnaires extends React.Component {
     var resultAsString = JSON.stringify(survey.data);
 
     //  console.log("resultAsString", resultAsString);
-
-    fetch(`${DATABASE_URL}/psych_quiz/` + prolificID, {
+// change prolific ID to src_subjectID
+    fetch(`${DATABASE_URL}/psych_quiz/` + src_subjectID, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -166,7 +186,7 @@ class Questionnaires extends React.Component {
   redirectToNextTask() {
     document.removeEventListener("keyup", this._handleInstructKey);
     document.removeEventListener("keyup", this._handleDebugKey);
-
+/*
     var condUrl =
       "/EndPage?PROLIFIC_PID=" +
       this.state.prolificID +
@@ -181,7 +201,32 @@ class Questionnaires extends React.Component {
         date: this.state.date,
         startTime: this.state.startTime,
       },
-    });
+    }); */
+    var condUrl =
+    "/EndPage?src_subject_id=" +
+      this.state.src_subjectID +
+      "&subjectkey=" +
+      this.state.subject_KEY +
+       "&time_pt=" +
+      this.state.timePT +
+      "&study=" +
+      this.state.studyName;
+
+  this.props.navigate(condUrl, {
+    state: {
+      userID: this.state.userID,
+      //prolificID: this.state.prolificID,
+      //sessionID: this.state.sessionID,
+      src_subjectID: this.state.src_subjectID,
+      subject_KEY: this.state.subject_KEY,
+      timePT: this.state.timePT,
+      studyName: this.state.studyName,
+      date: this.state.date,
+      startTime: this.state.startTime,
+    },
+  });
+
+
   }
 
   shuffleQuest() {
