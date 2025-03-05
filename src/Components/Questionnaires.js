@@ -127,7 +127,7 @@ class Questionnaires extends React.Component {
 
     //  console.log("resultAsString", resultAsString);
 // change prolific ID to src_subjectID
-    fetch(`${DATABASE_URL}/psych_quiz/` + src_subjectID, {
+    fetch(`${DATABASE_URL}/psych_quiz/` + prolificID, {
       method: "POST",
       headers: {
         Accept: "application/json",
