@@ -140,7 +140,7 @@ class StartPage extends React.Component {
           <div className={style.textFrame}>
             <div className={style.fontStyle}>
               <center>
-                <strong>Welcome to the Study</strong>
+                <strong>Welcome to the Study \n \n</strong>
               </center>
               <p>You will be redirected shortly...</p>
               <button className={style.button} onClick={this.redirectToTarget}>
