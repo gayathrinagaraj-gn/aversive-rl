@@ -1494,6 +1494,7 @@ class Tutorial extends React.Component {
       studyName: this.state.studyName,
       date: this.state.date,
       startTime: this.state.startTime,
+      volume: this.state.volume,
     },
   });
 

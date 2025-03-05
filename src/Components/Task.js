@@ -1067,6 +1067,7 @@ class Task extends React.Component {
         studyName: this.state.studyName,
         date: this.state.date,
         startTime: this.state.startTime,
+        correctPer: this.state.correctPer,
       },
     });
 
