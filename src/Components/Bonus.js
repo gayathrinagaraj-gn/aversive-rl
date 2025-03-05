@@ -182,7 +182,7 @@ class Bonus extends React.Component {
           time!
           <br />
           <br />
-          Your bonus is {this.state.bonus} GBP.
+          Your bonus is {this.state.bonus} USD.
           <br />
           <br />
           <center>
