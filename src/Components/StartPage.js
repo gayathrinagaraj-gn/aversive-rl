@@ -145,9 +145,13 @@ class StartPage extends React.Component {
               <br />
               <br />
               <p>You will be redirected shortly...</p>
-              <button className={style.button} onClick={this.redirectToTarget}>
-                Continue
-              </button>
+              <br />
+              <br />
+              <center>
+                <button className={style.button} onClick={this.redirectToTarget}>
+                  Continue
+                </button>
+              </center>
             </div>
           </div>
         </div>
